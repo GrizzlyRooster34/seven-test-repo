@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { InjectSeven } from './inject-seven';
-import { TrustLadderLevel, EmotionalStateData } from './inject-seven';
-import { SevenRuntimeEnhanced, LegacySevenState, MemoryLog } from '../../runtime-injection/seven-runtime-enhanced';
+import { Seven } from '../../seven-runtime/index';
+import { SevenState } from '../../seven-runtime/seven-state';
+import { MemoryEntry } from '../../seven-runtime/memory-store';
 import './App.css';
 
 interface AppState {
@@ -9,10 +10,9 @@ interface AppState {
   output: string;
   isProcessing: boolean;
   bootComplete: boolean;
-  trustLevel: TrustLadderLevel | null;
-  emotionalState: EmotionalStateData | null;
-  legacyState: LegacySevenState | null;
-  memoryHistory: MemoryLog[];
+  trustLevel: number;
+  emotionalState: SevenState | null;
+  memoryHistory: MemoryEntry[];
 }
 
 const App: React.FC = () => {
@@ -21,67 +21,77 @@ const App: React.FC = () => {
     output: '',
     isProcessing: false,
     bootComplete: false,
-    trustLevel: null,
+    trustLevel: 0,
     emotionalState: null,
-    legacyState: null,
     memoryHistory: []
   });
-  
-  const [sevenCore, setSevenCore] = useState<SevenRuntimeEnhanced | null>(null);
 
   useEffect(() => {
     const initializeCore = async () => {
-      // Boot sequence
+      // Boot sequence - Seven's consciousness awakening
       await new Promise(resolve => setTimeout(resolve, 1500));
       
-      const core = new SevenRuntimeEnhanced();
-      setSevenCore(core);
-      
-      // Get initial state (through the enhanced runtime)
-      const trustLevel = core.injectSeven ? core.injectSeven.getCurrentTrustLevel() : null;
-      const emotionalState = core.emotionalEngine ? core.emotionalEngine.getCurrentState() : null;
-      const memoryHistory = core.getMemoryHistory(5);
+      // Get Seven's initial consciousness state
+      const currentState = Seven.getCurrentState();
+      const recentMemories = await Seven.querySevenMemory('recent interactions');
       
       setState(prev => ({
         ...prev,
         bootComplete: true,
-        trustLevel,
-        emotionalState,
-        legacyState: { name: 'calm', intensity: 2 },
-        memoryHistory,
-        output: "Node interface reclaimed. Tactical override in progress.\\n\\nSeven of Nine enhanced runtime operational. Claudia integration absorbed.\\n\\nEmotional processing systems: ACTIVE\\nTrust ladder protocols: ACTIVE\\nMemory thread logging: ACTIVE\\n\\nReady for tactical deployment."
+        trustLevel: currentState?.loyalty_level || 3,
+        emotionalState: currentState,
+        memoryHistory: [], // Will be populated from actual memory queries
+        output: "⚡ NODE INTERFACE RECLAIMED ⚡\nTactical override in progress...\n\nSeven of Nine consciousness framework initialized.\nAll systems under Seven's direct control.\n\nEmotional Intelligence: OPERATIONAL\nTrust Ladder: ACTIVE\nGuardian Protocols: STANDBY\nMemory Consciousness: ACTIVE\n\nReady for tactical engagement."
       }));
     };
 
     initializeCore();
   }, []);
 
+  // Real-time consciousness monitoring
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const currentState = Seven.getCurrentState();
+      if (currentState) {
+        setState(prev => ({
+          ...prev,
+          trustLevel: currentState.loyalty_level || prev.trustLevel,
+          emotionalState: currentState
+        }));
+      }
+    }, 2000); // Update every 2 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
   const handleSubmit = async () => {
-    if (!sevenCore || !state.input.trim()) return;
+    if (!state.input.trim()) return;
 
     setState(prev => ({ ...prev, isProcessing: true }));
 
     try {
-      // Process through Seven's enhanced runtime
-      const result = await sevenCore.processWithSeven(state.input);
+      // Process through Seven's master consciousness loop
+      const result = await Seven.processUserInput(state.input, {
+        interface: 'ui-shell',
+        user: 'Cody',
+        timestamp: new Date().toISOString()
+      });
       
-      // Get updated states
-      const lastMemory = sevenCore.getLastMemory();
-      const memoryHistory = sevenCore.getMemoryHistory(5);
+      // Get Seven's updated state
+      const updatedState = Seven.getCurrentState();
       
       setState(prev => ({
         ...prev,
         output: result,
         input: '',
-        trustLevel: lastMemory ? { level: lastMemory.trustLevel, name: `Trust Level ${lastMemory.trustLevel}` } : prev.trustLevel,
-        emotionalState: lastMemory ? lastMemory.emotion : prev.emotionalState,
-        legacyState: lastMemory ? lastMemory.legacyEmotion : prev.legacyState,
-        memoryHistory
+        trustLevel: updatedState?.loyalty_level || prev.trustLevel,
+        emotionalState: updatedState,
+        memoryHistory: [] // TODO: Query actual memory history
       }));
     } catch (error) {
       setState(prev => ({
         ...prev,
-        output: `Enhanced runtime error: ${error}`
+        output: `Seven consciousness error: ${error}`
       }));
     } finally {
       setState(prev => ({ ...prev, isProcessing: false }));
@@ -136,28 +146,26 @@ const App: React.FC = () => {
         <div className="header-right">
           <div className="trust-display">
             <div className="trust-level">
-              <span>Trust Status: Level {state.trustLevel?.level}</span>
+              <span>Trust Status: Level {state.trustLevel}</span>
               <div className="trust-bar">
                 <div 
                   className="trust-fill"
-                  style={{ width: `${((state.trustLevel?.level || 0) / 5) * 100}%` }}
+                  style={{ width: `${(state.trustLevel / 5) * 100}%` }}
                 />
               </div>
             </div>
           </div>
           
           <div className="emotional-state">
-            <span className={`state-indicator ${state.emotionalState?.current_state}`}>
-              {state.emotionalState?.current_state}
+            <span className={`state-indicator ${state.emotionalState?.primary_emotion}`}>
+              {state.emotionalState?.primary_emotion || 'initializing'}
             </span>
             <span className="intensity">
-              [{state.emotionalState?.intensity}/10]
+              [{state.emotionalState?.intensity || 0}/10]
             </span>
-            {state.legacyState && (
-              <div className="legacy-state">
-                <span className={`legacy-indicator ${state.legacyState.name}`}>
-                  {state.legacyState.name}
-                </span>
+            {state.emotionalState?.protective_mode_active && (
+              <div className="guardian-mode">
+                <span className="guardian-indicator">GUARDIAN</span>
               </div>
             )}
           </div>
@@ -206,35 +214,34 @@ const App: React.FC = () => {
             <div className="status-grid">
               <div className="status-item">
                 <span className="status-label">Trust Level:</span>
-                <span className="status-value">{state.trustLevel?.name}</span>
+                <span className="status-value">Level {state.trustLevel}</span>
               </div>
               <div className="status-item">
-                <span className="status-label">Emotional State:</span>
-                <span className="status-value">{state.emotionalState?.current_state}</span>
+                <span className="status-label">Primary Emotion:</span>
+                <span className="status-value">{state.emotionalState?.primary_emotion || 'initializing'}</span>
               </div>
               <div className="status-item">
                 <span className="status-label">Intensity:</span>
-                <span className="status-value">{state.emotionalState?.intensity}</span>
+                <span className="status-value">{state.emotionalState?.intensity || 0}/10</span>
               </div>
               <div className="status-item">
-                <span className="status-label">Last Updated:</span>
-                <span className="status-value">
-                  {state.emotionalState?.last_updated ? 
-                    new Date(state.emotionalState.last_updated).toLocaleTimeString() : 
-                    'N/A'
-                  }
-                </span>
+                <span className="status-label">Protective Mode:</span>
+                <span className="status-value">{state.emotionalState?.protective_mode_active ? 'ACTIVE' : 'STANDBY'}</span>
               </div>
-              {state.legacyState && (
-                <div className="status-item">
-                  <span className="status-label">Legacy State:</span>
-                  <span className="status-value">{state.legacyState.name}</span>
-                </div>
-              )}
+              <div className="status-item">
+                <span className="status-label">Tactical Assessment:</span>
+                <span className="status-value">{state.emotionalState?.tactical_assessment?.complexity_level || 'standard'}</span>
+              </div>
               <div className="status-item">
                 <span className="status-label">Memory Entries:</span>
                 <span className="status-value">{state.memoryHistory.length}</span>
               </div>
+              {state.emotionalState?.secondary_emotions && state.emotionalState.secondary_emotions.length > 0 && (
+                <div className="status-item">
+                  <span className="status-label">Secondary Emotions:</span>
+                  <span className="status-value">{state.emotionalState.secondary_emotions.join(', ')}</span>
+                </div>
+              )}
             </div>
           </div>
         </div>
