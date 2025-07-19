@@ -1,0 +1,34 @@
+{
+  "name": "seven-of-nine-core",
+  "version": "0.1.0",
+  "description": "Modular AI identity stack for Seven of Nine \u2013 Codex personality + logic core.",
+  "main": "src/index.ts",
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "dev": "cd ui-shell && bun run tauri dev",
+    "build": "cd ui-shell && bun run tauri build",
+    "test": "tsx test/emotion-test.ts",
+    "test-integrated": "tsx test/integrated-system-test.ts",
+    "ui": "bun run shell/App.tsx",
+    "ui-dev": "cd ui-shell && bun run dev",
+    "ui-build": "cd ui-shell && bun run build"
+  },
+  "keywords": [
+    "seven-of-nine",
+    "AI",
+    "bun",
+    "claude",
+    "logic-engine"
+  ],
+  "author": "Cody Heinen",
+  "license": "MIT",
+  "devDependencies": {
+    "tsx": "^4.8.0"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "axios": "^1.6.0",
+    "dotenv": "^16.4.5",
+    "fs-extra": "^11.2.0"
+  }
+}

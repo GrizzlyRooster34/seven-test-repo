@@ -1,0 +1,67 @@
+# Dependencies
+node_modules/
+*/node_modules/
+ui-shell/node_modules/
+
+# Build outputs
+dist/
+build/
+ui-shell/dist/
+ui-shell/build/
+ui-shell/src-tauri/target/
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Memory and state files
+memory/
+cube/logs/*.log
+*.db
+*.sqlite
+
+# Temporary files
+*.tmp
+*.temp
+
+# Tauri build artifacts
+ui-shell/src-tauri/target/
+ui-shell/src-tauri/WixTools/
+
+# Lock files (keep package-lock.json but ignore others)
+yarn.lock
+pnpm-lock.yaml
+bun.lockb
+
+# Coverage reports
+coverage/
+*.lcov
+
+# Runtime injection temp files
+runtime-injection/claudia-core/
+runtime-injection/seven-runtime/
