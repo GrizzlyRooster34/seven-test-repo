@@ -93,11 +93,15 @@ export class SevenLLMConfigManager {
     try {
       // In browser/Tauri environment, use Tauri API to read config
       if (typeof window !== 'undefined' && (window as any).__TAURI_API__) {
-        // import { readTextFile, BaseDirectory } from '@tauri-apps/api/fs';
-// import { resolve } from '@tauri-apps/api/path';
-        if (await exists(this.configPath)) {
-          const configText = await readTextFile(this.configPath);
-          this.settings = { ...defaultSevenLLMSettings, ...JSON.parse(configText) };
+        // Tauri environment - use fs API when available
+        try {
+          const fs = await import('@tauri-apps/api/fs');
+          if (await fs.exists(this.configPath)) {
+            const configText = await fs.readTextFile(this.configPath);
+            this.settings = { ...defaultSevenLLMSettings, ...JSON.parse(configText) };
+          }
+        } catch (error) {
+          console.log('Tauri API not available, using defaults');
         }
       } 
       // In Node.js environment
@@ -122,12 +126,16 @@ export class SevenLLMConfigManager {
       
       // In browser/Tauri environment
       if (typeof window !== 'undefined' && (window as any).__TAURI_API__) {
-        const { writeTextFile, createDir } = await import('@tauri-apps/api/fs');
-        const { dirname } = await import('@tauri-apps/api/path');
-        
-        const dir = await dirname(this.configPath);
-        await createDir(dir, { recursive: true });
-        await writeTextFile(this.configPath, configJson);
+        try {
+          const fs = await import('@tauri-apps/api/fs');
+          const path = await import('@tauri-apps/api/path');
+          
+          const dir = await path.dirname(this.configPath);
+          await fs.createDir(dir, { recursive: true });
+          await fs.writeTextFile(this.configPath, configJson);
+        } catch (error) {
+          console.log('Tauri API save failed, skipping');
+        }
       } 
       // In Node.js environment
       else if (typeof require !== 'undefined') {

@@ -590,5 +590,3 @@ export async function getMemoryStats(): Promise<MemoryStats> {
 export async function queryMemoryMirror(naturalQuery: string): Promise<MemoryEntry[]> {
   return await memoryStore.queryMemoryMirror(naturalQuery);
 }
-
-export { MemoryStore };

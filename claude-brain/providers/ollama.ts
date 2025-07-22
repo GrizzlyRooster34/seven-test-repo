@@ -193,8 +193,8 @@ export class OllamaProvider implements LLMProvider {
           finish_reason: data.done ? 'completed' : 'stopped'
         };
       }
-    } catch (error) {
-      if (error.name === 'AbortError') {
+    } catch (error: any) {
+      if (error?.name === 'AbortError') {
         throw new Error('Ollama request timed out');
       }
       console.error('⚠️ SEVEN: Ollama execution failed:', error);

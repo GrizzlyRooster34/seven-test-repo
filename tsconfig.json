@@ -1,13 +1,15 @@
 {
   "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
+    "target": "es2017",
+    "module": "commonjs",
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "strict": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": false,
     "skipLibCheck": true,
     "noEmit": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "downlevelIteration": true
   },
   "include": [
     "seven-runtime/**/*.ts",

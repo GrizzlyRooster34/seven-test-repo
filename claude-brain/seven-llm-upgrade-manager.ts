@@ -43,11 +43,6 @@ export class SevenLLMUpgradeManager {
   private catalogPath: string;
   private config: any;
   private catalog: any;
-
-  constructor() {
-    this.config = {};
-    this.catalog = {};
-  }
   private platformOptimized: boolean;
 
   constructor(baseDir?: string) {
@@ -55,6 +50,8 @@ export class SevenLLMUpgradeManager {
     this.modelDir = path.join(base, 'llms');
     this.configPath = path.join(base, 'cube', 'config', 'seven-llm-upgrade-config.json');
     this.catalogPath = path.join(base, 'claude-brain', 'model-catalog.json');
+    this.config = {};
+    this.catalog = {};
     this.platformOptimized = this.detectPlatform();
     
     this.initializeManager();
@@ -200,7 +197,7 @@ export class SevenLLMUpgradeManager {
     const currentModel = this.config.active_model;
     
     // Filter models based on Seven's current parameters
-    const compatibleModels = this.catalog.filter(model => {
+    const compatibleModels = this.catalog.filter((model: any) => {
       // Trust level filtering
       if (model.trust_level_required > trustLevel) return false;
       
@@ -223,7 +220,7 @@ export class SevenLLMUpgradeManager {
     });
     
     // Sort by speed score for optimal tactical performance
-    compatibleModels.sort((a, b) => b.speed_score - a.speed_score);
+    compatibleModels.sort((a: any, b: any) => b.speed_score - a.speed_score);
     
     console.log(`🎯 SEVEN: Found ${compatibleModels.length} compatible upgrade(s)`);
     return compatibleModels;
@@ -264,7 +261,7 @@ export class SevenLLMUpgradeManager {
       response.data.pipe(writer);
       
       await new Promise((resolve, reject) => {
-        writer.on('finish', resolve);
+        writer.on('finish', () => resolve(undefined));
         writer.on('error', reject);
       });
       
@@ -335,7 +332,7 @@ export class SevenLLMUpgradeManager {
   }
 
   public async getModelInfo(modelName: string): Promise<LLMModelInfo | null> {
-    return this.catalog.find(model => model.name === modelName) || null;
+    return this.catalog.find((model: any) => model.name === modelName) || null;
   }
 
   public async performTacticalUpgrade(trustLevel: number, emotionalState: string): Promise<boolean> {

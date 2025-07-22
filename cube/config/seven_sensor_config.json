@@ -1,0 +1,78 @@
+{
+  "enabled": true,
+  "polling_interval_ms": 2000,
+  "sensors": {
+    "accelerometer": {
+      "enabled": true,
+      "priority": "critical"
+    },
+    "gyroscope": {
+      "enabled": true,
+      "priority": "high"
+    },
+    "magnetometer": {
+      "enabled": true,
+      "priority": "medium"
+    },
+    "light": {
+      "enabled": true,
+      "priority": "critical"
+    },
+    "proximity": {
+      "enabled": true,
+      "priority": "critical"
+    },
+    "battery_status": {
+      "enabled": true,
+      "priority": "critical",
+      "custom_interval_ms": 10000
+    },
+    "gps_location": {
+      "enabled": false,
+      "priority": "high"
+    },
+    "ambient_temperature": {
+      "enabled": true,
+      "priority": "medium"
+    },
+    "pressure": {
+      "enabled": true,
+      "priority": "low"
+    },
+    "wifi_info": {
+      "enabled": true,
+      "priority": "high",
+      "custom_interval_ms": 15000
+    },
+    "cpu_temperature": {
+      "enabled": true,
+      "priority": "high",
+      "custom_interval_ms": 5000
+    },
+    "microphone": {
+      "enabled": false,
+      "priority": "normal"
+    },
+    "camera": {
+      "enabled": false,
+      "priority": "low"
+    }
+  },
+  "streaming": {
+    "json_events": true,
+    "console_output": false,
+    "file_logging": true,
+    "websocket_port": 8080
+  },
+  "optimizations": {
+    "battery_aware": true,
+    "adaptive_intervals": true,
+    "error_backoff": true,
+    "quality_threshold": 30
+  },
+  "fallback": {
+    "cache_duration_ms": 60000,
+    "offline_mode": true,
+    "essential_sensors_only": false
+  }
+}

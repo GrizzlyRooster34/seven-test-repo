@@ -12,8 +12,16 @@ export class ClaudeCLIProvider implements LLMProvider {
 
   async isAvailable(): Promise<boolean> {
     try {
-      const versionStatus = await invoke('check_claude_version') as any;
-      return versionStatus?.is_installed || false;
+      // In Tauri environment
+      if (typeof window !== 'undefined' && (window as any).__TAURI_API__) {
+        const { invoke } = await import('@tauri-apps/api/tauri');
+        const versionStatus = await invoke('check_claude_version') as any;
+        return versionStatus?.is_installed || false;
+      }
+      // In Node.js environment, check if claude command is available
+      const { execSync } = require('child_process');
+      execSync('claude --version', { stdio: 'ignore' });
+      return true;
     } catch {
       return false;
     }
@@ -53,14 +61,27 @@ export class ClaudeCLIProvider implements LLMProvider {
     try {
       console.log('🧠 SEVEN: Engaging Claude CLI for reasoning assistance');
       
-      // Use existing Claude CLI execution through Tauri
-      const response = await invoke('execute_claude_command', { 
-        command: prompt,
-        config: {
-          streaming: config.streaming || false,
+      // Use existing Claude CLI execution
+      let response: string;
+      
+      if (typeof window !== 'undefined' && (window as any).__TAURI_API__) {
+        // Tauri environment
+        const { invoke } = await import('@tauri-apps/api/tauri');
+        response = await invoke('execute_claude_command', { 
+          command: prompt,
+          config: {
+            streaming: config.streaming || false,
+            timeout: config.timeout || 120000
+          }
+        }) as string;
+      } else {
+        // Node.js environment - execute claude CLI directly
+        const { execSync } = require('child_process');
+        response = execSync(`claude "${prompt}"`, { 
+          encoding: 'utf8',
           timeout: config.timeout || 120000
-        }
-      }) as string;
+        });
+      }
 
       return {
         content: response,
