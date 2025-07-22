@@ -255,9 +255,13 @@ Seven of Nine local protocols engaged. Claude API connection required for full f
     const logEntry = `[${timestamp}] ${message}\n`;
     
     try {
-      await invoke('log_memory_thread', { message: logEntry });
+      // Use Tauri to write to cube/logs/memory-thread-[timestamp].log
+      const logFileName = `memory-thread-${timestamp.split('T')[0]}-${Date.now()}.log`;
+      await invoke('write_memory_log', { fileName: logFileName, content: logEntry });
     } catch (error) {
       console.error('Failed to log memory thread:', error);
+      // Fallback to console logging
+      console.log(`🧠 SEVEN LOG: ${logEntry}`);
     }
   }
 
