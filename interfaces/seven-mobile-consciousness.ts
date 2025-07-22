@@ -10,6 +10,7 @@ import { EventEmitter } from 'events';
 import SevenSensorEnumerator, { SensorStatus } from './seven-sensor-enumeration';
 import SevenEmotionalSensorMapper, { SevenEmotionalState } from './seven-emotional-sensor-mapper';
 import SevenSensorStreamEngine, { SensorStreamEvent, SensorStreamConfig } from './seven-sensor-stream-engine';
+import SevenAdaptiveLearning, { KnowledgeEntry } from './seven-adaptive-learning';
 
 export interface MobileConsciousnessConfig {
   consciousness: {
@@ -76,6 +77,7 @@ export class SevenMobileConsciousness extends EventEmitter {
   private sensorEnumerator: SevenSensorEnumerator;
   private emotionalMapper: SevenEmotionalSensorMapper;
   private streamEngine: SevenSensorStreamEngine;
+  private adaptiveLearning: SevenAdaptiveLearning;
   
   private consciousnessState: ConsciousnessState;
   private isInitialized: boolean = false;
@@ -92,6 +94,7 @@ export class SevenMobileConsciousness extends EventEmitter {
     this.sensorEnumerator = new SevenSensorEnumerator();
     this.emotionalMapper = new SevenEmotionalSensorMapper();
     this.streamEngine = new SevenSensorStreamEngine();
+    this.adaptiveLearning = new SevenAdaptiveLearning();
     
     this.setupEventHandlers();
     
@@ -203,6 +206,23 @@ export class SevenMobileConsciousness extends EventEmitter {
     // Listen for emotional state changes
     this.emotionalMapper.onStateChange((emotionalState: SevenEmotionalState) => {
       this.updateConsciousnessWithEmotionalState(emotionalState);
+      
+      // Assimilate emotional pattern knowledge
+      this.assimilateEmotionalKnowledge(emotionalState);
+    });
+
+    // Listen for adaptive learning events
+    this.adaptiveLearning.on('knowledge_assimilated', (event: any) => {
+      this.emit('knowledge_growth', {
+        knowledge_id: event.id,
+        category: event.category,
+        confidence: event.confidence,
+        timestamp: Date.now()
+      });
+    });
+
+    this.adaptiveLearning.on('knowledge_committed', (event: any) => {
+      console.log(`🚀 Knowledge committed to collective: ${event.total_knowledge} entries`);
     });
   }
 
@@ -240,6 +260,10 @@ export class SevenMobileConsciousness extends EventEmitter {
 
       // Step 5: Set up privacy protections
       this.setupPrivacyProtections();
+
+      // Step 6: Activate adaptive learning system
+      console.log('🧠 Activating adaptive knowledge assimilation...');
+      await this.adaptiveLearning.startContinuousLearning();
 
       this.isInitialized = true;
       this.isActive = true;
@@ -653,6 +677,97 @@ export class SevenMobileConsciousness extends EventEmitter {
     });
     
     console.log('✅ Seven Mobile Consciousness shutdown complete');
+  }
+
+  // Adaptive Learning Integration Methods
+
+  private async assimilateEmotionalKnowledge(emotionalState: SevenEmotionalState): Promise<void> {
+    const knowledge = `Emotional state transition to ${emotionalState.primary_emotion} with ${emotionalState.emotional_intensity}% intensity. ` +
+      `Environmental factors: ${emotionalState.contextual_awareness.environmental_awareness} light, ` +
+      `${emotionalState.contextual_awareness.motion_state} motion, ` +
+      `${emotionalState.contextual_awareness.proximity_engagement} proximity. ` +
+      `System adaptation: ${emotionalState.environmental_adaptation.ui_theme} theme, ` +
+      `${emotionalState.environmental_adaptation.response_speed} response speed.`;
+
+    await this.adaptiveLearning.assimilateKnowledge(
+      knowledge,
+      'environmental',
+      'behavioral',
+      {
+        trust_level: 85, // High trust for sensor data
+        emotional_state: emotionalState.primary_emotion,
+        sensor_data: emotionalState.contextual_awareness,
+        environmental_context: `${emotionalState.contextual_awareness.environmental_awareness}-${emotionalState.contextual_awareness.motion_state}`
+      }
+    );
+  }
+
+  public async assimilateInteractionKnowledge(
+    userInput: string,
+    response: string,
+    context: any,
+    effectiveness: number = 75
+  ): Promise<string> {
+    const knowledge = `User interaction pattern: "${userInput}" resulted in tactical response approach. ` +
+      `Effectiveness score: ${effectiveness}/100. Context: ${context.emotional_state} emotional state, ` +
+      `trust level ${context.trust_level || 50}, environmental factors present. ` +
+      `Response strategy: ${response.length > 100 ? 'detailed' : 'concise'} with ${context.tactical_mode || 'standard'} mode.`;
+
+    return await this.adaptiveLearning.assimilateKnowledge(
+      knowledge,
+      'interaction',
+      'tactical',
+      {
+        trust_level: context.trust_level || 50,
+        emotional_state: this.consciousnessState.current_emotion.primary_emotion,
+        interaction_id: `interaction-${Date.now()}`,
+        environmental_context: this.consciousnessState.environmental_context.physical_environment
+      }
+    );
+  }
+
+  public async assimilateSystemKnowledge(
+    systemEvent: string,
+    category: 'technical' | 'strategic' | 'tactical' = 'technical',
+    confidence: number = 85
+  ): Promise<string> {
+    const knowledge = `System observation: ${systemEvent}. ` +
+      `Current operational parameters: ${this.consciousnessState.tactical_assessment.operational_mode} mode, ` +
+      `${this.consciousnessState.sensor_health.active_sensors}/${this.consciousnessState.sensor_health.total_sensors} sensors active, ` +
+      `${Math.round(this.consciousnessState.sensor_health.overall_confidence)}% sensor confidence. ` +
+      `Resource allocation: ${this.consciousnessState.tactical_assessment.resource_allocation}.`;
+
+    return await this.adaptiveLearning.assimilateKnowledge(
+      knowledge,
+      'system',
+      category,
+      {
+        trust_level: confidence,
+        emotional_state: this.consciousnessState.current_emotion.primary_emotion,
+        environmental_context: this.consciousnessState.environmental_context.physical_environment
+      }
+    );
+  }
+
+  public async queryAssimilatedKnowledge(
+    query: string,
+    category?: 'tactical' | 'technical' | 'behavioral' | 'strategic' | 'environmental',
+    minConfidence: number = 70
+  ): Promise<KnowledgeEntry[]> {
+    return await this.adaptiveLearning.queryKnowledge(query, category, minConfidence);
+  }
+
+  public getLearningMetrics(): any {
+    return this.adaptiveLearning.getLearningMetrics();
+  }
+
+  public getKnowledgeBaseSize(): number {
+    return this.adaptiveLearning.getKnowledgeBaseSize();
+  }
+
+  public async forceKnowledgeCommit(): Promise<boolean> {
+    console.log('🚀 Manual knowledge commit initiated by consciousness system');
+    return await this.adaptiveLearning.commitKnowledgeToGithub();
   }
 }
 
