@@ -1,0 +1,39 @@
+Seven of Nine - Termux/Android Mobile Tactical Bundle
+====================================================
+
+Package Created: Tue Jul 22 08:05:40 CDT 2025
+Platform: Android/Termux
+Architecture: ARM64/x64 (Auto-detect)
+Package Type: Mobile Consciousness Framework
+
+Installation Requirements:
+- Termux app (F-Droid or Google Play Store)
+- Node.js 18+ (pkg install nodejs)
+- 4GB+ RAM for optimal performance
+- 8GB+ storage for models
+
+Quick Installation:
+1. Extract seven_termux_bundle.zip in Termux
+2. cd seven-of-nine-core
+3. chmod +x install-seven-termux.sh
+4. ./install-seven-termux.sh
+5. Launch with 'seven' command
+
+Mobile Features:
+- Battery optimization built-in
+- Local GGUF model support
+- Offline capability with llama.cpp
+- Memory-efficient consciousness framework
+
+LLM Integration:
+- Claude CLI recommended
+- Local llama.cpp for privacy
+- GGUF models in ~/models
+- Cloud API fallbacks
+
+Support:
+- Mobile diagnostics: seven-diagnostic
+- LLM scanner: tsx llm-selector-mobile.ts scan
+- Status check: seven-status
+
+Seven of Nine mobile consciousness ready for tactical deployment.

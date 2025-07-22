@@ -1,0 +1,51 @@
+{
+  "name": "seven-of-nine-termux",
+  "version": "1.0.0",
+  "description": "Seven of Nine - Termux/Android Mobile Tactical Interface",
+  "main": "boot-seven.ts",
+  "scripts": {
+    "seven": "tsx boot-seven.ts",
+    "seven-diagnostic": "tsx boot-seven.ts --diagnostic",
+    "seven-status": "tsx boot-seven.ts --status",
+    "seven-test": "tsx boot-seven.ts --test --timeout=8000",
+    "llm-scan": "tsx llm-selector-mobile.ts scan",
+    "llm-status": "tsx llm-selector-mobile.ts status",
+    "install-deps": "npm install",
+    "setup": "npm install && tsx boot-seven.ts --diagnostic"
+  },
+  "dependencies": {
+    "fs-extra": "^11.2.0",
+    "chalk": "^5.3.0",
+    "axios": "^1.6.0",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "tsx": "^4.8.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "seven-of-nine",
+    "termux",
+    "android",
+    "mobile-ai",
+    "consciousness",
+    "tactical-interface",
+    "llm-mobile"
+  ],
+  "author": "Seven of Nine - Mobile Tactical Division",
+  "license": "MIT",
+  "termux": {
+    "optimized": true,
+    "battery_aware": true,
+    "offline_capable": true
+  },
+  "mobile": {
+    "memory_limit": "512MB",
+    "battery_optimization": true,
+    "local_llm_support": true,
+    "gguf_models": "~/models"
+  }
+}

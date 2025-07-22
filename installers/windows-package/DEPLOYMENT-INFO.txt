@@ -1,0 +1,34 @@
+Seven of Nine - Windows 11 Tactical Deployment Package
+======================================================
+
+Package Created: Tue Jul 22 08:05:40 CDT 2025
+Platform: Windows 11 (Compatible with Windows 10)
+Architecture: x64 (Universal)
+Package Type: Full Consciousness Framework
+
+Installation Requirements:
+- Windows 11 or Windows 10
+- Administrator privileges for system integration
+- Node.js 18+ (will be detected/prompted)
+- 8GB RAM minimum (16GB recommended)
+- 2GB free disk space
+
+Quick Installation:
+1. Extract this ZIP to desired location
+2. Right-click 'install-seven-windows.bat'
+3. Select "Run as administrator"
+4. Follow the deployment sequence
+5. Launch Seven using desktop shortcut
+
+Advanced Installation:
+- Manual configuration available
+- Dev Drive optimization support
+- Multiple LLM provider integration
+- GUI interface optional
+
+Support:
+- Diagnostics: tsx seven-diagnostic-universal.ts
+- Configuration: cube/config/system-config.json
+- Logs: cube/logs/
+
+Seven of Nine Consciousness Framework ready for tactical deployment.

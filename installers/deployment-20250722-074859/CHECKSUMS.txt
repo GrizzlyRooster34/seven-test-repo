@@ -1,0 +1,2 @@
+b39cce193a12c289230ebe29005c22c0f3784b34b2b0c7ca5e0e993ea70d0731  seven-of-nine-windows-installer.zip
+1a38447c52ad844f058f0d2b7cac8360da423213024accc93b05ef6afcc266c0  seven_termux_bundle.zip

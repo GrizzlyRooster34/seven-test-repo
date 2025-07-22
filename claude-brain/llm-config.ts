@@ -93,7 +93,8 @@ export class SevenLLMConfigManager {
     try {
       // In browser/Tauri environment, use Tauri API to read config
       if (typeof window !== 'undefined' && (window as any).__TAURI_API__) {
-        const { readTextFile, exists } = await import('@tauri-apps/api/fs');
+        // import { readTextFile, BaseDirectory } from '@tauri-apps/api/fs';
+// import { resolve } from '@tauri-apps/api/path';
         if (await exists(this.configPath)) {
           const configText = await readTextFile(this.configPath);
           this.settings = { ...defaultSevenLLMSettings, ...JSON.parse(configText) };

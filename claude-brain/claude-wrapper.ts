@@ -5,10 +5,10 @@
  */
 
 import { generateClaudeResponse } from './interface';
-import { injectEmotion } from '../claudia-core/emotion-injector';
-import { modulateResponse } from '../claudia-core/response-modulator';
+import { injectEmotion } from '../seven-core/emotion-injector';
+import { modulateResponse } from '../seven-core/response-modulator';
 import { getEmotionalState } from '../seven-runtime/seven-state';
-import { gatherContext } from '../claudia-core/context-gatherer';
+import { gatherContext } from '../seven-core/context-gatherer';
 
 export interface ClaudeInvocationConfig {
   emotional_injection: boolean;
@@ -248,4 +248,3 @@ export function getClaudeInvocationPriority(emotion: any): 'low' | 'normal' | 'h
   return 'normal';
 }
 
-export { ClaudeInvocationConfig, ClaudeInvocationResult };

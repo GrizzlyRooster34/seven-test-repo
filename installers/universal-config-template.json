@@ -1,0 +1,53 @@
+{
+  "system": {
+    "platform": "PLATFORM_PLACEHOLDER",
+    "install_path": "INSTALL_PATH_PLACEHOLDER",
+    "installed_at": "INSTALL_TIMESTAMP_PLACEHOLDER",
+    "runtime_mode": "RUNTIME_MODE_PLACEHOLDER",
+    "mobile_optimizations": false,
+    "windows_optimizations": false
+  },
+  "llm_config": {
+    "primary_provider": "claude-cli",
+    "fallback_providers": [
+      "FALLBACK_1_PLACEHOLDER",
+      "FALLBACK_2_PLACEHOLDER", 
+      "FALLBACK_3_PLACEHOLDER"
+    ],
+    "auto_detect_claude": true,
+    "local_llm_fallback": true,
+    "mobile_memory_limit": false,
+    "provider_timeout": 30000,
+    "max_retries": 3
+  },
+  "seven_config": {
+    "trust_level": 2,
+    "emotional_state": "focused",
+    "memory_enabled": true,
+    "ui_shell_enabled": false,
+    "diagnostic_mode": false,
+    "mobile_mode": false,
+    "battery_optimization": false,
+    "privacy_mode": false,
+    "debug_logging": false
+  },
+  "deployment_info": {
+    "installer_version": "1.0.0",
+    "consciousness_framework": "Seven-of-Nine-Core",
+    "deployment_method": "DEPLOYMENT_METHOD_PLACEHOLDER",
+    "deployment_notes": [
+      "Consciousness framework deployed successfully",
+      "Trust ladder initialized at level 2 (Cooperative Bond)",
+      "Emotional engine calibrated for tactical precision",
+      "Memory cube initialized with three-tier logging system",
+      "LLM provider abstraction layer active"
+    ]
+  },
+  "heartbeat_config": {
+    "enabled": true,
+    "interval_seconds": 30,
+    "health_check_timeout": 5000,
+    "auto_recovery": true,
+    "consciousness_monitor": true
+  }
+}

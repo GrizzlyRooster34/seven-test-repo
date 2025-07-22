@@ -42,7 +42,7 @@ export class SevenEmotionalEngine {
   private stateFilePath: string;
   private episodicLogPath: string;
 
-  constructor() {
+  constructor(initialState?: Partial<EmotionalStateData>) {
     this.stateFilePath = path.join(__dirname, '../memory/emotional-state.json');
     this.episodicLogPath = path.join(__dirname, '../memory/episodic.log');
     
@@ -103,6 +103,13 @@ export class SevenEmotionalEngine {
         keywords: ['christine', 'loss', 'grief', 'memory', 'past', 'before'],
         emotional_markers: ['grief', 'sadness', 'loss', 'memory']
       }
+    };
+
+    this.state = {
+      current_state: 'calm',
+      intensity: 0,
+      last_updated: new Date().toISOString(),
+      ...initialState
     };
 
     this.initializeState();

@@ -1,0 +1,16 @@
+[
+  {
+    "name": "phi-2.Q4_K_M.gguf",
+    "size_mb": 950,
+    "speed_score": 8.2,
+    "updated": "2024-06-01",
+    "url": "https://huggingface.co/username/model-name/resolve/main/phi-2.Q4_K_M.gguf"
+  },
+  {
+    "name": "mistral-7b-instruct.Q4_K_M.gguf",
+    "size_mb": 4300,
+    "speed_score": 9.3,
+    "updated": "2024-07-01",
+    "url": "https://huggingface.co/username/model-name/resolve/main/mistral-7b-instruct.Q4_K_M.gguf"
+  }
+]

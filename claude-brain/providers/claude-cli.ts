@@ -4,7 +4,7 @@
  */
 
 import { LLMProvider, LLMConfig, LLMResponse } from '../llm-providers';
-import { invoke } from '@tauri-apps/api/tauri';
+// import { invoke } from '@tauri-apps/api/tauri';
 
 export class ClaudeCLIProvider implements LLMProvider {
   name = 'claude-cli';

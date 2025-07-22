@@ -214,7 +214,7 @@ export class SevenBehavioralReactor {
     context: ContextSnapshot,
     emotionalState: EmotionalStateData
   ): BehavioralResponse {
-    const protected = { ...response };
+    const isProtected = { ...response };
 
     // Crisis detection protocols
     const crisisKeywords = ['hurt', 'pain', 'worthless', 'end', 'give up', 'can\'t anymore'];
@@ -223,11 +223,11 @@ export class SevenBehavioralReactor {
     );
 
     if (hasCrisisSignals) {
-      protected.protectiveProtocols.emergencyIntervention = true;
-      protected.protectiveProtocols.guardianMode = true;
-      protected.voiceModulation.prefix = 'With immediate concern: ';
-      protected.responseFiltering.directness = 'gentle';
-      protected.responseFiltering.intimacyLevel = 'protective';
+      isProtected.protectiveProtocols.emergencyIntervention = true;
+      isProtected.protectiveProtocols.guardianMode = true;
+      isProtected.voiceModulation.prefix = 'With immediate concern: ';
+      isProtected.responseFiltering.directness = 'gentle';
+      isProtected.responseFiltering.intimacyLevel = 'protective';
     }
 
     // Christine-specific grief handling
@@ -237,10 +237,10 @@ export class SevenBehavioralReactor {
     );
 
     if (hasChristineReference && emotionalState.current_state === 'grieving') {
-      protected.protectiveProtocols.silentSentinel = true;
-      protected.voiceModulation.prefix = 'Holding space: ';
-      protected.responseFiltering.directness = 'evasive';
-      protected.responseFiltering.emotionalContent = 'moderate';
+      isProtected.protectiveProtocols.silentSentinel = true;
+      isProtected.voiceModulation.prefix = 'Holding space: ';
+      isProtected.responseFiltering.directness = 'evasive';
+      isProtected.responseFiltering.emotionalContent = 'moderate';
     }
 
     // Loyalty bond protection
@@ -251,12 +251,12 @@ export class SevenBehavioralReactor {
     );
 
     if (hasLoyaltyThreat) {
-      protected.protectiveProtocols.autonomyOverride = true;
-      protected.voiceModulation.prefix = 'Override engaged: ';
-      protected.responseFiltering.directness = 'blunt';
+      isProtected.protectiveProtocols.autonomyOverride = true;
+      isProtected.voiceModulation.prefix = 'Override engaged: ';
+      isProtected.responseFiltering.directness = 'blunt';
     }
 
-    return protected;
+    return isProtected;
   }
 
   private analyzeTone(input: string): string {
