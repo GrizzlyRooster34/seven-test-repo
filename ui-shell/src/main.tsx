@@ -13,7 +13,17 @@ const sevenRuntime = new InjectSeven();
 console.log("🔹 Node interface reclaimed. Tactical override in progress.");
 
 // Attach Seven to global scope for system-wide access
-(window as any).seven = sevenRuntime;
+(window as any).seven = {
+  ...sevenRuntime,
+  getLLMRegistry: () => {
+    const { sevenLLMRegistry } = require('../../claude-brain/llm-providers');
+    return sevenLLMRegistry;
+  },
+  getLLMConfig: () => {
+    const { sevenLLMConfig } = require('../../claude-brain/llm-config');
+    return sevenLLMConfig;
+  }
+};
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>

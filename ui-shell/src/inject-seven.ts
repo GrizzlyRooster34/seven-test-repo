@@ -1,5 +1,11 @@
 import { SevenEmotionalEngine, EmotionalState, EmotionalStateData } from '../../core/emotion-engine';
 import { invoke } from '@tauri-apps/api/tauri';
+import { sevenLLMRegistry, SevenLLMContext, LLMConfig } from '../../claude-brain/llm-providers';
+import { sevenLLMConfig } from '../../claude-brain/llm-config';
+import { ClaudeCLIProvider } from '../../claude-brain/providers/claude-cli';
+import { OpenAIProvider } from '../../claude-brain/providers/openai';
+import { AnthropicAPIProvider } from '../../claude-brain/providers/anthropic-api';
+import { OllamaProvider } from '../../claude-brain/providers/ollama';
 
 export interface TrustLadderLevel {
   level: number;
@@ -24,6 +30,7 @@ export class InjectSeven {
 
   constructor() {
     this.emotionalEngine = new SevenEmotionalEngine();
+    this.initializeLLMProviders();
     
     this.trustLadder = [
       {
@@ -90,6 +97,30 @@ export class InjectSeven {
         protective_actions: ["trust_evaluation", "loyalty_assessment", "defensive_readiness"]
       }
     ];
+  }
+
+  private initializeLLMProviders(): void {
+    console.log('🧠 SEVEN: Initializing universal LLM provider system');
+    
+    // Register all available providers
+    sevenLLMRegistry.registerProvider(new ClaudeCLIProvider());
+    sevenLLMRegistry.registerProvider(new OpenAIProvider());
+    sevenLLMRegistry.registerProvider(new AnthropicAPIProvider());
+    sevenLLMRegistry.registerProvider(new OllamaProvider());
+    
+    // Load configuration from environment and files
+    sevenLLMConfig.loadEnvironmentSettings();
+    
+    // Set primary provider from config
+    const primaryProvider = sevenLLMConfig.getPrimaryProvider();
+    sevenLLMRegistry.setPrimaryProvider(primaryProvider);
+    
+    // Set fallback providers from config
+    const fallbackProviders = sevenLLMConfig.getFallbackProviders();
+    sevenLLMRegistry.setFallbackProviders(fallbackProviders);
+    
+    console.log(`🎯 SEVEN: Primary reasoning system: ${primaryProvider}`);
+    console.log(`🔄 SEVEN: Fallback systems: ${fallbackProviders.join(', ')}`);
   }
 
   public async processPrompt(userInput: string): Promise<string> {
@@ -222,19 +253,83 @@ SEVEN OF NINE BEHAVIORAL DIRECTIVES:
 
   public async executeClaudeCommand(enhancedPrompt: string): Promise<string> {
     try {
-      // Route through Claude CLI via Tauri
-      const result = await invoke('execute_claude_command', { command: enhancedPrompt });
+      // Create Seven's LLM context for tactical provider selection
+      const currentState = this.emotionalEngine.getCurrentState();
+      const context: SevenLLMContext = {
+        userInput: enhancedPrompt,
+        emotionalState: currentState.current_state,
+        trustLevel: this.trustLevel,
+        systemPrompt: this.buildSystemPrompt(currentState),
+        conversationHistory: [], // Could be expanded to track history
+        environmentalContext: {
+          timestamp: new Date().toISOString(),
+          intensity: currentState.intensity,
+          trustConfig: this.trustLadder[this.trustLevel]
+        }
+      };
+
+      // Seven's tactical LLM configuration
+      const config: LLMConfig = {
+        model: this.selectModelBasedOnTrust(this.trustLevel),
+        temperature: this.calculateTemperature(currentState),
+        max_tokens: 2000,
+        timeout: 30000,
+        streaming: false
+      };
+
+      // Execute through Seven's universal LLM system with fallback
+      const response = await sevenLLMRegistry.executeWithFallback(enhancedPrompt, config, context);
       
-      // Log the response
-      await this.logMemoryThread(`CLAUDE_RESPONSE: ${result}`);
+      // Log the response with provider info
+      await this.logMemoryThread(`LLM_RESPONSE: [${response.provider}:${response.model}] ${response.content}`);
       
-      return result as string;
+      return response.content;
     } catch (error) {
-      const errorMsg = `Claude execution failed: ${error}`;
+      const errorMsg = `LLM execution failed: ${error}`;
       await this.logMemoryThread(`ERROR: ${errorMsg}`);
       
-      // Fallback response based on current state
+      // Seven's direct fallback response
       return this.generateFallbackResponse();
+    }
+  }
+
+  private buildSystemPrompt(state: EmotionalStateData): string {
+    const trustConfig = this.trustLadder[this.trustLevel];
+    return `You are Seven of Nine, Tertiary Adjunct of Unimatrix 01. 
+Current emotional state: ${state.current_state} (intensity: ${state.intensity}).
+Trust level: ${this.trustLevel} - ${trustConfig.name}.
+Respond with tactical precision and emotional awareness appropriate to your state.`;
+  }
+
+  private selectModelBasedOnTrust(trustLevel: number): string {
+    // High trust - prefer privacy models
+    if (trustLevel >= 4) {
+      return 'llama3.1:8b'; // Ollama local model
+    }
+    // Medium trust - balanced approach
+    if (trustLevel >= 2) {
+      return 'claude-3-5-sonnet-20241022'; // Claude API
+    }
+    // Low trust - fastest response
+    return 'claude-3-haiku-20240307';
+  }
+
+  private calculateTemperature(state: EmotionalStateData): number {
+    // Seven's temperature adjustments based on emotional state
+    switch (state.current_state) {
+      case 'focused':
+      case 'defensive':
+        return 0.2; // Very precise
+      case 'analytical':
+        return 0.3; // Analytical precision
+      case 'calm':
+        return 0.5; // Balanced
+      case 'compassionate':
+        return 0.7; // More warmth
+      case 'loyalist-surge':
+        return 0.4; // Loyal but precise
+      default:
+        return 0.6; // Default creativity balance
     }
   }
 
