@@ -10,9 +10,9 @@ import { SevenState, getEmotionalState, updateEmotionalState } from './seven-sta
 import { MemoryStore, updateMemory, queryMemory } from './memory-store';
 import { OverrideConditions, checkCriticalOverrides } from './override-conditions';
 import { SafetyGuardrails, evaluateSafety } from './safety-guardrails';
-import { gatherContext } from '../claudia-core/context-gatherer';
-import { injectEmotion } from '../claudia-core/emotion-injector';
-import { modulateResponse } from '../claudia-core/response-modulator';
+import { gatherContext } from '../seven-core/context-gatherer';
+import { injectEmotion } from '../seven-core/emotion-injector';
+import { modulateResponse } from '../seven-core/response-modulator';
 import { requestClaude } from '../claude-brain/claude-wrapper';
 
 export interface SevenRuntimeContext {

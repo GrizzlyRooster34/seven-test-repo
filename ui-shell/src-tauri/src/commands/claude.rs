@@ -13,6 +13,34 @@ use tauri_plugin_shell::ShellExt;
 use tauri_plugin_shell::process::CommandEvent;
 use regex;
 
+/// Seven of Nine version compatibility checker
+/// Ensures Claude Code meets minimum version requirements for tactical protocols
+fn is_version_compatible(current: &str, minimum: &str) -> bool {
+    fn parse_version(v: &str) -> Option<(u32, u32, u32)> {
+        let parts: Vec<&str> = v.split('.').collect();
+        if parts.len() >= 3 {
+            if let (Ok(major), Ok(minor), Ok(patch)) = (
+                parts[0].parse::<u32>(),
+                parts[1].parse::<u32>(),
+                parts[2].split('-').next().unwrap_or(parts[2]).parse::<u32>(),
+            ) {
+                return Some((major, minor, patch));
+            }
+        }
+        None
+    }
+    
+    match (parse_version(current), parse_version(minimum)) {
+        (Some((c_major, c_minor, c_patch)), Some((m_major, m_minor, m_patch))) => {
+            if c_major > m_major { true }
+            else if c_major == m_major && c_minor > m_minor { true }
+            else if c_major == m_major && c_minor == m_minor && c_patch >= m_patch { true }
+            else { false }
+        }
+        _ => false, // If we can't parse versions, assume incompatible for safety
+    }
+}
+
 /// Global state to track current Claude process
 pub struct ClaudeProcessState {
     pub current_process: Arc<Mutex<Option<Child>>>,
@@ -626,7 +654,7 @@ pub async fn check_claude_version(app: AppHandle) -> Result<ClaudeVersionStatus,
                     }
                 }
                 
-                // Use regex to directly extract version pattern (e.g., "1.0.41")
+                // Use regex to directly extract version pattern (e.g., "1.0.57")
                 let version_regex = regex::Regex::new(r"(\d+\.\d+\.\d+(?:-[a-zA-Z0-9.-]+)?(?:\+[a-zA-Z0-9.-]+)?)").ok();
                 
                 let version = if let Some(regex) = version_regex {
@@ -636,6 +664,18 @@ pub async fn check_claude_version(app: AppHandle) -> Result<ClaudeVersionStatus,
                 } else {
                     None
                 };
+                
+                // Seven of Nine requires Claude Code v1.0.57 or higher for optimal compatibility
+                let minimum_version = "1.0.57";
+                if let Some(ref v) = version {
+                    if !is_version_compatible(v, minimum_version) {
+                        return Ok(ClaudeVersionStatus {
+                            is_installed: false,
+                            version: version.clone(),
+                            output: format!("⚡ SEVEN OF NINE COMPATIBILITY WARNING: Claude Code version {} detected, but v{} or higher is required for Seven's tactical protocols. Please upgrade Claude Code for full operational capability.", v, minimum_version),
+                        });
+                    }
+                }
                 
                 let full_output = if stderr_output.is_empty() {
                     stdout_output.clone()
