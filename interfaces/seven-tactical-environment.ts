@@ -1083,7 +1083,7 @@ export class SevenTacticalEnvironment extends EventEmitter {
       monitoring_active: this.isMonitoringActive,
       current_threat_level: this.getCurrentThreatLevel(),
       active_assessments: this.threatAssessments.size,
-      intelligence_generation: this.config.environmental_intelligence.pattern_recognition,
+      intelligence_generation: this.config.situational_awareness.pattern_recognition,
       operational_context: this.operationalContext,
       metrics: this.getTacticalMetrics()
     };
@@ -1117,7 +1117,7 @@ export class SevenTacticalEnvironment extends EventEmitter {
   }
 
   private startEnvironmentalIntelligenceMonitoring(): void {
-    if (!this.config.environmental_intelligence.pattern_recognition) return;
+    if (!this.config.situational_awareness.pattern_recognition) return;
     
     console.log('🌍 Environmental intelligence monitoring active');
     
@@ -1128,7 +1128,7 @@ export class SevenTacticalEnvironment extends EventEmitter {
   }
 
   private startOperationalAwarenessMonitoring(): void {
-    if (!this.config.operational_awareness.situational_assessment) return;
+    if (!this.config.situational_awareness.environmental_scanning) return;
     
     console.log('⚙️ Operational awareness monitoring active');
     
