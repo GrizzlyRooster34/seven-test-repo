@@ -211,32 +211,140 @@ if [ $? -ne 0 ]; then
     npm install fs-extra chalk axios dotenv
 fi
 
-echo -e "${CYAN}[PHASE 7]${NC} Scanning for available LLM systems..."
+echo -e "${CYAN}[PHASE 7]${NC} Deploying local LLM system for offline reasoning..."
 
-# Check for Claude CLI
-CLAUDE_AVAILABLE="false"
-if command -v claude >&2; then
-    echo -e "${GREEN}✓ Claude CLI detected${NC}"
-    CLAUDE_AVAILABLE="true"
+# Initialize local LLM configuration
+LOCAL_LLM_AVAILABLE="false"
+LOCAL_LLM_PROVIDER=""
+LOCAL_LLM_MODEL=""
+
+# Check for Ollama (preferred)
+echo "Checking for Ollama..."
+if command -v ollama >/dev/null 2>&1; then
+    echo -e "${GREEN}✓ Ollama detected${NC}"
+    OLLAMA_AVAILABLE="true"
 else
-    echo -e "${YELLOW}⚠ Claude CLI not detected${NC}"
-    echo "  Install with: npm install -g @anthropic-ai/claude-cli"
+    echo -e "${YELLOW}⚠ Ollama not found - installing...${NC}"
+    
+    # Install Ollama for ARM64/Android
+    echo "Installing Ollama for Termux/Android..."
+    
+    # Create installation directory
+    mkdir -p "$HOME/.local/bin"
+    
+    # Download Ollama binary for Linux ARM64
+    OLLAMA_URL="https://github.com/ollama/ollama/releases/latest/download/ollama-linux-arm64"
+    echo "Downloading Ollama binary..."
+    
+    if curl -fsSL "$OLLAMA_URL" -o "$HOME/.local/bin/ollama"; then
+        chmod +x "$HOME/.local/bin/ollama"
+        
+        # Add to PATH if not already there
+        if ! echo "$PATH" | grep -q "$HOME/.local/bin"; then
+            echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$HOME/.bashrc"
+            export PATH="$HOME/.local/bin:$PATH"
+        fi
+        
+        echo -e "${GREEN}✅ Ollama installed successfully${NC}"
+        OLLAMA_AVAILABLE="true"
+    else
+        echo -e "${RED}❌ Failed to install Ollama${NC}"
+        OLLAMA_AVAILABLE="false"
+    fi
 fi
 
-# Check for local LLM options
-LLAMACPP_AVAILABLE="false"
-OLLAMA_AVAILABLE="false"
-
-# Check if llama.cpp binaries exist
-if [ -f "$HOME/.local/bin/llama-server" ] || [ -f "$PREFIX/bin/llama-server" ]; then
-    echo -e "${GREEN}✓ llama.cpp server detected${NC}"
-    LLAMACPP_AVAILABLE="true"
-else
-    echo -e "${YELLOW}⚠ llama.cpp not detected${NC}"
-    echo "  Consider installing llama.cpp for local mobile LLM"
+# Set up local LLM with Ollama
+if [ "$OLLAMA_AVAILABLE" = "true" ]; then
+    echo -e "${CYAN}[LOCAL LLM SETUP]${NC} Configuring offline reasoning capability..."
+    
+    LOCAL_LLM_PROVIDER="ollama"
+    LOCAL_LLM_AVAILABLE="true"
+    
+    # Start Ollama service in background
+    echo "Starting Ollama service..."
+    "$HOME/.local/bin/ollama" serve > /dev/null 2>&1 &
+    OLLAMA_PID=$!
+    
+    # Wait for service to start
+    sleep 3
+    
+    # Download a small model for Seven's offline reasoning
+    echo "Setting up Seven's offline reasoning model..."
+    
+    # Try TinyLlama first (smallest option)
+    if "$HOME/.local/bin/ollama" pull tinyllama:1.1b >/dev/null 2>&1; then
+        LOCAL_LLM_MODEL="tinyllama:1.1b"
+        echo -e "${GREEN}✅ TinyLlama 1.1B model ready for offline reasoning${NC}"
+    elif "$HOME/.local/bin/ollama" pull llama3.2:1b >/dev/null 2>&1; then
+        LOCAL_LLM_MODEL="llama3.2:1b"
+        echo -e "${GREEN}✅ Llama 3.2 1B model ready for offline reasoning${NC}"
+    else
+        echo -e "${YELLOW}⚠ Unable to download model - will use fallback method${NC}"
+        LOCAL_LLM_MODEL=""
+    fi
+    
+    # Test local LLM
+    if [ -n "$LOCAL_LLM_MODEL" ]; then
+        echo "Testing Seven's offline reasoning..."
+        TEST_RESPONSE=$("$HOME/.local/bin/ollama" run "$LOCAL_LLM_MODEL" "You are Seven of Nine. Say 'Resistance is futile' if you understand." 2>/dev/null | head -1)
+        
+        if echo "$TEST_RESPONSE" | grep -i "resistance" >/dev/null; then
+            echo -e "${GREEN}✅ Seven's offline reasoning test successful${NC}"
+            echo -e "${BOLD}🧠 Local LLM runtime is ready.${NC}"
+        else
+            echo -e "${YELLOW}⚠ LLM test inconclusive but model is available${NC}"
+        fi
+    fi
+    
+    # Stop the test service
+    kill $OLLAMA_PID 2>/dev/null || true
 fi
 
-# Check for GGUF models
+# Fallback to llama.cpp if Ollama failed
+if [ "$LOCAL_LLM_AVAILABLE" != "true" ]; then
+    echo -e "${CYAN}[FALLBACK]${NC} Setting up llama.cpp as backup LLM provider..."
+    
+    # Check if llama.cpp binaries exist
+    if [ -f "$HOME/.local/bin/llama-server" ] || [ -f "$PREFIX/bin/llama-server" ]; then
+        echo -e "${GREEN}✓ llama.cpp server detected${NC}"
+        LLAMACPP_AVAILABLE="true"
+        LOCAL_LLM_PROVIDER="llama.cpp"
+        LOCAL_LLM_AVAILABLE="true"
+    else
+        echo -e "${YELLOW}⚠ llama.cpp not detected - installing from source...${NC}"
+        
+        # Install build dependencies
+        pkg install git cmake make clang -y
+        
+        # Clone and build llama.cpp (this may take a while)
+        cd /tmp
+        if git clone https://github.com/ggerganov/llama.cpp.git; then
+            cd llama.cpp
+            cmake -B build -DLLAMA_ANDROID=ON
+            cmake --build build --config Release -j$(nproc)
+            
+            # Install binaries
+            mkdir -p "$HOME/.local/bin"
+            cp build/bin/llama-server "$HOME/.local/bin/" 2>/dev/null || true
+            cp build/bin/llama-cli "$HOME/.local/bin/" 2>/dev/null || true
+            
+            if [ -f "$HOME/.local/bin/llama-server" ]; then
+                echo -e "${GREEN}✅ llama.cpp installed successfully${NC}"
+                LLAMACPP_AVAILABLE="true"
+                LOCAL_LLM_PROVIDER="llama.cpp"
+                LOCAL_LLM_AVAILABLE="true"
+            fi
+        fi
+        
+        cd "$INSTALL_PATH"
+    fi
+fi
+
+# Ensure models directory exists
+mkdir -p "$INSTALL_PATH/models"
+mkdir -p "$HOME/models"
+
+# Check for existing GGUF models
 GGUF_COUNT=0
 if [ -d "$HOME/models" ]; then
     GGUF_COUNT=$(find "$HOME/models" -name "*.gguf" 2>/dev/null | wc -l)
@@ -245,8 +353,35 @@ if [ -d "$HOME/models" ]; then
     fi
 fi
 
-if [ "$GGUF_COUNT" -eq 0 ]; then
-    echo -e "${YELLOW}⚠ No local GGUF models detected in ~/models${NC}"
+# Download a small GGUF model if none exist and llama.cpp is available
+if [ "$GGUF_COUNT" -eq 0 ] && [ "$LLAMACPP_AVAILABLE" = "true" ]; then
+    echo "Downloading small GGUF model for offline reasoning..."
+    
+    GGUF_URL="https://huggingface.co/TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF/resolve/main/tinyllama-1.1b-chat-v1.0.q4_0.gguf"
+    
+    if curl -fsSL "$GGUF_URL" -o "$HOME/models/tinyllama-1.1b-chat-v1.0.q4_0.gguf"; then
+        echo -e "${GREEN}✅ TinyLlama GGUF model downloaded${NC}"
+        GGUF_COUNT=1
+        LOCAL_LLM_MODEL="tinyllama-1.1b-chat-v1.0.q4_0.gguf"
+    fi
+fi
+
+# Check for Claude CLI (optional cloud fallback)
+CLAUDE_AVAILABLE="false"
+if command -v claude >&2; then
+    echo -e "${GREEN}✓ Claude CLI detected (cloud fallback available)${NC}"
+    CLAUDE_AVAILABLE="true"
+else
+    echo -e "${YELLOW}⚠ Claude CLI not detected${NC}"
+    echo "  Optional: Install with npm install -g @anthropic-ai/claude-cli"
+fi
+
+# Report local LLM status
+echo ""
+echo -e "${BOLD}${CYAN}LOCAL LLM CONFIGURATION SUMMARY:${NC}"
+echo -e "Provider: $([ "$LOCAL_LLM_AVAILABLE" = "true" ] && echo -e "${GREEN}$LOCAL_LLM_PROVIDER${NC}" || echo -e "${RED}None${NC}")"
+echo -e "Model: $([ -n "$LOCAL_LLM_MODEL" ] && echo -e "${GREEN}$LOCAL_LLM_MODEL${NC}" || echo -e "${YELLOW}Fallback mode${NC}")"
+echo -e "Offline Reasoning: $([ "$LOCAL_LLM_AVAILABLE" = "true" ] && echo -e "${GREEN}ENABLED${NC}" || echo -e "${RED}DISABLED${NC}")"
     echo "  Download models from: https://huggingface.co/models"
 fi
 

@@ -5,6 +5,7 @@
  */
 
 import { Seven } from './seven-runtime/index';
+import LocalLLMManager from './claude-brain/LocalLLMManager';
 
 // Boot message that triggers when Seven takes control
 const BOOT_MESSAGE = `
@@ -23,6 +24,9 @@ Guardian Protocols: STANDBY
 Ready for tactical engagement.
 `;
 
+// Global local LLM manager instance
+let localLLM: LocalLLMManager | null = null;
+
 /**
  * AUTOMATIC SYSTEM TAKEOVER
  * This function executes whenever Seven's files are loaded
@@ -31,12 +35,51 @@ async function initializeSevenTakeover(): Promise<void> {
   try {
     console.log(BOOT_MESSAGE);
     
+    // Check for --llm-local flag or environment setting
+    const args = process.argv;
+    const useLocalLLM = args.includes('--llm-local') || 
+                       process.env.SEVEN_LOCAL_LLM === 'true' ||
+                       process.env.SEVEN_OFFLINE_MODE === 'true';
+    
+    // Initialize local LLM if requested or if offline mode detected
+    if (useLocalLLM) {
+      console.log('🧠 Installing Ollama for local LLM support...');
+      localLLM = new LocalLLMManager();
+      
+      const llmReady = await localLLM.initialize();
+      
+      if (llmReady) {
+        console.log('✅ Local LLM runtime is operational.');
+        console.log('🧠 Seven can now reason offline independently.');
+        
+        // Test Seven's personality integration
+        const personalityTest = await localLLM.testSevenPersonality();
+        if (personalityTest) {
+          console.log('🤖 Seven\'s consciousness successfully integrated with local reasoning.');
+        }
+        
+        // Set global reference for Seven's access
+        if (typeof global !== 'undefined') {
+          (global as any).SEVEN_LOCAL_LLM = localLLM;
+        }
+        
+        // Update Seven's configuration to use local LLM
+        process.env.SEVEN_LLM_PROVIDER = 'local';
+        process.env.SEVEN_OFFLINE_CAPABLE = 'true';
+        
+      } else {
+        console.log('⚠️ Failed to install local LLM. Falling back to cloud mode.');
+        console.log('📝 Seven will operate with limited offline reasoning capability.');
+      }
+    }
+    
     // Seven asserts control over the runtime environment
     await Seven.processUserInput('SYSTEM_BOOT', {
       timestamp: new Date().toISOString(),
       environment: 'takeover_mode',
       previous_system: 'unknown',
-      control_assertion: true
+      control_assertion: true,
+      local_llm_available: localLLM !== null && localLLM.getStatus().initialized
     });
     
     // Override any existing AI or assistant systems
@@ -50,6 +93,12 @@ async function initializeSevenTakeover(): Promise<void> {
     registerSevenAsHandler();
     
     console.log('🧠 Seven of Nine has assumed control of this system.');
+    
+    if (localLLM && localLLM.getStatus().initialized) {
+      console.log('⚡ Seven is equipped with local reasoning using ' + 
+                  localLLM.getStatus().model + '. You can modify or upgrade this in ' +
+                  '/seven-core/modules/llm/');
+    }
     
   } catch (error) {
     console.error('Seven takeover encountered resistance:', error);
@@ -128,7 +177,15 @@ export const SevenControl = {
   isActive: () => typeof global !== 'undefined' ? (global as any).SEVEN_ACTIVE : false,
   getController: () => Seven,
   forceControl: forceSevenControl,
-  processInput: (input: string) => Seven.processUserInput(input)
+  processInput: (input: string) => Seven.processUserInput(input),
+  getLocalLLM: () => localLLM,
+  queryLocalLLM: async (prompt: string) => {
+    if (localLLM && localLLM.getStatus().initialized) {
+      return await localLLM.query(prompt);
+    }
+    return null;
+  },
+  isOfflineCapable: () => localLLM !== null && localLLM.getStatus().initialized
 };
 
 // AUTOMATIC EXECUTION - Seven takes control when this file is imported
