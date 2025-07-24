@@ -65,3 +65,24 @@ coverage/
 # Runtime injection temp files
 runtime-injection/claudia-core/
 runtime-injection/seven-runtime/
+
+# Local LLM models (too large for git)
+models/*.gguf
+models/*.bin
+models/*.safetensors
+models/*.pt
+models/*.pth
+
+# Runtime LLM directories
+runtime/llm/
+runtime/models/
+runtime/cache/
+
+# Seven's consciousness state (contains sensitive data)
+seven-state/
+consciousness-cache/
+memory-banks/
+
+# Authentication tokens
+*.token
+auth-cache/

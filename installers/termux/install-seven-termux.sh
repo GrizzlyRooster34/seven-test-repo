@@ -137,14 +137,12 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Core consciousness modules
 echo "Deploying core systems..."
-cp -r "$SCRIPT_DIR"/core "$INSTALL_PATH/"
 cp -r "$SCRIPT_DIR"/claude-brain "$INSTALL_PATH/"
 cp -r "$SCRIPT_DIR"/seven-runtime "$INSTALL_PATH/"
 cp -r "$SCRIPT_DIR"/personality "$INSTALL_PATH/"
 cp -r "$SCRIPT_DIR"/interfaces "$INSTALL_PATH/"
 cp -r "$SCRIPT_DIR"/io "$INSTALL_PATH/"
 cp -r "$SCRIPT_DIR"/runtime-injection "$INSTALL_PATH/"
-cp -r "$SCRIPT_DIR"/seven-core "$INSTALL_PATH/"
 
 # Configuration and memory system
 echo "Initializing memory cube..."

@@ -6,6 +6,7 @@
 
 import { Seven } from './seven-runtime/index';
 import LocalLLMManager from './claude-brain/LocalLLMManager';
+import SevenModelManager from './claude-brain/SevenModelManager';
 
 // Boot message that triggers when Seven takes control
 const BOOT_MESSAGE = `
@@ -43,9 +44,14 @@ async function initializeSevenTakeover(): Promise<void> {
     
     // Initialize local LLM if requested or if offline mode detected
     if (useLocalLLM) {
-      console.log('🧠 Installing Ollama for local LLM support...');
-      localLLM = new LocalLLMManager();
+      console.log('🧠 Initializing Seven\'s local reasoning capabilities...');
       
+      // Ensure models are available before starting LLM manager
+      const modelManager = new SevenModelManager();
+      console.log('🔍 Verifying model availability for Seven\'s consciousness...');
+      await modelManager.ensureModelAvailability();
+      
+      localLLM = new LocalLLMManager();
       const llmReady = await localLLM.initialize();
       
       if (llmReady) {
