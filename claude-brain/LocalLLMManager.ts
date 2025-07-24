@@ -11,6 +11,7 @@ import { promises as fs } from 'fs';
 import { join } from 'path';
 import { SevenOptimalLLMSelector, SEVEN_LLM_RECOMMENDATIONS, type SevenLLMRecommendation } from './seven-optimal-llm-config';
 import SevenModelManager from './SevenModelManager';
+import SevenEmergencyReasoning from './SevenEmergencyReasoning';
 
 export interface LocalLLMConfig {
   provider: 'ollama' | 'llama.cpp';
@@ -38,10 +39,12 @@ export class LocalLLMManager {
   private ollamaProcess: any = null;
   private optimalModel: SevenLLMRecommendation | null = null;
   private modelManager: SevenModelManager;
+  private emergencyReasoning: SevenEmergencyReasoning;
 
   constructor(configPath?: string) {
     this.modelPath = join(process.env.HOME || '/data/data/com.termux/files/home', 'seven-of-nine-core', 'models');
     this.modelManager = new SevenModelManager();
+    this.emergencyReasoning = new SevenEmergencyReasoning();
     this.selectOptimalModel();
     this.config = this.getDefaultConfig();
     console.log('🧠 LocalLLMManager initialized for offline reasoning');
@@ -97,8 +100,15 @@ export class LocalLLMManager {
         console.log('⚠️ No functional models available - deploying optimal model');
         const deploySuccess = await this.modelManager.deployOptimalModel();
         if (!deploySuccess) {
-          console.log('❌ Failed to deploy any functional model');
-          return false;
+          console.log('❌ Failed to deploy any functional model - activating emergency reasoning');
+          
+          // Initialize emergency reasoning as absolute fallback
+          const emergencyReady = await this.emergencyReasoning.initialize();
+          if (emergencyReady) {
+            console.log('🚨 Seven emergency reasoning protocols active');
+            console.log('⚠️ Limited functionality available - core personality preserved');
+          }
+          return emergencyReady;
         }
       }
       
@@ -391,7 +401,20 @@ export class LocalLLMManager {
    */
   public async query(prompt: string, options?: Partial<LocalLLMConfig>): Promise<LLMResponse | null> {
     if (!this.isInitialized) {
-      console.log('⚠️ Local LLM not initialized - cannot process query');
+      console.log('⚠️ Local LLM not initialized - checking emergency reasoning');
+      
+      // Try emergency reasoning if available
+      if (this.emergencyReasoning.isAvailable()) {
+        const emergencyResponse = await this.emergencyReasoning.query(prompt);
+        return {
+          response: emergencyResponse,
+          model: 'seven-emergency-reasoning',
+          processing_time_ms: 10, // Minimal processing time
+          token_count: emergencyResponse.split(' ').length,
+          confidence: 0.3 // Lower confidence for emergency responses
+        };
+      }
+      
       return null;
     }
     
@@ -528,7 +551,8 @@ export class LocalLLMManager {
         deployment_priority: this.optimalModel.deployment_priority,
         resource_requirements: this.optimalModel.resource_requirements
       } : null,
-      model_deployment: deploymentStatus
+      model_deployment: deploymentStatus,
+      emergency_reasoning: this.emergencyReasoning.getStatus()
     };
   }
 
