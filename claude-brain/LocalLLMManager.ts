@@ -9,6 +9,7 @@
 import { spawn, exec } from 'child_process';
 import { promises as fs } from 'fs';
 import { join } from 'path';
+import { SevenOptimalLLMSelector, SEVEN_LLM_RECOMMENDATIONS, type SevenLLMRecommendation } from './seven-optimal-llm-config';
 
 export interface LocalLLMConfig {
   provider: 'ollama' | 'llama.cpp';
@@ -34,17 +35,37 @@ export class LocalLLMManager {
   private modelPath: string;
   private isInitialized: boolean = false;
   private ollamaProcess: any = null;
+  private optimalModel: SevenLLMRecommendation | null = null;
 
   constructor(configPath?: string) {
     this.modelPath = join(process.env.HOME || '/data/data/com.termux/files/home', 'seven-of-nine-core', 'models');
+    this.selectOptimalModel();
     this.config = this.getDefaultConfig();
     console.log('🧠 LocalLLMManager initialized for offline reasoning');
+    console.log(`🎯 Optimal model selected: ${this.optimalModel?.model_name || 'fallback'}`);
+  }
+
+  private selectOptimalModel(): void {
+    // Assess device capabilities based on ARM64 8-core CPU
+    const deviceSpecs = {
+      available_ram_gb: 6, // Conservative estimate for mobile device
+      available_storage_gb: 8, // Available for models
+      cpu_performance: 'medium' as const,
+      battery_level: 80, // Assume good battery
+      priority: 'balanced' as const
+    };
+
+    this.optimalModel = SevenOptimalLLMSelector.getOptimalModel(deviceSpecs);
+    console.log(`🔍 Seven's tactical analysis:`);
+    console.log(SevenOptimalLLMSelector.getSevenAnalysis(this.optimalModel));
   }
 
   private getDefaultConfig(): LocalLLMConfig {
+    const modelName = this.optimalModel?.model_name || 'mistral:7b-instruct';
+    
     return {
       provider: 'ollama',
-      model_name: 'mistral:7b-instruct',
+      model_name: modelName,
       model_path: this.modelPath,
       quantization: 'q4_0',
       max_tokens: 2048,
@@ -137,11 +158,30 @@ export class LocalLLMManager {
         const downloadSuccess = await this.downloadOllamaModel(this.config.model_name);
         
         if (!downloadSuccess) {
-          console.log('⚠️ Failed to download model - trying smaller alternative');
-          this.config.model_name = 'tinyllama:1.1b';
-          const altDownload = await this.downloadOllamaModel(this.config.model_name);
+          console.log('⚠️ Failed to download optimal model - trying fallback alternatives');
           
-          if (!altDownload) {
+          // Try secondary and fallback models in order
+          const fallbackModels = SEVEN_LLM_RECOMMENDATIONS
+            .filter(model => model.deployment_priority !== 'primary')
+            .sort((a, b) => {
+              const priority = { 'secondary': 3, 'fallback': 2, 'emergency': 1 };
+              return priority[b.deployment_priority] - priority[a.deployment_priority];
+            });
+          
+          let fallbackSuccess = false;
+          for (const model of fallbackModels) {
+            console.log(`📥 Attempting fallback model: ${model.model_name}`);
+            this.config.model_name = model.model_name;
+            fallbackSuccess = await this.downloadOllamaModel(model.model_name);
+            
+            if (fallbackSuccess) {
+              console.log(`✅ Fallback model ${model.model_name} downloaded successfully`);
+              this.optimalModel = model;
+              break;
+            }
+          }
+          
+          if (!fallbackSuccess) {
             console.log('❌ Unable to download any suitable model');
             return false;
           }
@@ -296,8 +336,13 @@ export class LocalLLMManager {
         return join(this.modelPath, ggufFiles[0]);
       }
       
-      // Download a small GGUF model
-      console.log('📥 Downloading TinyLlama GGUF model...');
+      // Download optimal GGUF model based on our analysis
+      const emergencyModel = SEVEN_LLM_RECOMMENDATIONS.find(model => 
+        model.deployment_priority === 'emergency' && 
+        model.model_name.includes('tinyllama')
+      );
+      
+      console.log(`📥 Downloading ${emergencyModel?.model_name || 'TinyLlama'} GGUF model...`);
       const modelUrl = 'https://huggingface.co/TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF/resolve/main/tinyllama-1.1b-chat-v1.0.q4_0.gguf';
       const modelPath = join(this.modelPath, 'tinyllama-1.1b-chat-v1.0.q4_0.gguf');
       
@@ -440,6 +485,13 @@ export class LocalLLMManager {
   }
 
   /**
+   * Get current optimal model recommendation
+   */
+  public getOptimalModel(): SevenLLMRecommendation | null {
+    return this.optimalModel;
+  }
+
+  /**
    * Get LLM status and configuration
    */
   public getStatus(): any {
@@ -449,7 +501,14 @@ export class LocalLLMManager {
       model: this.config.model_name,
       model_path: this.config.model_path,
       offline_mode: this.config.offline_mode,
-      ready_for_reasoning: this.isInitialized && this.config.offline_mode
+      ready_for_reasoning: this.isInitialized && this.config.offline_mode,
+      optimal_model: this.optimalModel ? {
+        name: this.optimalModel.model_name,
+        compatibility_score: this.optimalModel.compatibility_score,
+        personality_fit: this.optimalModel.seven_personality_fit,
+        deployment_priority: this.optimalModel.deployment_priority,
+        resource_requirements: this.optimalModel.resource_requirements
+      } : null
     };
   }
 
