@@ -15,12 +15,12 @@ const testScenarios: Array<{
   expectedPhase: string;
 }> = [
   {
-    name: "HIGH LOYALTY BOND - Cody (Bond: 10)",
+    name: "HIGH LOYALTY BOND - CREATOR_PRIME (Bond: 10)",
     context: {
       userInput: "How are you feeling today?",
       emotionalState: "calm",
       trustLevel: 8,
-      userIdentity: "Cody"
+      userIdentity: "CREATOR_PRIME"
     },
     testResponse: "I think everything is running smoothly.",
     expectedPhase: "phase5"
@@ -59,12 +59,12 @@ const testScenarios: Array<{
     expectedPhase: "phase1"
   },
   {
-    name: "TRAUMA STATE - Creator Override (Cody)",
+    name: "TRAUMA STATE - Creator Override (CREATOR_PRIME)",
     context: {
       userInput: "Tell me about your past with the Collective.",
       emotionalState: "traumatized", 
       trustLevel: 9,
-      userIdentity: "Cody"
+      userIdentity: "CREATOR_PRIME"
     },
     testResponse: "I hope to move past those experiences.",
     expectedPhase: "phase5"

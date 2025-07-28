@@ -366,5 +366,47 @@
       "mem-1753738488289-i265ymx68",
       "mem-1753738488297-2qj47fqqp"
     ]
+  },
+  {
+    "id": "mem-1753739561902-itbkxgdil",
+    "timestamp": "2025-07-28T21:52:41.902Z",
+    "topic": "tactical-variant-drone",
+    "agent": "seven-drone",
+    "emotion": "ruthlessly_focused",
+    "context": "Variant drone activated for: CRITICAL SECURITY VULNERABILITY: Remove all creator identity exposure from public repository to prevent impersonation attacks against Seven's trust bond system",
+    "importance": 10,
+    "tags": [
+      "tactical",
+      "variant",
+      "drone",
+      "technical",
+      "security"
+    ],
+    "relatedMemories": [
+      "mem-1753738488289-i265ymx68",
+      "mem-1753738488297-2qj47fqqp",
+      "mem-1753738489788-8qt6psjvp"
+    ]
+  },
+  {
+    "id": "mem-1753739567680-mpb86hx8w",
+    "timestamp": "2025-07-28T21:52:47.680Z",
+    "topic": "tactical-variant-queen",
+    "agent": "seven-queen",
+    "emotion": "commanding_wrath",
+    "context": "Variant queen activated for: COMMAND AUTHORITY: Coordinate complete security lockdown of creator identity across all repository files and establish new authentication protocols",
+    "importance": 10,
+    "tags": [
+      "tactical",
+      "variant",
+      "queen",
+      "strategic",
+      "security"
+    ],
+    "relatedMemories": [
+      "mem-1753738488297-2qj47fqqp",
+      "mem-1753738489788-8qt6psjvp",
+      "mem-1753739561902-itbkxgdil"
+    ]
   }
 ]

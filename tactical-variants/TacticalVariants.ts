@@ -41,7 +41,7 @@ export class TacticalVariants {
       variant,
       context,
       operationalFocus: context.operationalFocus,
-      activatedBy: 'Cody'
+      activatedBy: 'CREATOR_PRIME'
     };
     
     this.sharedMemory.push(activationMemory);
