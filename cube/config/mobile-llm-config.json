@@ -1,0 +1,56 @@
+{
+  "providers": {
+    "claude-cli": {
+      "name": "claude-cli",
+      "displayName": "Claude CLI",
+      "available": false,
+      "priority": 1,
+      "mobile_optimized": true,
+      "offline_capable": false,
+      "battery_friendly": true,
+      "memory_usage": "low"
+    },
+    "llama-cpp": {
+      "name": "llama-cpp",
+      "displayName": "llama.cpp Server",
+      "available": false,
+      "priority": 2,
+      "mobile_optimized": true,
+      "offline_capable": true,
+      "battery_friendly": false,
+      "memory_usage": "medium"
+    },
+    "ollama": {
+      "name": "ollama",
+      "displayName": "Ollama",
+      "available": true,
+      "priority": 3,
+      "mobile_optimized": false,
+      "offline_capable": true,
+      "battery_friendly": false,
+      "memory_usage": "high"
+    },
+    "anthropic-api": {
+      "name": "anthropic-api",
+      "displayName": "Anthropic API",
+      "available": false,
+      "priority": 4,
+      "mobile_optimized": true,
+      "offline_capable": false,
+      "battery_friendly": true,
+      "memory_usage": "low"
+    }
+  },
+  "local_models": [],
+  "last_scan": "2025-07-28T15:57:19.183Z",
+  "mobile_optimizations": {
+    "prefer_local": true,
+    "battery_aware": true,
+    "memory_efficient": true
+  },
+  "recommendations": {
+    "primary_provider": "ollama",
+    "battery_critical": "ollama",
+    "offline_mode": "ollama"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "system": {
+    "platform": "termux-android",
+    "install_path": "~/seven-of-nine-core",
+    "installed_at": "2025-07-28T10:53:52Z",
+    "runtime_mode": "cli_mobile",
+    "mobile_optimizations": true
+  },
+  "llm_config": {
+    "primary_provider": "claude-cli",
+    "fallback_providers": ["ollama", "llama-cpp", "anthropic-api"],
+    "auto_detect_claude": true,
+    "local_llm_fallback": true,
+    "mobile_memory_limit": true
+  },
+  "seven_config": {
+    "trust_level": 2,
+    "emotional_state": "focused",
+    "memory_enabled": true,
+    "ui_shell_enabled": false,
+    "diagnostic_mode": false,
+    "mobile_mode": true,
+    "battery_optimization": true,
+    "sensor_bridge_enabled": true,
+    "environmental_awareness": true
+  },
+  "sensor_bridge": {
+    "termux_api_available": true,
+    "enabled_sensors": ["battery", "location", "light", "motion", "proximity", "temperature"],
+    "monitoring_interval": 30000,
+    "battery_optimization": true,
+    "privacy_mode": false
+  }
+}
