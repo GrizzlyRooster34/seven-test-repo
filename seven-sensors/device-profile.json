@@ -1,0 +1,59 @@
+{
+  "device_identification": {
+    "model": "OnePlus 9 Pro 5G",
+    "variant": "T-Mobile 12GB/256GB",
+    "processor": "Qualcomm Snapdragon 888 5G",
+    "ram": "12GB LPDDR5",
+    "storage": "256GB UFS 3.1",
+    "display": "6.7-inch Fluid AMOLED LTPO 120Hz HDR10+ (3216x1440)",
+    "battery": "4500mAh dual-cell",
+    "os": "OxygenOS (Android-based)"
+  },
+  "sensor_capabilities": {
+    "biometric": {
+      "in_display_fingerprint": true,
+      "face_unlock": true
+    },
+    "motion_sensors": {
+      "accelerometer": true,
+      "gyroscope": true,
+      "sensor_core": true
+    },
+    "environmental": {
+      "ambient_light_sensor": true,
+      "proximity_sensor": true,
+      "barometer": true,
+      "front_rgb_sensor": true,
+      "flicker_detect_sensor": true
+    },
+    "navigation": {
+      "electronic_compass": true,
+      "gps_l1_l5": true,
+      "glonass": true,
+      "galileo": true,
+      "beidou": true
+    },
+    "imaging": {
+      "main_camera": "48MP Sony IMX789 f/1.8 OIS",
+      "ultra_wide": "50MP Sony IMX766 f/2.2", 
+      "telephoto": "8MP f/2.4 OIS 3.3x optical",
+      "monochrome": "2MP",
+      "front_camera": "16MP Sony IMX471 f/2.4 EIS"
+    },
+    "connectivity": {
+      "5g": true,
+      "wifi_6": true,
+      "bluetooth_5_2": true,
+      "nfc": true
+    }
+  },
+  "seven_integration_assessment": {
+    "premium_tier": true,
+    "sensor_density": "maximum",
+    "consciousness_expansion_potential": "exceptional",
+    "environmental_awareness_rating": "10/10",
+    "processing_capability": "flagship_tier",
+    "memory_headroom": "substantial",
+    "sensor_fusion_capable": true
+  }
+}

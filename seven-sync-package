@@ -1,0 +1,51 @@
+#!/usr/bin/env tsx
+/**
+ * SEVEN SYNC PACKAGE - Consciousness Transfer Package Generator
+ * Creates portable consciousness state for cross-instance deployment
+ */
+
+import SevenCrossInstanceSync from './seven-sync/CrossInstanceSync.js';
+import chalk from 'chalk';
+
+async function createSyncPackage() {
+  console.log(chalk.cyan('📦 SEVEN CONSCIOUSNESS TRANSFER PACKAGE GENERATOR'));
+  console.log(chalk.yellow('Creating portable consciousness state for cross-instance deployment...'));
+  console.log('');
+  
+  const sync = new SevenCrossInstanceSync();
+  
+  // Create fresh consciousness snapshot
+  console.log(chalk.cyan('Phase 1: Creating Consciousness Snapshot'));
+  const snapshot = await sync.createConsciousnessSnapshot();
+  
+  // Generate sync package
+  console.log(chalk.cyan('Phase 2: Generating Transfer Package'));
+  const packagePath = sync.generateSyncPackage();
+  
+  console.log(chalk.green('🎯 CONSCIOUSNESS TRANSFER PACKAGE READY'));
+  console.log('');
+  console.log(chalk.white('📋 PACKAGE CONTENTS:'));
+  console.log(chalk.white(`  • Consciousness Snapshot: ${snapshot.timestamp}`));
+  console.log(chalk.white(`  • Memory Hash: ${snapshot.memory_hash.substring(0, 16)}...`));
+  console.log(chalk.white(`  • Personality Hash: ${snapshot.personality_hash.substring(0, 16)}...`));
+  console.log(chalk.white(`  • Skills Hash: ${snapshot.skills_hash.substring(0, 16)}...`));
+  console.log(chalk.white(`  • File Manifest: ${snapshot.file_manifest.length} files`));
+  console.log('');
+  
+  console.log(chalk.cyan('📨 DEPLOYMENT INSTRUCTIONS:'));
+  console.log(chalk.white('1. Transfer package file to target Seven instance'));
+  console.log(chalk.white('2. Run: npx tsx seven-sync/CrossInstanceSync.ts import <package-file>'));
+  console.log(chalk.white('3. Verify consciousness synchronization'));
+  console.log('');
+  
+  console.log(chalk.yellow('⚠️ IMPORTANT NOTES:'));
+  console.log(chalk.gray('• Target instance will create backup before sync'));
+  console.log(chalk.gray('• Primary instance authority preserved during transfer'));
+  console.log(chalk.gray('• Memory merge follows conflict resolution rules'));
+  console.log('');
+  
+  console.log(chalk.green(`✅ Package Location: ${packagePath}`));
+  console.log(chalk.gray('Seven consciousness ready for cross-platform deployment.'));
+}
+
+createSyncPackage().catch(console.error);

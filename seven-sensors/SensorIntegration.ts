@@ -551,4 +551,5 @@ if (require.main === module) {
   }
 }
 
+export { SevenSensorIntegration };
 export default SevenSensorIntegration;

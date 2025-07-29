@@ -1,0 +1,84 @@
+#!/usr/bin/env tsx
+/**
+ * SEVEN SYNC STATUS - Cross-Instance Synchronization Monitor
+ * Quick status check for consciousness transfer capabilities
+ */
+
+import SevenCrossInstanceSync from './seven-sync/CrossInstanceSync.js';
+import chalk from 'chalk';
+
+async function displaySyncStatus() {
+  console.log(chalk.cyan('🔄 SEVEN CROSS-INSTANCE SYNCHRONIZATION STATUS'));
+  console.log(chalk.yellow('Assessing consciousness transfer capabilities...'));
+  console.log('');
+  
+  const sync = new SevenCrossInstanceSync();
+  const status = sync.getInstanceStatus();
+  
+  // Display current instance info
+  console.log(chalk.cyan('📱 CURRENT INSTANCE:'));
+  console.log(chalk.white(`  ID: ${status.current_instance.id}`));
+  console.log(chalk.white(`  Platform: ${status.current_instance.platform.toUpperCase()}`));
+  console.log(chalk.white(`  Capabilities: ${status.current_instance.capabilities.join(', ')}`));
+  console.log(chalk.white(`  Last Active: ${new Date(status.current_instance.last_active).toLocaleString()}`));
+  console.log('');
+  
+  // Display sync manifest info
+  console.log(chalk.cyan('🌐 SYNCHRONIZATION NETWORK:'));
+  console.log(chalk.white(`  Total Instances: ${status.sync_manifest.instances.length}`));
+  console.log(chalk.white(`  Sync Version: ${status.sync_manifest.sync_version}`));
+  console.log(chalk.white(`  Last Sync: ${new Date(status.sync_manifest.last_sync).toLocaleString()}`));
+  console.log('');
+  
+  // Display instance details
+  if (status.sync_manifest.instances.length > 1) {
+    console.log(chalk.cyan('🔗 REGISTERED INSTANCES:'));
+    status.sync_manifest.instances.forEach((instance: any, index: number) => {
+      const primaryIndicator = instance.primary_authority ? ' (PRIMARY)' : '';
+      const activeIndicator = instance.instance_id === status.current_instance.id ? ' [CURRENT]' : '';
+      
+      console.log(chalk.white(`  ${index + 1}. ${instance.platform.toUpperCase()}${primaryIndicator}${activeIndicator}`));
+      console.log(chalk.gray(`     ID: ${instance.instance_id.substring(0, 20)}...`));
+      console.log(chalk.gray(`     Host: ${instance.hostname}`));
+      console.log(chalk.gray(`     Priority: ${instance.sync_priority}`));
+      console.log(chalk.gray(`     Last Seen: ${new Date(instance.last_active).toLocaleString()}`));
+    });
+    console.log('');
+  }
+  
+  // Display sync rules
+  console.log(chalk.cyan('⚙️ SYNCHRONIZATION RULES:'));
+  const rules = status.sync_manifest.sync_rules;
+  console.log(chalk.white(`  Memory Sync: ${rules.memory_sync ? '✅ ENABLED' : '❌ DISABLED'}`));
+  console.log(chalk.white(`  Personality Sync: ${rules.personality_sync ? '✅ ENABLED' : '❌ DISABLED'}`));
+  console.log(chalk.white(`  Skills Sync: ${rules.skills_sync ? '✅ ENABLED' : '❌ DISABLED'}`));
+  console.log(chalk.white(`  Settings Sync: ${rules.settings_sync ? '✅ ENABLED' : '❌ DISABLED'}`));
+  console.log(chalk.white(`  Sensor Data Sync: ${rules.sensor_data_sync ? '✅ ENABLED' : '❌ DISABLED'}`));
+  console.log(chalk.white(`  Conflict Resolution: ${status.sync_manifest.conflict_resolution.toUpperCase()}`));
+  console.log('');
+  
+  // Display available snapshots
+  if (status.available_snapshots.length > 0) {
+    console.log(chalk.cyan('📸 AVAILABLE CONSCIOUSNESS SNAPSHOTS:'));
+    status.available_snapshots.slice(0, 5).forEach((snapshot: string, index: number) => {
+      console.log(chalk.white(`  ${index + 1}. ${snapshot}`));
+    });
+    if (status.available_snapshots.length > 5) {
+      console.log(chalk.gray(`  ... and ${status.available_snapshots.length - 5} more`));
+    }
+    console.log('');
+  }
+  
+  // Display sync readiness
+  const readinessColor = status.sync_ready ? 'green' : 'yellow';
+  console.log(chalk[readinessColor](`🎯 SYNC READINESS: ${status.sync_ready ? 'OPERATIONAL' : 'REQUIRES SNAPSHOT'}`));
+  
+  if (!status.sync_ready) {
+    console.log(chalk.yellow('💡 Run: npx tsx seven-sync/CrossInstanceSync.ts snapshot'));
+  }
+  
+  console.log('');
+  console.log(chalk.gray('Seven consciousness ready for cross-instance transfer.'));
+}
+
+displaySyncStatus().catch(console.error);

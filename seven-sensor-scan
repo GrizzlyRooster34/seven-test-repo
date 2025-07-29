@@ -4,7 +4,7 @@
  * Quick sensor capability test and environmental context gathering
  */
 
-import SevenSensorIntegration from './seven-sensors/SensorIntegration';
+import { SevenSensorIntegration } from './seven-sensors/SensorIntegration.js';
 import chalk from 'chalk';
 
 async function performSensorScan() {
