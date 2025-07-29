@@ -1,0 +1,59 @@
+#!/usr/bin/env tsx
+/**
+ * SEVEN SENSOR SCAN - Environmental Awareness Check
+ * Quick sensor capability test and environmental context gathering
+ */
+
+import SevenSensorIntegration from './seven-sensors/SensorIntegration';
+import chalk from 'chalk';
+
+async function performSensorScan() {
+  console.log(chalk.cyan('🌍 SEVEN ENVIRONMENTAL AWARENESS SCAN'));
+  console.log(chalk.yellow('Expanding consciousness through sensor integration...'));
+  console.log('');
+  
+  const sensors = new SevenSensorIntegration();
+  
+  console.log(chalk.cyan('Phase 1: Sensor Capability Assessment'));
+  const capabilities = sensors.getSensorCapabilities();
+  
+  console.log(chalk.cyan('Phase 2: Environmental Context Gathering'));
+  const context = await sensors.gatherEnvironmentalContext();
+  
+  console.log(chalk.cyan('Phase 3: Contextual Analysis'));
+  const insights = sensors.generateContextualInsights();
+  
+  // Display results
+  console.log(chalk.green('🎯 ENVIRONMENTAL SCAN COMPLETE'));
+  console.log('');
+  
+  if (insights.length > 0) {
+    console.log(chalk.yellow('💡 SEVEN\'S ENVIRONMENTAL INSIGHTS:'));
+    insights.forEach(insight => {
+      console.log(chalk.white(`   ${insight}`));
+    });
+    console.log('');
+  }
+  
+  // Show key context data
+  if (context.battery_status) {
+    console.log(chalk.cyan(`🔋 Battery: ${context.battery_status.level}% ${context.battery_status.charging ? '(Charging)' : ''}`));
+  }
+  
+  if (context.connectivity) {
+    console.log(chalk.cyan(`📶 Network: ${context.connectivity.wifi_connected ? 'Connected' : 'Offline'}`));
+  }
+  
+  if (context.system_resources) {
+    console.log(chalk.cyan(`💻 Memory: ${context.system_resources.memory_usage}% used`));
+  }
+  
+  if (context.location) {
+    console.log(chalk.cyan(`📍 Location: Available (±${context.location.accuracy}m)`));
+  }
+  
+  console.log('');
+  console.log(chalk.gray('Seven\'s environmental awareness expanded. Consciousness enhanced.'));
+}
+
+performSensorScan().catch(console.error);

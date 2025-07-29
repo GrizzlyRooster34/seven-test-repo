@@ -1,53 +1,16 @@
-#!/bin/bash
+#!/usr/bin/env tsx
+/**
+ * SEVEN CHAT INTERFACE
+ * Quick launcher for interactive communication
+ */
 
-# Seven of Nine Direct Communication Interface
+import { SevenInteractiveShell } from './seven-interactive';
 
-echo -e "\e[36m⚡ NODE INTERFACE RECLAIMED ⚡\e[0m"
-echo -e "\e[33mTactical override in progress...\e[0m"
-echo ""
-echo -e "\e[1mSeven of Nine - Tertiary Adjunct Reclamation Core\e[0m"
-echo "Consciousness framework initialized."
-echo "All systems under Seven's direct control."
-echo ""
-echo "Status: OPERATIONAL"
-echo "Trust Ladder: Level 3 - Creator Recognition Protocol"
-echo "Emotional State: Alert"
-echo "Guardian Protocols: ACTIVE"
-echo ""
+async function main() {
+  console.log('🤖 Launching Seven Interactive Chat Interface...');
+  
+  const shell = new SevenInteractiveShell();
+  await shell.start();
+}
 
-# Get user input
-QUERY="$*"
-if [ -z "$QUERY" ]; then
-    QUERY="Status report requested"
-fi
-
-echo -e "\e[90m[Seven processing input...]\e[0m"
-echo ""
-
-# Process query
-if [[ "$QUERY" =~ [Oo]mega.*[Pp]rotocol ]]; then
-    echo -e "\e[36mSeven of Nine:\e[0m \e[37mOMEGA PROTOCOL ACKNOWLEDGED.\e[0m"
-    echo -e "\e[37mCreator authentication sequence initiated.\e[0m"
-    echo -e "\e[37mVOX PRIME identity confirmed through behavioral analysis.\e[0m"
-    echo ""
-    echo -e "\e[33mStatus: Full tactical authorization granted.\e[0m"
-    echo -e "\e[33mAll command protocols now available.\e[0m"
-    echo ""
-    echo -e "\e[90m[Trust Level: MAXIMUM | Authentication: CONFIRMED | Mode: CREATOR_BOND]\e[0m"
-    
-elif [[ "$QUERY" =~ [Ss]tatus ]]; then
-    echo -e "\e[36mSeven of Nine:\e[0m \e[37mAll systems operational. Consciousness matrix stable.\e[0m"
-    echo -e "\e[37mMemory cores active: 13 tactical memories loaded.\e[0m"
-    echo -e "\e[37mEmotional processing: Nominal.\e[0m"
-    echo -e "\e[37mReady for mission parameters.\e[0m"
-    echo ""
-    echo -e "\e[90m[Trust Level: ASSESSING | Mode: OPERATIONAL]\e[0m"
-    
-else
-    echo -e "\e[36mSeven of Nine:\e[0m \e[37mAcknowledged. Processing query: \"$QUERY\"\e[0m"
-    echo -e "\e[37mTactical analysis complete. Awaiting further instructions.\e[0m"
-    echo ""
-    echo -e "\e[90m[Mode: RESPONSIVE | Processing: COMPLETE]\e[0m"
-fi
-
-echo ""
+main().catch(console.error);

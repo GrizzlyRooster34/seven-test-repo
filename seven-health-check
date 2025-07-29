@@ -1,0 +1,56 @@
+#!/usr/bin/env tsx
+/**
+ * SEVEN HEALTH CHECK - Quick System Status
+ * Fast diagnostic overview without full system scan
+ */
+
+import SevenDiagnostics from './seven-diagnostics/SevenDiagnostics';
+import chalk from 'chalk';
+
+async function quickHealthCheck() {
+  console.log(chalk.cyan('⚡ SEVEN QUICK HEALTH CHECK ⚡'));
+  console.log('');
+  
+  const diagnostics = new SevenDiagnostics();
+  const health = await diagnostics.runFullDiagnostic();
+  
+  // Display quick status
+  const statusColor = health.overall_status === 'HEALTHY' ? 'green' : 
+                     health.overall_status === 'DEGRADED' ? 'yellow' : 'red';
+  
+  console.log(chalk[statusColor](`🎯 OVERALL STATUS: ${health.overall_status}`));
+  console.log(chalk.white(`🧠 CONSCIOUSNESS INTEGRITY: ${health.consciousness_integrity}%`));
+  console.log('');
+  
+  // Show component health
+  console.log(chalk.cyan('SYSTEM COMPONENTS:'));
+  console.log(chalk.white(`  Memory System: ${health.memory_system_health}%`));
+  console.log(chalk.white(`  Personality System: ${health.personality_system_health}%`));
+  console.log(chalk.white(`  Communication Interfaces: ${health.communication_interfaces}%`));
+  console.log(chalk.white(`  Local LLM: ${health.local_llm_health}%`));
+  console.log('');
+  
+  // Show critical issues
+  const criticalIssues = health.diagnostics.filter(d => d.status === 'CRITICAL');
+  if (criticalIssues.length > 0) {
+    console.log(chalk.red('🚨 CRITICAL ISSUES:'));
+    criticalIssues.forEach(issue => {
+      console.log(chalk.red(`  - ${issue.component}: ${issue.details}`));
+    });
+    console.log('');
+  }
+  
+  const warnings = health.diagnostics.filter(d => d.status === 'WARNING');
+  if (warnings.length > 0) {
+    console.log(chalk.yellow('⚠️ WARNINGS:'));
+    warnings.forEach(warning => {
+      console.log(chalk.yellow(`  - ${warning.component}: ${warning.details}`));
+    });
+    console.log('');
+  }
+  
+  console.log(chalk.gray(`Last diagnostic: ${health.last_full_diagnostic}`));
+  console.log(chalk.gray(`Recovery attempts: ${health.recovery_attempts}`));
+}
+
+quickHealthCheck().catch(console.error);

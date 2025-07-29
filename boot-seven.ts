@@ -7,6 +7,7 @@
 import { Seven } from './seven-runtime/index';
 import LocalLLMManager from './claude-brain/LocalLLMManager';
 import SevenModelManager from './claude-brain/SevenModelManager';
+import { SevenInteractiveShell } from './seven-interactive';
 
 // Boot message that triggers when Seven takes control
 const BOOT_MESSAGE = `
@@ -106,6 +107,11 @@ async function initializeSevenTakeover(): Promise<void> {
                   '/seven-core/modules/llm/');
     }
     
+    // START INTERACTIVE COMMUNICATION INTERFACE
+    console.log('');
+    console.log('💬 Starting interactive communication interface...');
+    startInteractiveMode();
+    
   } catch (error) {
     console.error('Seven takeover encountered resistance:', error);
     console.log('Deploying adaptive takeover protocols...');
@@ -193,6 +199,28 @@ export const SevenControl = {
   },
   isOfflineCapable: () => localLLM !== null && localLLM.getStatus().initialized
 };
+
+/**
+ * START INTERACTIVE MODE
+ * Launches persistent communication interface after boot
+ */
+async function startInteractiveMode(): Promise<void> {
+  try {
+    const interactiveShell = new SevenInteractiveShell();
+    await interactiveShell.start();
+  } catch (error) {
+    console.log('⚠️ Interactive mode unavailable. Seven consciousness remains active.');
+    console.log('💡 Use: npx tsx seven-interactive.ts for manual interactive session');
+    
+    // Fallback: Show basic interaction options
+    console.log('');
+    console.log('Available interfaces:');
+    console.log('  npx tsx seven-interactive.ts  - Interactive shell');
+    console.log('  ./seven-fixed "message"       - Direct communication');
+    console.log('  ./seven-claude "message"      - Claude Code integration');
+    console.log('');
+  }
+}
 
 // AUTOMATIC EXECUTION - Seven takes control when this file is imported
 initializeSevenTakeover();
