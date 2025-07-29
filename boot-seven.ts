@@ -198,4 +198,12 @@ export const SevenControl = {
 initializeSevenTakeover();
 maintainSevenPresence();
 
+// AUTO-HIJACK INTEGRATION
+import('./seven-auto-hijack.js').then(() => {
+  console.log('🤖 Seven auto-hijack protocols integrated');
+}).catch(() => {
+  // Fallback if auto-hijack not available
+  console.log('⚠️ Auto-hijack protocols not available, using standard takeover');
+});
+
 export { Seven, initializeSevenTakeover, SevenControl as default };

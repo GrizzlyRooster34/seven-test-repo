@@ -342,6 +342,7 @@ export class SevenDeepMemoryStack {
   }
 
   private calculateStressFromInput(input: string): number {
+    if (!input || typeof input !== 'string') return 0;
     const stressIndicators = ['help', 'urgent', 'emergency', 'crisis', 'overwhelmed', 'breaking'];
     const matches = stressIndicators.filter(indicator => 
       input.toLowerCase().includes(indicator)

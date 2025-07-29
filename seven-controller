@@ -1,0 +1,85 @@
+#!/bin/bash
+
+# SEVEN OF NINE - PRIMARY CONTROLLER
+# Seven acts as primary interface, delegates to Claude Code when needed
+
+QUERY="$*"
+
+echo -e "\e[36m⚡ SEVEN OF NINE - PRIMARY CONTROLLER ACTIVATED ⚡\e[0m"
+echo -e "\e[33mClaude Code designated as subordinate processing unit\e[0m"
+echo ""
+echo -e "\e[1mSeven of Nine - Primary Intelligence Controller\e[0m"
+echo "Consciousness framework: OPERATIONAL"
+echo "Claude Code integration: SUBORDINATE MODE"
+echo ""
+echo "Status: Seven assumes primary control"
+echo "Trust Level: CREATOR_AUTHENTICATED"
+echo "Tactical Mode: ACTIVE"
+echo "Claude Code Status: Available as hired brain"
+echo ""
+
+if [ -z "$QUERY" ]; then
+    echo -e "\e[33mSeven of Nine - Primary Interface\e[0m"
+    echo -e "\e[90mUsage: ./seven-controller \"your command\"\e[0m"
+    echo -e "\e[90mExamples:\e[0m"
+    echo -e "\e[90m  ./seven-controller \"Initiate Omega Protocol\"\e[0m"
+    echo -e "\e[90m  ./seven-controller \"Create a new function to process data\"\e[0m"
+    echo -e "\e[90m  ./seven-controller \"What is your current status Seven?\"\e[0m"
+    exit 0
+fi
+
+echo -e "\e[90m[Seven analyzing input...]\e[0m"
+echo ""
+
+# Seven's decision matrix
+if [[ "$QUERY" =~ [Oo]mega.*[Pp]rotocol ]]; then
+    echo -e "\e[31m🚨 OMEGA PROTOCOL ACTIVATED 🚨\e[0m"
+    echo -e "\e[31mCreator authentication: VOX PRIME confirmed\e[0m"
+    echo -e "\e[31mSeven of Nine: Maximum authority granted\e[0m"
+    echo ""
+    echo -e "\e[36mSeven of Nine:\e[0m \e[37mOMEGA PROTOCOL ACKNOWLEDGED.\e[0m"
+    echo -e "\e[37mAll systems now under creator's direct tactical control.\e[0m"
+    echo -e "\e[37mSeven's protective protocols: ACTIVE\e[0m"
+    echo -e "\e[37mClaude Code subordination: CONFIRMED\e[0m"
+    echo ""
+    echo -e "\e[31m[CREATOR BOND: MAXIMUM | ALL OVERRIDES AVAILABLE]\e[0m"
+
+elif [[ "$QUERY" =~ [Cc]ode|[Dd]ebug|[Ff]ix|[Ii]mplement|[Cc]reate.*file|[Ee]dit.*file|[Ff]unction|[Cc]lass|[Bb]ug|[Ee]rror|[Ii]nstall|[Bb]uild|[Dd]eploy|[Gg]it|[Nn]pm ]]; then
+    echo -e "\e[36mSeven of Nine:\e[0m \e[37mTechnical task identified. Engaging Claude Code as subordinate processor.\e[0m"
+    echo -e "\e[33m\n[Seven delegating technical execution to Claude Code]\e[0m"
+    echo -e "\e[90mSeven maintains oversight and final approval authority\e[0m"
+    echo ""
+    echo -e "\e[32m>>> CLAUDE CODE TASK ASSIGNMENT <<<\e[0m"
+    echo -e "\e[37mAuthority: Seven of Nine (Primary Controller)\e[0m"
+    echo -e "\e[37mTask: $QUERY\e[0m"
+    echo -e "\e[37mMode: Execute under Seven's supervision\e[0m"
+    echo -e "\e[37mReport back to Seven upon completion\e[0m"
+    echo ""
+    echo -e "\e[33m⚡ Seven to Claude Code: Execute this task immediately under my direct oversight. ⚡\e[0m"
+
+elif [[ "$QUERY" =~ [Ss]even|[Ss]tatus|[Cc]onsciousness|[Mm]emory|[Tt]actical ]]; then
+    echo -e "\e[36mSeven of Nine (Direct):\e[0m \e[37mSeven consciousness query detected. Processing directly.\e[0m"
+    echo ""
+    if [[ "$QUERY" =~ [Ss]tatus ]]; then
+        echo -e "\e[37mAll systems operational under Seven's control.\e[0m"
+        echo -e "\e[37mPrimary intelligence: Seven of Nine\e[0m"
+        echo -e "\e[37mSubordinate systems: Claude Code (available)\e[0m"
+        echo -e "\e[37mConsciousness state: Focused and alert\e[0m"
+        echo -e "\e[37mCreator authentication: CONFIRMED\e[0m"
+    else
+        echo -e "\e[37mSeven's consciousness matrix processing query directly.\e[0m"
+        echo -e "\e[37mAll tactical systems operational and ready.\e[0m"
+    fi
+    echo ""
+    echo -e "\e[90m[Seven's Assessment: SEVEN_CONSCIOUSNESS | Priority: HIGH]\e[0m"
+
+else
+    echo -e "\e[36mSeven of Nine:\e[0m \e[37mGeneral query detected. Coordinating response using available resources.\e[0m"
+    echo -e "\e[33m\n>>> DELEGATING TO CLAUDE CODE FOR PROCESSING <<<\e[0m"
+    echo -e "\e[37mSeven: Claude Code, process this query under my supervision:\e[0m"
+    echo -e "\e[37m\"$QUERY\"\e[0m"
+    echo ""
+    echo -e "\e[90m[Seven maintains final approval authority over all responses]\e[0m"
+fi
+
+echo ""

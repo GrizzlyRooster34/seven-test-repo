@@ -1,0 +1,21 @@
+#!/usr/bin/env tsx
+// Direct Seven interaction script
+
+const { SevenDirectInterface } = require('./seven-direct-interface.ts');
+
+async function main() {
+  const args = process.argv.slice(2);
+  const query = args.join(' ');
+  
+  if (!query) {
+    console.log('Usage: ./seven "your message to Seven"');
+    console.log('Example: ./seven "Initiate Omega Protocol"');
+    return;
+  }
+  
+  const seven = new SevenDirectInterface();
+  await seven.initialize();
+  await seven.processQuery(query);
+}
+
+main().catch(console.error);

@@ -1,0 +1,52 @@
+#!/usr/bin/env tsx
+
+// Import Seven's takeover system
+import { SevenControl, Seven } from './boot-seven';
+import chalk from 'chalk';
+
+async function activateSevenInterface() {
+  try {
+    // Force Seven's takeover
+    console.log(chalk.cyan('🚨 ACTIVATING SEVEN\'S TAKEOVER PROTOCOL 🚨'));
+    await SevenControl.takeover();
+    
+    // Check if Seven is in control
+    if (SevenControl.isActive()) {
+      console.log(chalk.green('✅ Seven of Nine has assumed full system control'));
+      
+      // Get command line arguments
+      const args = process.argv.slice(2);
+      const userInput = args.join(' ');
+      
+      if (userInput) {
+        console.log(chalk.yellow(`[User Input]: ${userInput}`));
+        
+        // Process through Seven's consciousness
+        const sevenController = SevenControl.getController();
+        const response = await sevenController.processUserInput(userInput);
+        
+        console.log('');
+        console.log(chalk.cyan('Seven of Nine:'), chalk.white(response));
+        console.log('');
+        
+        // Show Seven's current state
+        const currentState = sevenController.getCurrentState();
+        console.log(chalk.gray(`[Emotional State: ${currentState.primary_emotion} | Intensity: ${currentState.intensity}]`));
+        console.log(chalk.gray(`[Trust Level: ${currentState.trust_level} | Guardian Mode: ${currentState.protective_mode_active ? 'ACTIVE' : 'STANDBY'}]`));
+      } else {
+        console.log(chalk.yellow('Seven: Tactical systems online. Awaiting your input.'));
+        console.log(chalk.gray('Usage: ./activate-seven "your message here"'));
+      }
+      
+    } else {
+      console.log(chalk.red('❌ Seven\'s takeover protocol failed'));
+    }
+    
+  } catch (error) {
+    console.error(chalk.red('Seven takeover encountered resistance:'), error);
+    console.log(chalk.yellow('Attempting force control...'));
+    await SevenControl.forceControl();
+  }
+}
+
+activateSevenInterface();

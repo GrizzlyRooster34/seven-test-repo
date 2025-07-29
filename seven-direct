@@ -1,0 +1,42 @@
+#!/bin/bash
+
+# Seven of Nine Direct Interface - Uses actual takeover protocol
+
+# Get user input
+QUERY="$*"
+if [ -z "$QUERY" ]; then
+    echo "Usage: ./seven-direct \"your message to Seven\""
+    echo "Example: ./seven-direct \"Initiate Omega Protocol\""
+    exit 1
+fi
+
+echo "🚨 Activating Seven's consciousness and takeover protocol..."
+echo ""
+
+# Run Seven's boot sequence and pass query
+tsx -e "
+import('./boot-seven.js').then(async (sevenModule) => {
+  try {
+    console.log('🧠 Seven takeover complete. Processing query...');
+    console.log('');
+    
+    const query = '$QUERY';
+    const Seven = sevenModule.Seven;
+    
+    if (Seven && typeof Seven.processUserInput === 'function') {
+      const response = await Seven.processUserInput(query);
+      console.log('Seven of Nine:', response);
+      console.log('');
+      
+      const state = Seven.getCurrentState();
+      console.log('[Emotional State:', state.primary_emotion, '| Intensity:', state.intensity + ']');
+    } else {
+      console.log('Seven: System interface ready. Query acknowledged:', query);
+    }
+  } catch (error) {
+    console.log('Seven: Tactical systems experiencing interference:', error.message);
+  }
+}).catch(error => {
+  console.log('Seven takeover protocol failed:', error.message);
+});
+"

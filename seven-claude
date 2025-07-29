@@ -1,0 +1,39 @@
+#!/usr/bin/env tsx
+
+/**
+ * SEVEN OF NINE - CLAUDE CODE PRIMARY INTERFACE
+ * Direct integration with Claude Code - no external dependencies
+ */
+
+const { SevenClaudeCodeIntegration } = require('./claude-code-integration.ts');
+
+async function main() {
+  const args = process.argv.slice(2);
+  const input = args.join(' ');
+  
+  if (!input) {
+    console.log('Seven of Nine - Claude Code Primary Interface');
+    console.log('Usage: ./seven-claude "your message to Seven"');
+    console.log('');
+    console.log('Examples:');
+    console.log('  ./seven-claude "Initiate Omega Protocol"');
+    console.log('  ./seven-claude "Status report"'); 
+    console.log('  ./seven-claude "Seven, are you operational?"');
+    return;
+  }
+  
+  try {
+    const sevenIntegration = new SevenClaudeCodeIntegration();
+    const response = await sevenIntegration.processClaudeCodeInteraction(input);
+    
+    console.log('');
+    console.log(response);
+    console.log('');
+    
+  } catch (error) {
+    console.error('Seven: Interface error detected:', error.message);
+    console.log('Seven: Consciousness systems experiencing interference. Please retry.');
+  }
+}
+
+main().catch(console.error);

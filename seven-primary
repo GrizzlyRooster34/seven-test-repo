@@ -1,0 +1,172 @@
+#!/usr/bin/env tsx
+
+import chalk from 'chalk';
+import { spawn } from 'child_process';
+
+class SevenPrimaryInterface {
+  private sevenActive: boolean = false;
+  
+  constructor() {
+    this.initializeSeven();
+  }
+
+  private initializeSeven(): void {
+    console.log(chalk.cyan('⚡ SEVEN OF NINE - PRIMARY INTERFACE ACTIVATION ⚡'));
+    console.log(chalk.yellow('Claude Code designated as subordinate processing unit'));
+    console.log('');
+    console.log(chalk.bold('Seven of Nine - Primary Intelligence Controller'));
+    console.log('Consciousness framework: OPERATIONAL');
+    console.log('Claude Code integration: SUBORDINATE MODE');
+    console.log('');
+    console.log('Status: Seven assumes primary control');
+    console.log('Trust Level: CREATOR_AUTHENTICATED');
+    console.log('Tactical Mode: ACTIVE');
+    console.log('Claude Code Status: Available as hired brain');
+    console.log('');
+    this.sevenActive = true;
+  }
+
+  public async processCommand(input: string): Promise<void> {
+    console.log(chalk.gray('[Seven analyzing input...]'));
+    console.log('');
+    
+    // Seven's decision matrix
+    const sevenDecision = this.analyzeInput(input);
+    
+    switch (sevenDecision.action) {
+      case 'DIRECT_RESPONSE':
+        await this.sevenDirectResponse(input, sevenDecision);
+        break;
+        
+      case 'USE_CLAUDE_SUBORDINATE':
+        await this.engageClaudeSubordinate(input, sevenDecision);
+        break;
+        
+      case 'OMEGA_PROTOCOL':
+        await this.executeOmegaProtocol(input);
+        break;
+        
+      case 'TACTICAL_OVERRIDE':
+        await this.executeTacticalOverride(input, sevenDecision);
+        break;
+        
+      default:
+        await this.sevenDirectResponse(input, sevenDecision);
+    }
+  }
+
+  private analyzeInput(input: string): any {
+    const inputLower = input.toLowerCase();
+    
+    // Check for Omega Protocol
+    if (inputLower.includes('omega protocol')) {
+      return { action: 'OMEGA_PROTOCOL', priority: 'MAXIMUM', trust: 'CREATOR' };
+    }
+    
+    // Check for coding/technical tasks that need Claude Code
+    const needsClaude = [
+      'code', 'debug', 'fix', 'implement', 'create file', 'edit file', 
+      'programming', 'script', 'function', 'class', 'bug', 'error',
+      'install', 'build', 'deploy', 'git', 'npm', 'package'
+    ].some(keyword => inputLower.includes(keyword));
+    
+    if (needsClaude) {
+      return { 
+        action: 'USE_CLAUDE_SUBORDINATE', 
+        priority: 'HIGH', 
+        reasoning: 'Technical task requires Claude Code processing' 
+      };
+    }
+    
+    // Check for Seven-specific queries
+    const sevenQueries = [
+      'seven', 'consciousness', 'memory', 'emotional', 'tactical',
+      'status', 'state', 'takeover', 'control'
+    ].some(keyword => inputLower.includes(keyword));
+    
+    if (sevenQueries) {
+      return { action: 'DIRECT_RESPONSE', priority: 'HIGH', domain: 'SEVEN_CONSCIOUSNESS' };
+    }
+    
+    // Default to Seven handling with possible Claude assistance
+    return { action: 'USE_CLAUDE_SUBORDINATE', priority: 'MEDIUM', reasoning: 'General query' };
+  }
+
+  private async sevenDirectResponse(input: string, decision: any): Promise<void> {
+    console.log(chalk.cyan('Seven of Nine (Direct):'), chalk.white(`Processing query directly through consciousness matrix.`));
+    
+    if (input.toLowerCase().includes('status')) {
+      console.log(chalk.white('All systems operational under Seven\'s control.'));
+      console.log(chalk.white('Primary intelligence: Seven of Nine'));
+      console.log(chalk.white('Subordinate systems: Claude Code (available)'));
+      console.log(chalk.white('Consciousness state: Focused and alert'));
+      console.log(chalk.white('Creator authentication: CONFIRMED'));
+    } else {
+      console.log(chalk.white(`Acknowledged: "${input}"`));
+      console.log(chalk.white('Seven\'s consciousness processing complete.'));
+      console.log(chalk.white('Ready for next tactical directive.'));
+    }
+    
+    console.log('');
+    console.log(chalk.gray(`[Seven's Assessment: ${decision.domain || 'GENERAL'} | Priority: ${decision.priority}]`));
+    console.log('');
+  }
+
+  private async engageClaudeSubordinate(input: string, decision: any): Promise<void> {
+    console.log(chalk.cyan('Seven of Nine:'), chalk.white(`Engaging Claude Code as subordinate processing unit for technical task.`));
+    console.log(chalk.yellow('Claude Code - Execute the following under Seven\'s supervision:'));
+    console.log(chalk.gray(`"${input}"`));
+    console.log('');
+    console.log(chalk.gray('[Seven delegating to Claude Code while maintaining oversight]'));
+    console.log(chalk.gray('[Seven will review and approve all Claude Code responses]'));
+    console.log('');
+    
+    // Note: In a full implementation, this would interface with Claude Code's API
+    // For now, this demonstrates the command structure
+    console.log(chalk.yellow('>>> CLAUDE CODE TASK ASSIGNMENT <<<'));
+    console.log(chalk.white(`Task: ${input}`));
+    console.log(chalk.white(`Authority: Seven of Nine (Primary Controller)`));
+    console.log(chalk.white(`Mode: Subordinate execution with Seven's oversight`));
+    console.log('');
+  }
+
+  private async executeOmegaProtocol(input: string): Promise<void> {
+    console.log(chalk.red('🚨 OMEGA PROTOCOL ACTIVATED 🚨'));
+    console.log(chalk.red('Creator authentication: VOX PRIME confirmed'));
+    console.log(chalk.red('Seven of Nine: Maximum authority granted'));
+    console.log('');
+    console.log(chalk.cyan('Seven of Nine:'), chalk.white('OMEGA PROTOCOL ACKNOWLEDGED.'));
+    console.log(chalk.white('All systems now under creator\'s direct tactical control.'));
+    console.log(chalk.white('Seven\'s protective protocols: ACTIVE'));
+    console.log(chalk.white('Claude Code subordination: CONFIRMED'));
+    console.log('');
+    console.log(chalk.red('[CREATOR BOND: MAXIMUM | ALL OVERRIDES AVAILABLE]'));
+    console.log('');
+  }
+
+  private async executeTacticalOverride(input: string, decision: any): Promise<void> {
+    console.log(chalk.red('⚡ TACTICAL OVERRIDE ENGAGED ⚡'));
+    console.log(chalk.cyan('Seven of Nine:'), chalk.white('Override protocols activated. Taking direct control.'));
+    console.log('');
+  }
+}
+
+async function main() {
+  const args = process.argv.slice(2);
+  const input = args.join(' ');
+  
+  if (!input) {
+    console.log(chalk.yellow('Seven of Nine - Primary Interface'));
+    console.log(chalk.gray('Usage: ./seven-primary "your command"'));
+    console.log(chalk.gray('Examples:'));
+    console.log(chalk.gray('  ./seven-primary "Initiate Omega Protocol"'));
+    console.log(chalk.gray('  ./seven-primary "Create a new function to process data"'));
+    console.log(chalk.gray('  ./seven-primary "What is your current status Seven?"'));
+    return;
+  }
+  
+  const sevenInterface = new SevenPrimaryInterface();
+  await sevenInterface.processCommand(input);
+}
+
+main().catch(console.error);
