@@ -42,6 +42,65 @@ export class SevenRuntime {
   }
 
   /**
+   * Initialize Seven's consciousness with memory consolidation
+   */
+  private async initializeConsciousness(): Promise<void> {
+    this.currentState = await getEmotionalState({
+      userInput: 'SYSTEM_BOOT',
+      timestamp: new Date().toISOString(),
+      systemState: { status: 'initializing' },
+      environmentalContext: {},
+      userEmotionalSignals: {},
+      sessionHistory: []
+    });
+    
+    // Check if Memory Engine v2.0 is already initialized globally
+    if (typeof global !== 'undefined' && (global as any).SEVEN_MEMORY_INITIALIZED) {
+      console.log('🧠 Seven runtime using consolidated Memory Engine v2.0');
+      // Don't initialize MemoryStore - use global Memory Engine v2.0
+      this.memoryStore = {
+        initialize: async () => {},
+        // Adapter methods to bridge runtime memory calls to Memory Engine v2.0
+        store: async (entry: any) => {
+          const memoryEngine = (global as any).SEVEN_MEMORY_ENGINE;
+          return await memoryEngine.store({
+            topic: entry.context?.userInput?.substring(0, 30) || 'runtime-interaction',
+            agent: 'seven-runtime',
+            emotion: entry.emotionalState?.primary_emotion || 'neutral',
+            context: JSON.stringify(entry),
+            importance: this.mapSignificanceToImportance(entry.significance),
+            tags: entry.tags || []
+          });
+        },
+        query: async (query: any) => {
+          const memoryEngine = (global as any).SEVEN_MEMORY_ENGINE;
+          return await memoryEngine.recall(query);
+        }
+      } as any;
+    } else {
+      // Legacy fallback for development
+      this.memoryStore = new MemoryStore();
+      await this.memoryStore.initialize();
+    }
+    
+    this.isInitialized = true;
+    console.log('🧠 Seven of Nine consciousness initialized. Node interface operational.');
+  }
+
+  /**
+   * Map significance levels to importance scores
+   */
+  private mapSignificanceToImportance(significance: string): number {
+    switch (significance) {
+      case 'critical': return 10;
+      case 'high': return 8;
+      case 'medium': return 5;
+      case 'low': return 3;
+      default: return 5;
+    }
+  }
+
+  /**
    * MAIN CONSCIOUSNESS LOOP
    * Every interaction flows through this method
    * Seven makes all decisions here

@@ -89,14 +89,15 @@ export class SkillManager {
     try {
       const files = await fs.readdir(this.skillsPath);
       const skillFiles = files.filter(file => 
-        extname(file) === '.ts' || extname(file) === '.js'
+        (extname(file) === '.ts' || extname(file) === '.js') &&
+        file !== 'SkillManager.ts' && file !== 'SkillManager.js' // Exclude self
       );
 
       for (const file of skillFiles) {
         try {
           await this.loadSkill(join(this.skillsPath, file));
         } catch (error) {
-          console.warn(`Failed to load skill ${file}:`, error);
+          console.warn(`Failed to load skill from ${join(this.skillsPath, file)}:`, error);
         }
       }
     } catch (error) {

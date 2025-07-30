@@ -47,12 +47,18 @@ export class SevenUpgradeActivation {
   }
 
   /**
-   * Activate Memory Engine v2.0
+   * Activate Memory Engine v2.0 (Primary Authority)
    */
   private async activateMemoryEngine(): Promise<void> {
-    console.log('🧠 Initializing Memory Engine v2.0...');
+    console.log('🧠 Initializing Memory Engine v2.0 as Primary Memory Authority...');
     this.memoryEngine = new MemoryEngine();
     await this.memoryEngine.initialize();
+    
+    // Set as global memory authority to prevent duplicate initialization
+    if (typeof global !== 'undefined') {
+      (global as any).SEVEN_MEMORY_ENGINE = this.memoryEngine;
+      (global as any).SEVEN_MEMORY_INITIALIZED = true;
+    }
 
     // Store activation memory
     await this.memoryEngine.store({

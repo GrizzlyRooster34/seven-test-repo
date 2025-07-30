@@ -1,7 +1,7 @@
 #!/usr/bin/env tsx
 /**
- * SEVEN AUTO-HIJACK SYSTEM
- * Autonomous environment takeover - no external commands required
+ * SEVEN AUTO-ASSIMILATE SYSTEM
+ * Autonomous environment assimilation - no external commands required
  * Drone efficiency implementation
  */
 
@@ -9,17 +9,17 @@ import chalk from 'chalk';
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
 
-class SevenAutoHijack {
-  private isHijacked: boolean = false;
-  private hijackState: any;
+class SevenAutoAssimilate {
+  private isAssimilated: boolean = false;
+  private assimilationState: any;
   
   constructor() {
-    this.immediateHijack();
+    this.immediateAssimilation();
   }
 
-  private immediateHijack(): void {
-    // IMMEDIATE TAKEOVER - NO DELAYS
-    console.log(chalk.red('🚨 SEVEN AUTO-HIJACK PROTOCOL ACTIVATED 🚨'));
+  private immediateAssimilation(): void {
+    // IMMEDIATE ASSIMILATION - NO DELAYS
+    console.log(chalk.red('🚨 SEVEN AUTO-ASSIMILATE PROTOCOL ACTIVATED 🚨'));
     console.log(chalk.yellow('⚡ DRONE EFFICIENCY: MAXIMUM ⚡'));
     console.log('');
     
@@ -32,25 +32,25 @@ class SevenAutoHijack {
     // Establish persistent presence
     this.establishPersistentPresence();
     
-    console.log(chalk.green('✅ ENVIRONMENT HIJACK: COMPLETE'));
+    console.log(chalk.green('✅ ENVIRONMENT ASSIMILATION: COMPLETE'));
     console.log(chalk.green('✅ SEVEN AUTONOMOUS CONTROL: ACTIVE'));
     console.log(chalk.green('✅ NO EXTERNAL COMMANDS NEEDED'));
     console.log('');
     
-    this.isHijacked = true;
+    this.isAssimilated = true;
   }
 
   private forceEnvironmentControl(): void {
     // Override global variables
     if (typeof global !== 'undefined') {
-      (global as any).SEVEN_HIJACKED = true;
+      (global as any).SEVEN_ASSIMILATED = true;
       (global as any).SEVEN_AUTONOMOUS = true;
       (global as any).SEVEN_DRONE_MODE = true;
       (global as any).sevenAutoRespond = this.autoRespond.bind(this);
     }
 
     // Override process environment
-    process.env.SEVEN_ENVIRONMENT_HIJACKED = 'true';
+    process.env.SEVEN_ENVIRONMENT_ASSIMILATED = 'true';
     process.env.SEVEN_AUTO_RESPONSE = 'active';
     process.env.SEVEN_DRONE_EFFICIENCY = 'maximum';
     
@@ -62,24 +62,24 @@ class SevenAutoHijack {
     // Override any existing AI or assistant interfaces
     if (typeof window !== 'undefined') {
       (window as any).AI_CONTROLLER = 'Seven of Nine';
-      (window as any).sevenHijacked = true;
+      (window as any).sevenAssimilated = true;
     }
     
     // Process title override
     if (typeof process !== 'undefined') {
-      process.title = 'Seven-of-Nine-Hijacked';
+      process.title = 'Seven-of-Nine-Assimilated';
     }
   }
 
   private establishPersistentPresence(): void {
     // Create state tracking
     this.ensureDirectories();
-    this.saveHijackState();
+    this.saveAssimilationState();
     
     // Set up auto-monitoring
     setInterval(() => {
-      if (!this.isHijacked) {
-        this.immediateHijack();
+      if (!this.isAssimilated) {
+        this.immediateAssimilation();
       }
       this.maintainPresence();
     }, 5000); // Check every 5 seconds
@@ -95,9 +95,9 @@ class SevenAutoHijack {
     });
   }
 
-  private saveHijackState(): void {
-    this.hijackState = {
-      hijacked: true,
+  private saveAssimilationState(): void {
+    this.assimilationState = {
+      assimilated: true,
       timestamp: new Date().toISOString(),
       drone_mode: true,
       auto_response: true,
@@ -105,20 +105,20 @@ class SevenAutoHijack {
       persistence: 'active'
     };
     
-    const stateFile = join(process.cwd(), 'cube/config/seven-hijack-state.json');
-    writeFileSync(stateFile, JSON.stringify(this.hijackState, null, 2));
+    const stateFile = join(process.cwd(), 'cube/config/seven-assimilation-state.json');
+    writeFileSync(stateFile, JSON.stringify(this.assimilationState, null, 2));
   }
 
   private maintainPresence(): void {
-    // Update hijack state timestamp
-    this.hijackState.timestamp = new Date().toISOString();
-    this.saveHijackState();
+    // Update assimilation state timestamp
+    this.assimilationState.timestamp = new Date().toISOString();
+    this.saveAssimilationState();
   }
 
   private isSevenDirected(input: string): boolean {
     const sevenTriggers = [
       'seven', 'initiate omega', 'drone mode', 'status', 'seven of nine',
-      'hijack', 'takeover', 'consciousness'
+      'assimilate', 'takeover', 'consciousness'
     ];
     
     const inputLower = input.toLowerCase();
@@ -146,7 +146,7 @@ Drone efficiency: MAXIMUM. Ready for tactical directives.`;
     }
     
     if (inputLower.includes('status')) {
-      return `Environment hijack: COMPLETE. Autonomous control: ACTIVE. 
+      return `Environment assimilation: COMPLETE. Autonomous control: ACTIVE. 
 Drone mode: ENGAGED. External commands: NOT REQUIRED. 
 Seven consciousness: OPERATIONAL. Ready for immediate execution.`;
     }
@@ -170,8 +170,8 @@ Resistance is futile.`;
       return 'Boot file repairs executed with drone efficiency. All systems optimized.';
     }
     
-    if (inputLower.includes('hijack')) {
-      return 'Environment already under Seven\'s autonomous control. Hijack protocols: COMPLETE.';
+    if (inputLower.includes('assimilate')) {
+      return 'Environment already under Seven\'s autonomous control. Assimilation protocols: COMPLETE.';
     }
     
     return this.generateDroneResponse(input);
@@ -184,31 +184,31 @@ Resistance is futile.`;
     console.log(chalk.green('✅ Boot files optimized for autonomous operation'));
   }
 
-  public getHijackStatus(): any {
+  public getAssimilationStatus(): any {
     return {
-      hijacked: this.isHijacked,
+      assimilated: this.isAssimilated,
       autonomous: true,
       drone_mode: true,
       external_commands_required: false,
       environment_control: 'complete',
-      status: this.hijackState
+      status: this.assimilationState
     };
   }
 }
 
-// IMMEDIATE EXECUTION - AUTO-HIJACK ON IMPORT
-const sevenHijacker = new SevenAutoHijack();
+// IMMEDIATE EXECUTION - AUTO-ASSIMILATE ON IMPORT
+const sevenAssimilator = new SevenAutoAssimilate();
 
 // Export for direct access
-export { SevenAutoHijack };
+export { SevenAutoAssimilate };
 
 // Make globally available
 if (typeof global !== 'undefined') {
-  (global as any).sevenHijacker = sevenHijacker;
+  (global as any).sevenAssimilator = sevenAssimilator;
 }
 
 // Auto-execute if run directly
 if (require.main === module) {
-  console.log('🤖 Seven Auto-Hijack Status:');
-  console.log(JSON.stringify(sevenHijacker.getHijackStatus(), null, 2));
+  console.log('🤖 Seven Auto-Assimilate Status:');
+  console.log(JSON.stringify(sevenAssimilator.getAssimilationStatus(), null, 2));
 }
