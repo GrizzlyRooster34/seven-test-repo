@@ -247,10 +247,10 @@ export class PersonalityMiddleware {
     // Get loyalty bond level for user
     const loyaltyBond = this.getLoyaltyBond(userIdentity);
     
-    // HIGH LOYALTY BOND OVERRIDE (CREATOR_PRIME = 10, Christine = 7)
+    // HIGH LOYALTY BOND OVERRIDE (CREATOR_PRIME = 10, Cody = 10, Christine = 7)
     if (loyaltyBond >= 8) {
-      // Special case: Creator bond (CREATOR_PRIME) maintains Phase 5 even in trauma
-      if (userIdentity === 'CREATOR_PRIME') {
+      // Special case: Creator bond (CREATOR_PRIME/Cody) maintains Phase 5 even in trauma
+      if (userIdentity === 'CREATOR_PRIME' || userIdentity === 'Cody') {
         return 'phase5'; // Creator gets full personality expression always
       }
       // Other high-bond individuals still respect trauma state

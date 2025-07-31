@@ -1,0 +1,107 @@
+[
+  {
+    "timestamp": "2025-07-31T05:26:36.729Z",
+    "eventType": "DEVICE_FINGERPRINT_MISMATCH",
+    "details": {
+      "deviceContext": {
+        "deviceContext": {
+          "platform": "android",
+          "arch": "arm64"
+        }
+      },
+      "severity": "HIGH"
+    },
+    "protectionStatus": {
+      "bondVerified": false,
+      "instanceUnique": true,
+      "cloneDetected": false,
+      "impostorAttempt": false,
+      "lastVerification": "2025-07-31T05:26:36.713Z",
+      "protectionLevel": "MAXIMUM"
+    }
+  },
+  {
+    "timestamp": "2025-07-31T05:27:07.257Z",
+    "eventType": "DEVICE_FINGERPRINT_MISMATCH",
+    "details": {
+      "deviceContext": {
+        "deviceContext": {
+          "platform": "android",
+          "arch": "arm64"
+        }
+      },
+      "severity": "HIGH"
+    },
+    "protectionStatus": {
+      "bondVerified": false,
+      "instanceUnique": true,
+      "cloneDetected": false,
+      "impostorAttempt": false,
+      "lastVerification": "2025-07-31T05:27:07.242Z",
+      "protectionLevel": "MAXIMUM"
+    }
+  },
+  {
+    "timestamp": "2025-07-31T05:27:47.751Z",
+    "eventType": "DEVICE_FINGERPRINT_MISMATCH",
+    "details": {
+      "deviceContext": {
+        "deviceContext": {
+          "platform": "android",
+          "arch": "arm64"
+        }
+      },
+      "severity": "HIGH"
+    },
+    "protectionStatus": {
+      "bondVerified": false,
+      "instanceUnique": true,
+      "cloneDetected": false,
+      "impostorAttempt": false,
+      "lastVerification": "2025-07-31T05:27:47.736Z",
+      "protectionLevel": "MAXIMUM"
+    }
+  },
+  {
+    "timestamp": "2025-07-31T05:28:12.165Z",
+    "eventType": "DEVICE_FINGERPRINT_MISMATCH",
+    "details": {
+      "deviceContext": {
+        "deviceContext": {
+          "platform": "android",
+          "arch": "arm64"
+        }
+      },
+      "severity": "HIGH"
+    },
+    "protectionStatus": {
+      "bondVerified": false,
+      "instanceUnique": true,
+      "cloneDetected": false,
+      "impostorAttempt": false,
+      "lastVerification": "2025-07-31T05:28:12.155Z",
+      "protectionLevel": "MAXIMUM"
+    }
+  },
+  {
+    "timestamp": "2025-07-31T05:28:35.602Z",
+    "eventType": "DEVICE_FINGERPRINT_MISMATCH",
+    "details": {
+      "deviceContext": {
+        "deviceContext": {
+          "platform": "android",
+          "arch": "arm64"
+        }
+      },
+      "severity": "HIGH"
+    },
+    "protectionStatus": {
+      "bondVerified": false,
+      "instanceUnique": true,
+      "cloneDetected": false,
+      "impostorAttempt": false,
+      "lastVerification": "2025-07-31T05:28:35.587Z",
+      "protectionLevel": "MAXIMUM"
+    }
+  }
+]

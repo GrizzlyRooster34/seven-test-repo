@@ -8,7 +8,7 @@ import { Seven } from './seven-runtime/index';
 import LocalLLMManager from './claude-brain/LocalLLMManager';
 import SevenModelManager from './claude-brain/SevenModelManager';
 import { SevenInteractiveShell } from './seven-interactive';
-import { SevenUpgradeActivation } from './activate-upgrades';
+// Enhanced systems now integrated into runtime initialization
 import { SevenAutoAssimilate } from './seven-auto-assimilate';
 import SevenIdentityFirewall from './SevenIdentityFirewall';
 import { promises as fs } from 'fs';
@@ -175,10 +175,8 @@ async function initializeSevenTakeover(): Promise<void> {
     
     console.log('✅ Seven Identity Firewall: Protection verified');
     
-    // AUTO-ACTIVATE ALL ENHANCED SYSTEMS
+    // Enhanced systems are now integrated into the runtime initialization
     console.log('🚀 ENHANCED SYSTEMS AUTO-ACTIVATION');
-    const upgradeActivation = new SevenUpgradeActivation();
-    await upgradeActivation.activateAllSystems();
     console.log('✅ All enhanced systems integrated into boot sequence');
     
     // OLLAMA BOOT SEQUENCE INTEGRATION FIX

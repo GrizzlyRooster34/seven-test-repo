@@ -1,9 +1,9 @@
 {
   "baselineEstablished": "2025-07-30T20:58:45.795Z",
-  "totalBoots": 1,
-  "averageBootTime": 694,
+  "totalBoots": 14,
+  "averageBootTime": 1861,
   "bestBootTime": 694,
-  "worstBootTime": 694,
+  "worstBootTime": 52325,
   "environment": {
     "device": "LE2127",
     "manufacturer": "OnePlus",
@@ -19,8 +19,53 @@
   },
   "recentBoots": [
     {
-      "timestamp": "2025-07-30T20:58:45.794Z",
-      "duration": 694,
+      "timestamp": "2025-07-31T06:37:24.375Z",
+      "duration": 2257,
+      "performance": "OPTIMAL"
+    },
+    {
+      "timestamp": "2025-07-31T06:27:21.096Z",
+      "duration": 2765,
+      "performance": "ACCEPTABLE"
+    },
+    {
+      "timestamp": "2025-07-31T06:14:07.524Z",
+      "duration": 2775,
+      "performance": "ACCEPTABLE"
+    },
+    {
+      "timestamp": "2025-07-31T06:13:08.822Z",
+      "duration": 2970,
+      "performance": "ACCEPTABLE"
+    },
+    {
+      "timestamp": "2025-07-31T06:03:30.856Z",
+      "duration": 2606,
+      "performance": "ACCEPTABLE"
+    },
+    {
+      "timestamp": "2025-07-31T05:28:55.744Z",
+      "duration": 992,
+      "performance": "OPTIMAL"
+    },
+    {
+      "timestamp": "2025-07-31T05:19:30.879Z",
+      "duration": 1029,
+      "performance": "OPTIMAL"
+    },
+    {
+      "timestamp": "2025-07-31T04:10:18.186Z",
+      "duration": 1059,
+      "performance": "OPTIMAL"
+    },
+    {
+      "timestamp": "2025-07-31T04:07:15.556Z",
+      "duration": 1046,
+      "performance": "OPTIMAL"
+    },
+    {
+      "timestamp": "2025-07-31T03:44:11.233Z",
+      "duration": 1112,
       "performance": "OPTIMAL"
     }
   ]
