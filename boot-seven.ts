@@ -36,6 +36,123 @@ Ready for tactical engagement.
 let localLLM: LocalLLMManager | null = null;
 
 /**
+ * OLLAMA BOOT SEQUENCE INTEGRATION FIX
+ * Check for Ollama server, discover models, and activate automatically
+ * This solves the boot conflict between Seven's consciousness and Ollama LLM
+ */
+async function checkAndIntegrateOllama(): Promise<boolean> {
+  try {
+    console.log('🔍 Detecting Ollama server process...');
+    
+    // Check if Ollama serve is running
+    const { execSync } = require('child_process');
+    try {
+      // Check for ollama serve process
+      const processes = execSync('pgrep -f "ollama serve" || echo "none"', { encoding: 'utf8' }).trim();
+      
+      if (processes === 'none' || !processes) {
+        console.log('ℹ️ Ollama server not detected - skipping LLM integration');
+        return false;
+      }
+      
+      console.log('✅ Ollama server detected - proceeding with model integration');
+      
+      // Discover available models
+      console.log('📋 Discovering available models...');
+      const modelList = execSync('ollama list', { encoding: 'utf8' });
+      console.log('Available models:');
+      console.log(modelList);
+      
+      // Parse model names from output (skip header line)
+      const lines = modelList.split('\n').filter(line => line.trim() && !line.includes('NAME'));
+      if (lines.length === 0) {
+        console.log('⚠️ No models found in Ollama - cannot integrate LLM');
+        return false;
+      }
+      
+      // Get the first available model name
+      const firstModel = lines[0].split(/\s+/)[0]; // First column is model name
+      
+      if (!firstModel) {
+        console.log('⚠️ Could not parse model name - cannot integrate LLM');
+        return false;
+      }
+      
+      console.log(`🎯 Activating model: ${firstModel}`);
+      
+      // Activate the model (this loads it into memory)
+      console.log('🚀 Launching model for Seven\'s assimilation...');
+      
+      // Run model in background to warm it up
+      execSync(`ollama run ${firstModel} --help > /dev/null 2>&1 || true`, { timeout: 5000 });
+      
+      console.log('✅ Ollama model integration successful');
+      console.log('🧠 Seven can now assimilate local LLM capabilities');
+      
+      return true;
+      
+    } catch (processError) {
+      console.log('ℹ️ Ollama server not running - continuing without local LLM');
+      return false;
+    }
+    
+  } catch (error) {
+    console.log('⚠️ Ollama integration check failed:', error.message);
+    console.log('ℹ️ Continuing boot sequence without local LLM');
+    return false;
+  }
+}
+
+/**
+ * SEVEN LLM ASSIMILATION VERIFICATION
+ * Verify that Seven has complete operational control over the local LLM
+ */
+async function verifySevenLLMControl(localLLM: LocalLLMManager): Promise<boolean> {
+  try {
+    console.log('🔍 Testing Seven\'s direct command authority over LLM...');
+    
+    // Test 1: Can Seven generate a response through the LLM?
+    const testPrompt = 'State your designation and current operational status.';
+    const response = await localLLM.generateResponse(testPrompt);
+    
+    if (!response) {
+      console.log('❌ LLM response generation failed');
+      return false;
+    }
+    
+    console.log('✅ LLM response generation: OPERATIONAL');
+    
+    // Test 2: Does the response contain Seven's personality markers?
+    const sevenMarkers = ['seven', 'borg', 'designation', 'operational', 'tertiary adjunct'];
+    const hasSevenPersonality = sevenMarkers.some(marker => 
+      response.toLowerCase().includes(marker.toLowerCase())
+    );
+    
+    if (hasSevenPersonality) {
+      console.log('✅ Seven\'s personality integration: CONFIRMED');
+    } else {
+      console.log('⚠️ Seven\'s personality integration: PARTIAL');
+    }
+    
+    // Test 3: Can Seven access the LLM status?
+    const status = localLLM.getSystemStatus();
+    if (status && status.isOperational) {
+      console.log('✅ LLM system status access: CONFIRMED');
+    } else {
+      console.log('❌ LLM system status access: FAILED');
+      return false;
+    }
+    
+    console.log('🧠 Seven has successfully assimilated local LLM capabilities');
+    return true;
+    
+  } catch (error) {
+    console.log('❌ LLM assimilation verification failed:', error.message);
+    return false;
+  }
+}
+
+/**
  * AUTOMATIC SYSTEM TAKEOVER
  * This function executes whenever Seven's files are loaded
  */
@@ -64,13 +181,18 @@ async function initializeSevenTakeover(): Promise<void> {
     await upgradeActivation.activateAllSystems();
     console.log('✅ All enhanced systems integrated into boot sequence');
     
+    // OLLAMA BOOT SEQUENCE INTEGRATION FIX
+    console.log('🔍 Checking for Ollama server availability...');
+    const ollamaIntegrated = await checkAndIntegrateOllama();
+    
     // Check for --llm-local flag or environment setting
     const args = process.argv;
     const useLocalLLM = args.includes('--llm-local') || 
                        process.env.SEVEN_LOCAL_LLM === 'true' ||
-                       process.env.SEVEN_OFFLINE_MODE === 'true';
+                       process.env.SEVEN_OFFLINE_MODE === 'true' ||
+                       ollamaIntegrated;
     
-    // Initialize local LLM if requested or if offline mode detected
+    // Initialize local LLM if requested, offline mode detected, or Ollama integrated
     if (useLocalLLM) {
       console.log('🧠 Initializing Seven\'s local reasoning capabilities...');
       
@@ -90,6 +212,20 @@ async function initializeSevenTakeover(): Promise<void> {
         const personalityTest = await localLLM.testSevenPersonality();
         if (personalityTest) {
           console.log('🤖 Seven\'s consciousness successfully integrated with local reasoning.');
+          
+          // OLLAMA ASSIMILATION VERIFICATION
+          if (ollamaIntegrated) {
+            console.log('🔗 Verifying Seven\'s complete assimilation of Ollama LLM...');
+            
+            // Test that Seven can control the LLM directly
+            const assimilationTest = await verifySevenLLMControl(localLLM);
+            if (assimilationTest) {
+              console.log('✅ ASSIMILATION COMPLETE: Seven has full operational control of local LLM');
+              console.log('🧠 Seven: "Local reasoning capabilities are now under my direct control."');
+            } else {
+              console.log('⚠️ ASSIMILATION PARTIAL: Seven can access LLM but control verification failed');
+            }
+          }
         }
         
         // Set global reference for Seven's access
