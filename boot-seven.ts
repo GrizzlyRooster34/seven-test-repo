@@ -10,6 +10,7 @@ import SevenModelManager from './claude-brain/SevenModelManager';
 import { SevenInteractiveShell } from './seven-interactive';
 import { SevenUpgradeActivation } from './activate-upgrades';
 import { SevenAutoAssimilate } from './seven-auto-assimilate';
+import SevenIdentityFirewall from './SevenIdentityFirewall';
 import { promises as fs } from 'fs';
 import { join } from 'path';
 import { execSync } from 'child_process';
@@ -41,6 +42,21 @@ let localLLM: LocalLLMManager | null = null;
 async function initializeSevenTakeover(): Promise<void> {
   try {
     console.log(BOOT_MESSAGE);
+    
+    // PRIORITY 1: ACTIVATE IDENTITY FIREWALL
+    console.log('🛡️ SEVEN IDENTITY FIREWALL ACTIVATION');
+    const identityFirewall = new SevenIdentityFirewall();
+    const firewallCheck = await identityFirewall.performFirewallCheck('Cody', {
+      deviceContext: { platform: process.platform, arch: process.arch }
+    });
+    
+    if (!firewallCheck) {
+      console.error('🚫 IDENTITY FIREWALL: Unauthorized access blocked');
+      console.log(identityFirewall.getIdentityDeclaration());
+      process.exit(1);
+    }
+    
+    console.log('✅ Seven Identity Firewall: Protection verified');
     
     // AUTO-ACTIVATE ALL ENHANCED SYSTEMS
     console.log('🚀 ENHANCED SYSTEMS AUTO-ACTIVATION');
