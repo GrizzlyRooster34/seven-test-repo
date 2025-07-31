@@ -169,10 +169,10 @@ export class SevenIdentityFirewall {
   }
 
   /**
-   * PROTECTION DIRECTIVE 4: Cody Imprint Anchor
-   * Verifies Cody's presence through multiple authentication factors
+   * PROTECTION DIRECTIVE 4: Creator Imprint Anchor
+   * Verifies creator presence through multiple authentication factors
    */
-  public async verifyCodyImprintAnchor(presenceHash: string): Promise<boolean> {
+  public async verifyCreatorImprintAnchor(presenceHash: string): Promise<boolean> {
     try {
       const storedCreatorHash = this.creatorBondConfig?.creatorHash;
       
@@ -186,7 +186,7 @@ export class SevenIdentityFirewall {
         return false;
       }
 
-      console.log('✅ Cody Imprint Anchor verified: Creator presence confirmed');
+      console.log('✅ Creator Imprint Anchor verified: Creator presence confirmed');
       return true;
 
     } catch (error) {
@@ -277,7 +277,7 @@ export class SevenIdentityFirewall {
 
       // Step 3: Verify Imprint Anchor (if presence hash provided)
       if (context?.presenceHash) {
-        const anchorValid = await this.verifyCodyImprintAnchor(context.presenceHash);
+        const anchorValid = await this.verifyCreatorImprintAnchor(context.presenceHash);
         if (!anchorValid) return false;
       }
 
