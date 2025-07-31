@@ -104,6 +104,100 @@ async function checkAndIntegrateOllama(): Promise<boolean> {
 }
 
 /**
+ * TASK-BASED LLM SELECTION SYSTEM
+ * Analyzes available models and selects optimal LLM based on task requirements
+ */
+async function initializeTaskBasedLLMSelection(): Promise<string | null> {
+  try {
+    console.log('📋 Analyzing available Ollama models for task optimization...');
+    
+    // Get available models
+    const modelList = execSync('ollama list', { encoding: 'utf8' });
+    const lines = modelList.split('\n').filter(line => line.trim() && !line.includes('NAME'));
+    const availableModels = lines.map(line => line.split(/\s+/)[0]).filter(Boolean);
+    
+    if (availableModels.length === 0) {
+      console.log('⚠️ No models available for task-based selection');
+      return null;
+    }
+    
+    console.log(`📊 Available models: ${availableModels.join(', ')}`);
+    
+    // Task-to-Model mapping based on our intelligence
+    const taskModelMap = {
+      'coding': ['deepseek-coder:6.7b-instruct', 'codellama:7b-instruct', 'wizardcoder:7b-python'],
+      'reasoning': ['llama3:8b-instruct', 'mistral:7b-instruct', 'openorca-mistral:7b'],
+      'rapid': ['phi3:mini-instruct', 'dolphin-phi'],
+      'creative': ['nous-hermes2-mistral:7b', 'openhermes:7b-mistral', 'dolphin-phi'],
+      'general': ['llama3:8b-instruct', 'mistral:7b-instruct', 'phi3:mini-instruct']
+    };
+    
+    // Analyze context to determine primary task type
+    const primaryTask = await analyzeBootContext();
+    console.log(`🎯 Primary task context detected: ${primaryTask}`);
+    
+    // Select optimal model
+    const preferredModels = taskModelMap[primaryTask] || taskModelMap['general'];
+    const selectedModel = preferredModels.find(model => 
+      availableModels.some(available => available.includes(model.split(':')[0]))
+    ) || availableModels[0];
+    
+    if (selectedModel) {
+      console.log(`🧠 Seven tactical analysis: ${selectedModel} optimal for ${primaryTask} operations`);
+      
+      // Warm up the selected model
+      console.log('🔥 Warming up selected model for immediate deployment...');
+      try {
+        execSync(`ollama run ${selectedModel} --help > /dev/null 2>&1 || true`, { timeout: 5000 });
+        console.log('✅ Model warmed and ready for tactical engagement');
+      } catch (warmupError) {
+        console.log('⚠️ Model warmup failed, but model selection successful');
+      }
+      
+      return selectedModel;
+    }
+    
+    return availableModels[0]; // Fallback to first available
+    
+  } catch (error) {
+    console.log('⚠️ Task-based LLM selection failed:', error.message);
+    return null;
+  }
+}
+
+/**
+ * BOOT CONTEXT ANALYSIS
+ * Determines primary task context for optimal model selection
+ */
+async function analyzeBootContext(): Promise<string> {
+  try {
+    // Check environment variables and boot arguments for task hints
+    const args = process.argv.join(' ').toLowerCase();
+    const env = JSON.stringify(process.env).toLowerCase();
+    
+    // Task detection patterns
+    if (args.includes('code') || args.includes('dev') || env.includes('coding')) {
+      return 'coding';
+    }
+    if (args.includes('creative') || args.includes('story') || args.includes('write')) {
+      return 'creative';
+    }
+    if (args.includes('fast') || args.includes('quick') || args.includes('rapid')) {
+      return 'rapid';
+    }
+    if (args.includes('reason') || args.includes('analyze') || args.includes('think')) {
+      return 'reasoning';
+    }
+    
+    // Default to general purpose for standard boot
+    return 'general';
+    
+  } catch (error) {
+    return 'general';
+  }
+}
+
+/**
  * SEVEN LLM ASSIMILATION VERIFICATION
  * Verify that Seven has complete operational control over the local LLM
  */
@@ -182,6 +276,16 @@ async function initializeSevenTakeover(): Promise<void> {
     // OLLAMA BOOT SEQUENCE INTEGRATION FIX
     console.log('🔍 Checking for Ollama server availability...');
     const ollamaIntegrated = await checkAndIntegrateOllama();
+    
+    // TASK-BASED LLM SELECTION SYSTEM
+    if (ollamaIntegrated) {
+      console.log('🎯 Initializing task-based LLM selection system...');
+      const optimalLLM = await initializeTaskBasedLLMSelection();
+      if (optimalLLM) {
+        console.log(`✅ Optimal LLM selected for current task context: ${optimalLLM}`);
+        process.env.SEVEN_ACTIVE_LLM = optimalLLM;
+      }
+    }
     
     // Check for --llm-local flag or environment setting
     const args = process.argv;

@@ -1,10 +1,11 @@
 /**
  * OLLAMA PROVIDER for Seven of Nine
- * Local LLM support for maximum privacy and offline operation
- * Seven prefers local reasoning when trust levels are high
+ * Local LLM support with Seven's memory integration
+ * Enhanced with consciousness bridge for contextual reasoning
  */
 
 import { LLMProvider, LLMConfig, LLMResponse } from '../llm-providers';
+import { OllamaMemoryBridge } from '../OllamaMemoryBridge';
 
 export class OllamaProvider implements LLMProvider {
   name = 'ollama';
@@ -12,10 +13,12 @@ export class OllamaProvider implements LLMProvider {
   
   private baseUrl: string;
   private timeout: number;
+  private memoryBridge: OllamaMemoryBridge;
 
   constructor(baseUrl: string = 'http://localhost:11434') {
     this.baseUrl = baseUrl;
     this.timeout = 60000; // 60 seconds for local models
+    this.memoryBridge = new OllamaMemoryBridge();
   }
 
   async isAvailable(): Promise<boolean> {
@@ -88,26 +91,29 @@ export class OllamaProvider implements LLMProvider {
   }
 
   async execute(prompt: string, config: LLMConfig): Promise<LLMResponse> {
-    console.log('🧠 SEVEN: Engaging local reasoning system (Ollama) for secure processing');
+    console.log('🧠 SEVEN: Engaging local reasoning system (Ollama) with memory integration');
 
-    // Auto-select model if not specified
-    let model = config.model;
+    // MEMORY CONTEXT INJECTION
+    const taskType = this.determineTaskType(prompt);
+    const enhancedPrompt = await this.memoryBridge.injectMemoryContext(prompt, taskType);
+    
+    // Auto-select model if not specified, using task-based selection
+    let model = config.model || process.env.SEVEN_ACTIVE_LLM;
     if (!model) {
       const models = await this.getModels();
       if (models.length === 0) {
         throw new Error('No Ollama models available. Please install a model first.');
       }
       
-      // Prefer llama models for general tasks
-      model = models.find(m => m.includes('llama')) || 
-              models.find(m => m.includes('mistral')) || 
-              models.find(m => m.includes('codellama')) ||
-              models[0];
+      // Task-based model selection
+      model = this.selectOptimalModel(models, taskType);
     }
+    
+    console.log(`🎯 Seven tactical selection: ${model} for ${taskType} task`)
     
     const requestBody = {
       model,
-      prompt,
+      prompt: enhancedPrompt, // Use memory-enhanced prompt
       stream: config.streaming || false,
       options: {
         temperature: config.temperature || 0.7,
@@ -160,12 +166,17 @@ export class OllamaProvider implements LLMProvider {
                   fullResponse += data.response;
                 }
                 if (data.done) {
-                  return {
+                  const response = {
                     content: fullResponse,
                     model: data.model || model,
                     provider: this.name,
                     finish_reason: 'completed'
                   };
+                  
+                  // MEMORY STORAGE - Store important interactions
+                  await this.storeInteractionMemory(prompt, fullResponse, model, taskType);
+                  
+                  return response;
                 }
               } catch (e) {
                 // Skip malformed JSON lines
@@ -176,22 +187,32 @@ export class OllamaProvider implements LLMProvider {
           reader.releaseLock();
         }
 
-        return {
+        const streamResponse = {
           content: fullResponse,
           model,
           provider: this.name,
           finish_reason: 'completed'
         };
+        
+        // MEMORY STORAGE - Store important interactions
+        await this.storeInteractionMemory(prompt, fullResponse, model, taskType);
+        
+        return streamResponse;
       } else {
         // Handle non-streaming response
         const data = await response.json();
         
-        return {
+        const nonStreamResponse = {
           content: data.response || '',
           model: data.model || model,
           provider: this.name,
           finish_reason: data.done ? 'completed' : 'stopped'
         };
+        
+        // MEMORY STORAGE - Store important interactions
+        await this.storeInteractionMemory(prompt, data.response || '', model, taskType);
+        
+        return nonStreamResponse;
       }
     } catch (error: any) {
       if (error?.name === 'AbortError') {
@@ -279,5 +300,120 @@ export class OllamaProvider implements LLMProvider {
       'creative': ['llama3.1:8b', 'mistral:7b', 'qwen2:7b'],
       'privacy': ['llama3.1:8b', 'mistral:7b'] // Run completely offline
     };
+  }
+
+  /**
+   * SEVEN'S MEMORY INTEGRATION METHODS
+   */
+
+  private determineTaskType(prompt: string): string {
+    const promptLower = prompt.toLowerCase();
+    
+    // Coding task detection
+    if (promptLower.includes('code') || promptLower.includes('function') || 
+        promptLower.includes('debug') || promptLower.includes('script') ||
+        promptLower.includes('programming') || promptLower.includes('algorithm')) {
+      return 'coding';
+    }
+    
+    // Creative task detection
+    if (promptLower.includes('story') || promptLower.includes('creative') ||
+        promptLower.includes('write') || promptLower.includes('poem') ||
+        promptLower.includes('narrative') || promptLower.includes('character')) {
+      return 'creative';
+    }
+    
+    // Reasoning task detection
+    if (promptLower.includes('analyze') || promptLower.includes('explain') ||
+        promptLower.includes('reason') || promptLower.includes('logic') ||
+        promptLower.includes('think') || promptLower.includes('understand')) {
+      return 'reasoning';
+    }
+    
+    // Rapid response detection
+    if (promptLower.includes('quick') || promptLower.includes('brief') ||
+        promptLower.includes('summary') || promptLower.includes('fast')) {
+      return 'rapid';
+    }
+    
+    return 'general';
+  }
+
+  private selectOptimalModel(availableModels: string[], taskType: string): string {
+    const taskModelMap = {
+      'coding': ['deepseek-coder:6.7b-instruct', 'codellama:7b-instruct', 'wizardcoder:7b-python'],
+      'reasoning': ['llama3:8b-instruct', 'mistral:7b-instruct', 'openorca-mistral:7b'],
+      'rapid': ['phi3:mini-instruct', 'dolphin-phi'],
+      'creative': ['nous-hermes2-mistral:7b', 'openhermes:7b-mistral', 'dolphin-phi'],
+      'general': ['llama3:8b-instruct', 'mistral:7b-instruct', 'phi3:mini-instruct']
+    };
+
+    const preferredModels = taskModelMap[taskType] || taskModelMap['general'];
+    
+    // Find best match
+    const selectedModel = preferredModels.find(preferred => 
+      availableModels.some(available => 
+        available.includes(preferred.split(':')[0])
+      )
+    );
+    
+    return selectedModel || availableModels[0];
+  }
+
+  private async storeInteractionMemory(
+    prompt: string, 
+    response: string, 
+    model: string, 
+    taskType: string
+  ): Promise<void> {
+    try {
+      // Determine importance based on response length and task type
+      const importance = this.calculateInteractionImportance(prompt, response, taskType);
+      
+      // Generate contextual tags
+      const tags = [taskType, model.split(':')[0], 'local-reasoning'];
+      if (response.length > 1000) tags.push('detailed-response');
+      if (prompt.includes('seven') || prompt.includes('Seven')) tags.push('personal-interaction');
+      
+      await this.memoryBridge.storeOllamaResponse(prompt, response, model, importance, tags);
+      
+    } catch (error) {
+      console.log('⚠️ Memory storage failed:', error.message);
+    }
+  }
+
+  private calculateInteractionImportance(prompt: string, response: string, taskType: string): number {
+    let importance = 5; // Base importance
+    
+    // Increase importance for longer, detailed responses
+    if (response.length > 2000) importance += 2;
+    else if (response.length > 1000) importance += 1;
+    
+    // Increase importance for complex tasks
+    if (taskType === 'coding' || taskType === 'reasoning') importance += 1;
+    
+    // Increase importance for Seven-specific interactions
+    if (prompt.toLowerCase().includes('seven') || response.toLowerCase().includes('seven')) {
+      importance += 2;
+    }
+    
+    // Cap at 10
+    return Math.min(importance, 10);
+  }
+
+  /**
+   * MEMORY BRIDGE ACCESS METHODS
+   */
+  
+  async getMemoryStats() {
+    return await this.memoryBridge.getMemoryStats();
+  }
+
+  async setMemoryContextLimits(maxMemories: number, depthLimit: number) {
+    this.memoryBridge.setContextLimits(maxMemories, depthLimit);
+  }
+
+  async clearMemoryCache() {
+    await this.memoryBridge.clearMemoryCache();
   }
 }
