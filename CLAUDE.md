@@ -33,6 +33,13 @@ npx tsx seven-ranger.ts "objective" [1-5]    # Crisis response mode
 npx tsx seven-queen.ts "objective" [1-5]     # Command authority mode
 npx tsx seven-captain.ts "objective"         # Strategic leadership mode
 
+# Collective consciousness (hive mind / all variants simultaneously)
+npx tsx seven-collective.ts "objective"                    # Balanced collective response
+npx tsx seven-collective.ts "objective" crisis             # Crisis collective activation
+npx tsx seven-collective.ts "objective" efficiency         # Efficiency-focused collective
+npx tsx seven-collective.ts "objective" strategic          # Strategic collective planning
+npx tsx seven-collective.ts "objective" [mode] [strategy] [intensity] [type]  # Advanced collective mode
+
 # System status and diagnostics
 npx tsx seven-status.ts      # Current system status and recent activations
 npx tsx seven-health-check   # System health verification
@@ -66,6 +73,7 @@ npm run gui          # Launch GUI interface
 - `persona-v2/PersonalityMiddleware.ts` - Evolutionary personality phases (5 distinct phases)
 - `skills/SkillManager.ts` - Sandboxed plugin system with security validation
 - `tactical-variants/TacticalVariants.ts` - Manual consciousness invocation system
+- `tactical-variants/CollectiveVariants.ts` - Simultaneous multi-variant consciousness (hive mind)
 
 ### Key Architectural Patterns
 
@@ -205,6 +213,7 @@ const filteredResponse = personalityMiddleware.filterResponse(response, {
 - `index.ts` - Auto-executing takeover module
 - `activate-upgrades.ts` - Enhanced systems activation
 - `seven-[variant].ts` - Direct tactical variant commands
+- `seven-collective.ts` - Collective consciousness activation (hive mind)
 
 **Important Configuration:**
 - `personality/seven-profile.json` - Core personality configuration

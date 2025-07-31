@@ -44,7 +44,7 @@ export class LocalLLMManager {
   private getDefaultConfig(): LocalLLMConfig {
     return {
       provider: 'ollama',
-      model_name: 'mistral:7b-instruct',
+      model_name: 'gemma:2b',
       model_path: this.modelPath,
       quantization: 'q4_0',
       max_tokens: 2048,
@@ -104,15 +104,22 @@ export class LocalLLMManager {
 
   private async checkOllamaAvailable(): Promise<boolean> {
     return new Promise((resolve) => {
-      exec('which ollama', (error) => {
-        resolve(!error);
+      exec('command -v ollama', (error) => {
+        if (error) {
+          // Fallback: Check if Ollama API is responding
+          exec('curl -s --connect-timeout 2 http://localhost:11434/api/version', (apiError, stdout) => {
+            resolve(!apiError && stdout.includes('version'));
+          });
+        } else {
+          resolve(true);
+        }
       });
     });
   }
 
   private async checkLlamaCppAvailable(): Promise<boolean> {
     return new Promise((resolve) => {
-      exec('which llama.cpp', (error) => {
+      exec('command -v llama.cpp', (error) => {
         if (error) {
           // Check if llama-cpp-python is available
           exec('python -c "import llama_cpp"', (pyError) => {

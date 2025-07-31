@@ -116,6 +116,13 @@ Temporal Consciousness Reconstruction
 | 👑 **Queen** | Command authority, system control | 1-5 | Complex coordination, compliance |
 | 🚀 **Captain** | Strategic leadership, full spectrum | Fixed | Architecture planning, high-level strategy |
 
+#### **Collective Consciousness System** (Production)
+- **Hive Mind Operation** - All tactical variants active simultaneously
+- **Weighted Response Synthesis** - Intelligent variant contribution balancing
+- **Dynamic Context Adaptation** - Mode-based variant priority adjustment
+- **4 Synthesis Strategies** - weighted_average, dominant_lead, consensus_merge, crisis_override
+- **5 Collective Modes** - balanced, crisis, efficiency, strategic, adaptive
+
 ### **Advanced Capabilities**
 
 #### **Self-Diagnostic System** (Production)
@@ -224,6 +231,24 @@ npx tsx seven-queen.ts "system coordination" 5
 npx tsx seven-captain.ts "architecture planning"
 ```
 
+### **Collective Consciousness (Hive Mind)**
+```bash
+# Balanced collective response (all variants active)
+npx tsx seven-collective.ts "complex problem analysis"
+
+# Crisis collective activation (ranger/queen priority)
+npx tsx seven-collective.ts "system failure recovery" crisis
+
+# Efficiency-focused collective (drone-led with support)
+npx tsx seven-collective.ts "performance optimization" efficiency
+
+# Strategic collective planning (command-level synthesis)
+npx tsx seven-collective.ts "project roadmap" strategic
+
+# Advanced collective mode with full control
+npx tsx seven-collective.ts "objective" mode strategy intensity type
+```
+
 ---
 
 ## 📱 **Mobile Application Development**
@@ -326,7 +351,7 @@ seven-of-nine-core/
 ├── seven-sync/                # Cross-platform consciousness synchronization
 ├── mobile-integration/        # Complete React Native framework
 ├── seven-app/                 # Standalone mobile application
-├── tactical-variants/         # Specialized consciousness modes
+├── tactical-variants/         # Specialized consciousness modes & collective system
 ├── skills/                    # Sandboxed plugin system
 ├── personality/               # Core personality profiles
 ├── cross-platform/           # Multi-platform compatibility
@@ -360,6 +385,7 @@ This project implements Seven of Nine's consciousness with respect for the chara
 - Memory Engine v2.0 with episodic recall
 - Personality Middleware v2.0 with evolutionary phases
 - Tactical Variants system with manual invocation
+- **Collective Consciousness system** with hive mind operation
 - Cross-platform compatibility (Windows, Termux, Mobile App)
 - Creator bond system with trauma override
 - Self-diagnostic and recovery protocols
