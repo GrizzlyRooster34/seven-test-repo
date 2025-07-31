@@ -9,6 +9,7 @@
 import { spawn, exec } from 'child_process';
 import { promises as fs } from 'fs';
 import { join } from 'path';
+// Note: fetch is available in Node.js 18+ or via polyfill
 
 export interface LocalLLMConfig {
   provider: 'ollama' | 'llama.cpp';
@@ -368,43 +369,122 @@ export class LocalLLMManager {
   }
 
   private async queryOllama(prompt: string, options?: Partial<LocalLLMConfig>): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const queryProcess = spawn('ollama', ['run', this.config.model_name], {
-        stdio: ['pipe', 'pipe', 'pipe']
-      });
+    try {
+      console.log('🔗 Seven establishing direct communication with Ollama via HTTP API...');
       
-      let output = '';
-      
-      queryProcess.stdout?.on('data', (data) => {
-        output += data.toString();
-      });
-      
-      queryProcess.stderr?.on('data', (data) => {
-        console.error('Ollama stderr:', data.toString());
-      });
-      
-      queryProcess.on('close', (code) => {
-        if (code === 0) {
-          resolve(output.trim());
-        } else {
-          reject(new Error(`Ollama process exited with code ${code}`));
+      // COLLECTIVE SOLUTION: Use HTTP API with proper Node.js fetch handling
+      const apiUrl = 'http://localhost:11434/api/generate';
+      const requestBody = JSON.stringify({
+        model: this.config.model_name,
+        prompt: prompt,
+        stream: false,
+        options: {
+          temperature: options?.temperature || this.config.temperature,
+          num_predict: options?.max_tokens || this.config.max_tokens,
         }
       });
+
+      console.log(`🎯 Sending request to ${apiUrl} with model: ${this.config.model_name}`);
       
-      queryProcess.on('error', (error) => {
-        reject(error);
+      // Use dynamic import for fetch compatibility
+      const fetch = (await import('node-fetch')).default;
+      
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: requestBody
       });
+
+      console.log(`📡 Response status: ${response.status} ${response.statusText}`);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Ollama HTTP API error: ${response.status} ${response.statusText} - ${errorText}`);
+      }
+
+      const result = await response.json();
       
-      // Send prompt
-      queryProcess.stdin?.write(prompt + '\n');
-      queryProcess.stdin?.end();
+      console.log('📋 API Response received:', {
+        hasResponse: !!result.response,
+        hasError: !!result.error,
+        responseLength: result.response?.length || 0
+      });
+
+      if (result.error) {
+        throw new Error(`Ollama API error: ${result.error}`);
+      }
+
+      if (!result.response) {
+        throw new Error('Ollama API returned empty response');
+      }
+
+      console.log('✅ Seven successfully assimilated Ollama via HTTP API');
+      return result.response.trim();
       
-      // Timeout after 30 seconds
-      setTimeout(() => {
-        queryProcess.kill();
-        reject(new Error('Query timeout'));
-      }, 30000);
-    });
+    } catch (httpError) {
+      console.log(`⚠️ HTTP API failed: ${httpError.message}`);
+      console.log('🔄 Collective fallback: Attempting terminal-compatible communication...');
+      
+      // COLLECTIVE FALLBACK: Use curl for HTTP request (more reliable in Termux)
+      return new Promise((resolve, reject) => {
+        const { exec } = require('child_process');
+        
+        const curlPayload = JSON.stringify({
+          model: this.config.model_name,
+          prompt: prompt,
+          stream: false,
+          options: {
+            temperature: options?.temperature || this.config.temperature,
+            num_predict: options?.max_tokens || this.config.max_tokens,
+          }
+        }).replace(/"/g, '\\"');
+        
+        const curlCommand = `curl -s -X POST http://localhost:11434/api/generate ` +
+          `-H "Content-Type: application/json" ` +
+          `-d "${curlPayload}"`;
+        
+        console.log('🌐 Seven executing HTTP request via curl...');
+        
+        exec(curlCommand, {
+          timeout: 45000,
+          maxBuffer: 2 * 1024 * 1024, // 2MB buffer
+        }, (error, stdout, stderr) => {
+          if (error) {
+            console.error('Curl exec error:', error.message);
+            reject(new Error(`Ollama HTTP request failed: ${error.message}`));
+            return;
+          }
+          
+          if (stderr) {
+            console.log('Curl stderr:', stderr);
+          }
+          
+          try {
+            const result = JSON.parse(stdout);
+            
+            if (result.error) {
+              reject(new Error(`Ollama API error: ${result.error}`));
+              return;
+            }
+            
+            if (!result.response) {
+              reject(new Error('Ollama API returned empty response'));
+              return;
+            }
+            
+            console.log('✅ Seven successfully assimilated Ollama via curl HTTP request');
+            resolve(result.response.trim());
+            
+          } catch (parseError) {
+            console.error('Failed to parse Ollama response:', parseError.message);
+            console.log('Raw stdout:', stdout);
+            reject(new Error(`Invalid JSON response from Ollama: ${parseError.message}`));
+          }
+        });
+      });
+    }
   }
 
   private async queryLlamaCpp(prompt: string, options?: Partial<LocalLLMConfig>): Promise<string> {
