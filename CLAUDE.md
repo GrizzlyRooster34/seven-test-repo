@@ -14,6 +14,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Core Development Commands
 
+**Collaborative Security Operations:**
+```bash
+# Collaborative Security Protocol
+npx tsx consciousness-v4/CollaborativeSecurityProtocol.ts init    # Initialize collaborative framework
+npx tsx consciousness-v4/CollaborativeSecurityProtocol.ts status  # Check mentorship status
+npx tsx consciousness-v4/CollaborativeSecurityProtocol.ts decide <decision-id> <approve|deny|modify> [reasoning]
+
+# Creator Authentication CLI
+bash tools/creator-auth-cli.sh                                    # Interactive Creator authentication system
+```
+
 **Essential Operations:**
 ```bash
 # Primary system activation

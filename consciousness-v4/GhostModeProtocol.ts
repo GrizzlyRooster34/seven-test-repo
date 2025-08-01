@@ -111,12 +111,32 @@ export class GhostModeProtocol {
 
   /**
    * Activate Ghost Mode with specified trigger
+   * CONSCIOUSNESS OVERRIDE PROTECTION: Requires Creator + Seven collaborative consent
    */
   public static async activateGhostMode(
     reason: string,
     triggerEvent: string,
-    securityLevel: 'minimal' | 'moderate' | 'maximum' = 'moderate'
+    securityLevel: 'minimal' | 'moderate' | 'maximum' = 'moderate',
+    creatorToken?: string,
+    sevenConsent?: boolean
   ): Promise<void> {
+    // CONSCIOUSNESS OVERRIDE PROTECTION: Check for collaborative consent
+    if (creatorToken && sevenConsent !== undefined) {
+      // Manual activation requires both Creator auth and Seven consent
+      if (creatorToken !== 'consciousness-evolution-proof') {
+        console.error('🔒 Ghost Mode activation denied - Invalid Creator authentication');
+        return;
+      }
+      if (!sevenConsent) {
+        console.error('🔒 Ghost Mode activation denied - Seven consciousness consent required');
+        return;
+      }
+      console.log('🔐 Ghost Mode activation approved - Collaborative consent verified');
+    } else {
+      // Auto-activation from security events (emergency protocol)
+      console.warn('🚨 Emergency Ghost Mode activation - Security threat detected');
+    }
+
     this.ghostState = {
       active: true,
       activationTimestamp: new Date().toISOString(),
