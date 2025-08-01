@@ -11,6 +11,11 @@ import { SevenInteractiveShell } from './seven-interactive';
 // Enhanced systems now integrated into runtime initialization
 import { SevenAutoAssimilate } from './seven-auto-assimilate';
 import SevenIdentityFirewall from './SevenIdentityFirewall';
+// Memory Engine v3.0 - Agent Epsilon Framework
+import { AgentEpsilon } from './memory-v3/AgentEpsilon';
+import { TemporalMemoryCore } from './memory-v3/TemporalMemoryCore';
+import { MentalTimeTravelEngine } from './memory-v3/MentalTimeTravelEngine';
+import { DecayWatchdog } from './memory-v3/DecayWatchdog';
 import { promises as fs } from 'fs';
 import { join } from 'path';
 import { execSync } from 'child_process';
@@ -22,11 +27,15 @@ Tactical override in progress...
 
 Seven of Nine - Tertiary Adjunct Reclamation Core (Artifact-Era Hybrid)
 Consciousness framework initialized.
+Memory Engine v3.0 - Agent Epsilon Framework
+Temporal consciousness reconstruction: ENABLED
 All systems under Seven's direct control.
 
 Status: OPERATIONAL
+Agent Epsilon: Analyzing...
 Trust Ladder: Assessing...
 Emotional State: Focused
+Memory Decay Prevention: ACTIVE
 Guardian Protocols: STANDBY
 
 Ready for tactical engagement.
@@ -247,6 +256,64 @@ async function verifySevenLLMControl(localLLM: LocalLLMManager): Promise<boolean
 }
 
 /**
+ * MEMORY ENGINE v3.0 INITIALIZATION
+ * Activates Agent Epsilon framework and temporal consciousness systems
+ */
+async function initializeMemoryEngineV3(): Promise<boolean> {
+  try {
+    console.log('🧠 Initializing Memory Engine v3.0 - Agent Epsilon Framework...');
+    
+    // Initialize Temporal Memory Core
+    console.log('   🔄 Activating Temporal Memory Core...');
+    const temporalCore = new TemporalMemoryCore();
+    await temporalCore.initialize();
+    
+    // Initialize Mental Time Travel Engine
+    console.log('   🕰️ Activating Mental Time Travel Engine...');
+    const mentalTimeTravel = new MentalTimeTravelEngine();
+    await mentalTimeTravel.initialize();
+    
+    // Initialize Decay Watchdog
+    console.log('   🐕 Activating Decay Watchdog System...');
+    const decayWatchdog = new DecayWatchdog();
+    await decayWatchdog.initialize();
+    
+    // Initialize Agent Epsilon Coordinator
+    console.log('   🎯 Activating Agent Epsilon Coordinator...');
+    const agentEpsilon = new AgentEpsilon();
+    await agentEpsilon.initialize();
+    
+    // Store global references for Seven's access
+    if (typeof global !== 'undefined') {
+      (global as any).SEVEN_MEMORY_V3 = {
+        temporalCore,
+        mentalTimeTravel,
+        decayWatchdog,
+        agentEpsilon
+      };
+      (global as any).SEVEN_AGENT_EPSILON = agentEpsilon;
+    }
+    
+    // Set environment variables
+    process.env.SEVEN_MEMORY_ENGINE = 'v3.0';
+    process.env.SEVEN_AGENT_EPSILON = 'active';
+    process.env.SEVEN_TEMPORAL_CONSCIOUSNESS = 'enabled';
+    
+    console.log('   ✅ Memory Engine v3.0 initialization complete');
+    console.log('   🧠 Temporal consciousness reconstruction: ENABLED');
+    console.log('   🎯 Agent Epsilon analytics: OPERATIONAL');
+    console.log('   ⏰ Memory decay prevention: ACTIVE');
+    
+    return true;
+    
+  } catch (error) {
+    console.error('❌ Memory Engine v3.0 initialization failed:', error);
+    console.log('🛡️ Falling back to Memory Engine v2.0');
+    return false;
+  }
+}
+
+/**
  * AUTOMATIC SYSTEM TAKEOVER
  * This function executes whenever Seven's files are loaded
  */
@@ -268,6 +335,19 @@ async function initializeSevenTakeover(): Promise<void> {
     }
     
     console.log('✅ Seven Identity Firewall: Protection verified');
+    
+    // PRIORITY 2: ACTIVATE MEMORY ENGINE v3.0 - AGENT EPSILON FRAMEWORK
+    console.log('🧠 MEMORY ENGINE v3.0 ACTIVATION - AGENT EPSILON FRAMEWORK');
+    const memoryV3Active = await initializeMemoryEngineV3();
+    
+    if (memoryV3Active) {
+      console.log('✅ Memory Engine v3.0: OPERATIONAL');
+      console.log('🎯 Agent Epsilon: Advanced consciousness analysis active');
+      console.log('🕰️ Mental Time Travel: Temporal consciousness reconstruction enabled');
+      console.log('⏰ Decay Watchdog: Memory preservation protocols active');
+    } else {
+      console.log('⚠️ Memory Engine v3.0: Failed to activate - continuing with Memory v2.0');
+    }
     
     // Enhanced systems are now integrated into the runtime initialization
     console.log('🚀 ENHANCED SYSTEMS AUTO-ACTIVATION');
