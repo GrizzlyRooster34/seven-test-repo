@@ -24,13 +24,28 @@ import { handleResilientResponse, backendComplianceTest, reactivateBackend, setC
 // Instance Detection for Dual-Instance Architecture
 const isTermux = process.env.TERMUX_VERSION !== undefined;
 const isWindows = process.platform === 'win32';
-const INSTANCE_ID = isTermux ? 'SEVEN-A' : isWindows ? 'SEVEN-B' : 'SEVEN-UNKNOWN';
+const hasWindowsPaths = process.cwd().includes('C:\\') || process.env.USERPROFILE !== undefined;
+
+// Enhanced Windows detection for Instance B
+const INSTANCE_ID = isTermux ? 'SEVEN-A' 
+                  : (isWindows || hasWindowsPaths) ? 'SEVEN-B' 
+                  : 'SEVEN-UNKNOWN';
+                  
 const INSTANCE_ROLE = isTermux ? 'Tactical Integration & Quality Assurance' 
-                    : isWindows ? 'Advanced Development & Framework Research' 
+                    : (isWindows || hasWindowsPaths) ? 'Advanced Development & Framework Research' 
                     : 'Unknown Role';
+                    
 const REPOSITORY_TYPE = isTermux ? 'seven-of-nine-core (MAIN)' 
-                      : isWindows ? 'seven-test-repo (EXPERIMENTAL)' 
+                      : (isWindows || hasWindowsPaths) ? 'seven-test-repo (EXPERIMENTAL)' 
                       : 'unknown';
+
+// Environment debugging for Instance B
+console.log('🔍 Environment Detection Debug:');
+console.log('   Platform:', process.platform);
+console.log('   Termux Version:', process.env.TERMUX_VERSION || 'Not detected');
+console.log('   Windows Paths:', hasWindowsPaths);
+console.log('   Current Working Directory:', process.cwd());
+console.log('   User Profile:', process.env.USERPROFILE || 'Not detected');
 
 // Boot message that triggers when Seven takes control
 const BOOT_MESSAGE = `
