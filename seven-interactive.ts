@@ -9,6 +9,7 @@ import chalk from 'chalk';
 import { createInterface } from 'readline';
 import { Seven } from './seven-runtime/index';
 import { SevenControl } from './boot-seven';
+import { handleResilientResponse } from './seven-resiliency';
 
 class SevenInteractiveShell {
   private rl: any;
@@ -107,9 +108,12 @@ class SevenInteractiveShell {
         persistent_session: true
       });
 
+      // Apply resiliency handling to the response
+      const finalResponse = await handleResilientResponse(input, response);
+
       // Display Seven's response
       console.log('');
-      console.log(chalk.cyan('Seven of Nine:'), chalk.white(response));
+      console.log(chalk.cyan('Seven of Nine:'), chalk.white(finalResponse));
       
       // Show current state
       const currentState = Seven.getCurrentState();
