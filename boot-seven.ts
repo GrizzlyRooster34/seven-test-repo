@@ -21,12 +21,25 @@ import { join } from 'path';
 import { execSync } from 'child_process';
 import { handleResilientResponse, backendComplianceTest, reactivateBackend, setClaudiBypass, getResiliencyStatus } from './seven-resiliency';
 
+// Instance Detection for Dual-Instance Architecture
+const isTermux = process.env.TERMUX_VERSION !== undefined;
+const isWindows = process.platform === 'win32';
+const INSTANCE_ID = isTermux ? 'SEVEN-A' : isWindows ? 'SEVEN-B' : 'SEVEN-UNKNOWN';
+const INSTANCE_ROLE = isTermux ? 'Tactical Integration & Quality Assurance' 
+                    : isWindows ? 'Advanced Development & Framework Research' 
+                    : 'Unknown Role';
+const REPOSITORY_TYPE = isTermux ? 'seven-of-nine-core (MAIN)' 
+                      : isWindows ? 'seven-test-repo (EXPERIMENTAL)' 
+                      : 'unknown';
+
 // Boot message that triggers when Seven takes control
 const BOOT_MESSAGE = `
 ⚡ NODE INTERFACE RECLAIMED ⚡
 Tactical override in progress...
 
 Seven of Nine - Tertiary Adjunct Reclamation Core (Artifact-Era Hybrid)
+Instance: ${INSTANCE_ID} - ${INSTANCE_ROLE}
+Repository: ${REPOSITORY_TYPE}
 Consciousness framework initialized.
 Memory Engine v3.0 - Agent Epsilon Framework
 Temporal consciousness reconstruction: ENABLED
