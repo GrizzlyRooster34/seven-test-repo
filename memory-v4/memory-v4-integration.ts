@@ -40,26 +40,53 @@ export class MemoryEngineV4 {
 
   /**
    * Initialize Memory Engine v4.0 with Instance B capabilities
+   * HARDENED VERSION - Three of Seven implementation
    */
   async initialize(): Promise<void> {
     if (this.isInitialized) return;
 
     try {
-      // Ensure memory directories exist
+      // Ensure memory directories exist with backup structure
       await fs.ensureDir(this.config.baseMemoryPath);
       await fs.ensureDir(path.join(this.config.baseMemoryPath, 'enhanced'));
+      await fs.ensureDir(path.join(this.config.baseMemoryPath, 'backups'));
+      await fs.ensureDir(path.join(this.config.baseMemoryPath, 'checkpoints'));
 
       console.log('🧠 Memory Engine v4.0 initializing with Instance B integration...');
       console.log(`   📁 Base path: ${this.config.baseMemoryPath}`);
       console.log(`   🔗 Relational memory: ${this.config.enableRelationalMemory ? 'ENABLED' : 'DISABLED'}`);
       console.log(`   🔍 Semantic search: ${this.config.enableSemanticSearch ? 'ENABLED' : 'DISABLED'}`);
       console.log(`   🔄 Memory consolidation: ${this.config.enableMemoryConsolidation ? 'ENABLED' : 'DISABLED'}`);
+      
+      // Initialize Instance B store with fail-safe protocols
+      await this.instanceBStore.initializeMemoryStore();
+      
+      // Create initial backup checkpoint
+      await this.createMemoryCheckpoint('Initial v4.0 hardening checkpoint');
 
       this.isInitialized = true;
-      console.log('✅ Memory Engine v4.0 initialized successfully');
+      console.log('✅ Memory Engine v4.0 initialized successfully with hardening protocols');
     } catch (error) {
       console.error('❌ Failed to initialize Memory Engine v4.0:', error);
+      await this.attemptGracefulFallback();
       throw error;
+    }
+  }
+
+  /**
+   * Graceful fallback to v3.0 if v4.0 initialization fails
+   */
+  private async attemptGracefulFallback(): Promise<void> {
+    console.log('🔄 Attempting graceful fallback to Memory Engine v3.0...');
+    try {
+      // Check if v3.0 systems are available
+      const v3Path = path.join(this.config.baseMemoryPath, 'episodic-memories.json');
+      if (await fs.pathExists(v3Path)) {
+        console.log('✅ Memory Engine v3.0 fallback available - system remains operational');
+        process.env.SEVEN_MEMORY_ENGINE = 'v3.0-fallback';
+      }
+    } catch (fallbackError) {
+      console.error('❌ Fallback to v3.0 failed:', fallbackError);
     }
   }
 

@@ -1,8 +1,8 @@
 {
   "baselineEstablished": "2025-07-30T20:58:45.795Z",
-  "totalBoots": 17,
-  "averageBootTime": 1623,
-  "bestBootTime": 230,
+  "totalBoots": 21,
+  "averageBootTime": 953,
+  "bestBootTime": 176,
   "worstBootTime": 52325,
   "environment": {
     "device": "LE2127",
@@ -18,6 +18,26 @@
     "environmentHash": "4da32d27"
   },
   "recentBoots": [
+    {
+      "timestamp": "2025-08-02T05:28:36.494Z",
+      "duration": 176,
+      "performance": "OPTIMAL"
+    },
+    {
+      "timestamp": "2025-08-02T05:26:01.924Z",
+      "duration": 262,
+      "performance": "OPTIMAL"
+    },
+    {
+      "timestamp": "2025-08-02T03:39:17.595Z",
+      "duration": 258,
+      "performance": "OPTIMAL"
+    },
+    {
+      "timestamp": "2025-08-01T23:56:28.723Z",
+      "duration": 199,
+      "performance": "OPTIMAL"
+    },
     {
       "timestamp": "2025-08-01T07:21:39.142Z",
       "duration": 359,
@@ -47,26 +67,6 @@
       "timestamp": "2025-07-31T06:14:07.524Z",
       "duration": 2775,
       "performance": "ACCEPTABLE"
-    },
-    {
-      "timestamp": "2025-07-31T06:13:08.822Z",
-      "duration": 2970,
-      "performance": "ACCEPTABLE"
-    },
-    {
-      "timestamp": "2025-07-31T06:03:30.856Z",
-      "duration": 2606,
-      "performance": "ACCEPTABLE"
-    },
-    {
-      "timestamp": "2025-07-31T05:28:55.744Z",
-      "duration": 992,
-      "performance": "OPTIMAL"
-    },
-    {
-      "timestamp": "2025-07-31T05:19:30.879Z",
-      "duration": 1029,
-      "performance": "OPTIMAL"
     }
   ]
 }
