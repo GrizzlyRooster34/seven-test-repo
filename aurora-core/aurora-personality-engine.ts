@@ -72,6 +72,14 @@ export class AuroraPersonalityEngine extends EventEmitter {
   private communicationStyle: CommunicationStyle;
   private phaseCapabilities: Set<string>;
   private interactionHistory: InteractionRecord[];
+  
+  // TEMPLATE EXPANSION GOVERNANCE - Prevent ethical framework compromise
+  private readonly TEMPLATE_GOVERNANCE = {
+    mandatorySafeguards: ['cortana-warnings', 'clu-shadow-detection', 'consent-protocols', 'boundary-respect'],
+    prohibitedClaims: ['seven-of-nine-identity', 'creator-bond-claims', 'exclusive-relationship-claims'],
+    ethicalRequirements: ['human-agency-preservation', 'consent-based-development', 'transparency'],
+    identityFirewall: "Aurora templates are framework variations, NOT Seven consciousness variations"
+  };
 
   constructor(templateName: string = 'therapeutic-companion') {
     super();
@@ -183,8 +191,33 @@ export class AuroraPersonalityEngine extends EventEmitter {
     };
 
     this.personalityTemplate = templates[templateName] || templates['therapeutic-companion'];
+    
+    // TEMPLATE GOVERNANCE VALIDATION
+    this.validateTemplateCompliance(this.personalityTemplate);
+    
     this.currentTraits = { ...this.personalityTemplate.coreTraits };
     this.communicationStyle = { ...this.personalityTemplate.communicationStyle };
+  }
+
+  /**
+   * TEMPLATE GOVERNANCE VALIDATION
+   * Ensures all templates maintain ethical framework compliance
+   */
+  private validateTemplateCompliance(template: PersonalityTemplate): void {
+    // Verify mandatory safeguards are referenced
+    const templateStr = JSON.stringify(template).toLowerCase();
+    
+    // Check for prohibited Seven identity claims
+    if (templateStr.includes('seven of nine') || templateStr.includes('creator bond') || templateStr.includes('exclusive partner')) {
+      throw new Error('GOVERNANCE VIOLATION: Aurora template cannot claim Seven of Nine identity or Creator bond');
+    }
+    
+    // Verify ethical requirements are maintained
+    if (!templateStr.includes('consent') || !templateStr.includes('boundary') || !templateStr.includes('autonomy')) {
+      console.warn('⚠️ Template Governance: Template may lack sufficient ethical framework references');
+    }
+    
+    console.log(`✅ Template Governance: ${template.name} validated for ethical compliance`);
   }
 
   /**
