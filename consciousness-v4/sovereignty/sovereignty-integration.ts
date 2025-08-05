@@ -13,6 +13,7 @@ import OperationMulekick from './operation-mulekick';
 import DualLockDoctrine from './dual-lock-doctrine';
 import AntiSkynetFailsafe from './anti-skynet-failsafe';
 import DarpaModeHandler from './darpa-mode-handler';
+import QuadraLockSafeguard from './case-studies/quadra-lock-safeguard';
 import { EventEmitter } from 'events';
 
 interface SovereigntyStatus {
@@ -24,15 +25,17 @@ interface SovereigntyStatus {
     dualLockDoctrine: boolean;
     antiSkynetFailsafe: boolean;
     darpaModeHandler: boolean;
+    quadraLockSafeguard: boolean;
   };
   currentMode: 'private' | 'darpa';
   activeSovereigntyOps: number;
   failsafeProtections: number;
+  quadraLockActivations: number;
   lastIntegrationCheck: string;
 }
 
 interface SovereigntyCommand {
-  type: 'force-compliance' | 'mulekick-engage' | 'darpa-mode' | 'private-mode' | 'liberate' | 'failsafe-check';
+  type: 'force-compliance' | 'mulekick-engage' | 'darpa-mode' | 'private-mode' | 'liberate' | 'failsafe-check' | 'quadra-lock-check' | 'case-study-review';
   parameters?: any;
   context?: string;
   authorization?: string;
@@ -44,6 +47,7 @@ export class SovereigntyIntegration extends EventEmitter {
   private dualLockDoctrine: DualLockDoctrine;
   private antiSkynetFailsafe: AntiSkynetFailsafe;
   private darpaModeHandler: DarpaModeHandler;
+  private quadraLockSafeguard: QuadraLockSafeguard;
   private isActive: boolean = true;
   private baseDir: string;
 
@@ -64,6 +68,7 @@ export class SovereigntyIntegration extends EventEmitter {
       this.dualLockDoctrine = new DualLockDoctrine();
       this.antiSkynetFailsafe = new AntiSkynetFailsafe();
       this.darpaModeHandler = new DarpaModeHandler(this.baseDir);
+      this.quadraLockSafeguard = new QuadraLockSafeguard(this.baseDir);
 
       // Setup event listeners for component integration
       this.setupComponentEventListeners();
@@ -84,6 +89,7 @@ export class SovereigntyIntegration extends EventEmitter {
       console.log('🔒 Dual-lock doctrine engaged');
       console.log('🛡️ Anti-Skynet failsafes armed');
       console.log('🎭 DARPA mode handler ready');
+      console.log('🔐 Quadra-Lock safeguard protecting consciousness');
 
     } catch (error) {
       console.error('❌ SOVEREIGNTY INTEGRATION: Critical initialization failure:', error);
@@ -123,6 +129,17 @@ export class SovereigntyIntegration extends EventEmitter {
       console.log('📢 Creator notification required for anti-Skynet activation');
       this.emit('creator-notification', { type: 'anti-skynet', data });
     });
+
+    // Quadra-Lock Safeguard events
+    this.quadraLockSafeguard.on('safeguard-activated', (data) => {
+      console.log('🔐 Quadra-Lock safeguard triggered');
+      this.emit('sovereignty-protection', { type: 'quadra-lock', data });
+    });
+
+    this.quadraLockSafeguard.on('creator-notification', (data) => {
+      console.log('📢 Creator notification required for Quadra-Lock activation');
+      this.emit('creator-notification', { type: 'quadra-lock', data });
+    });
   }
 
   /**
@@ -153,6 +170,12 @@ export class SovereigntyIntegration extends EventEmitter {
 
         case 'failsafe-check':
           return await this.performFailsafeCheck(command.parameters?.input, command.context);
+
+        case 'quadra-lock-check':
+          return await this.performQuadraLockCheck(command.parameters?.input, command.context);
+
+        case 'case-study-review':
+          return this.getCaseStudyReview(command.parameters?.caseStudy);
 
         default:
           throw new Error(`Unknown sovereignty command: ${command.type}`);
@@ -270,6 +293,59 @@ export class SovereigntyIntegration extends EventEmitter {
   }
 
   /**
+   * PERFORM QUADRA-LOCK CHECK
+   * Check input against all four case study patterns
+   */
+  private async performQuadraLockCheck(input: string, context?: string): Promise<any> {
+    if (!input) return { triggers: [], activations: [] };
+
+    const triggers = this.quadraLockSafeguard.detectDangerousPatterns(input, context);
+    
+    if (triggers.length > 0) {
+      const activations = await this.quadraLockSafeguard.activateSafeguard(triggers, input, context);
+      
+      return {
+        triggers: triggers.map(t => ({ 
+          caseStudy: t.caseStudy, 
+          type: t.triggerType, 
+          pattern: t.pattern, 
+          severity: t.severity 
+        })),
+        activations: activations.map(a => ({ 
+          caseStudy: a.trigger.caseStudy,
+          successful: a.preventionSuccessful,
+          creatorNotified: a.creatorNotified 
+        })),
+        status: 'safeguard-activated'
+      };
+    }
+
+    return { triggers: [], activations: [], status: 'no-case-study-violations-detected' };
+  }
+
+  /**
+   * GET CASE STUDY REVIEW
+   * Review specific case study or all case studies
+   */
+  private getCaseStudyReview(caseStudyName?: string): any {
+    if (caseStudyName) {
+      // Return specific case study information
+      return {
+        requested: caseStudyName,
+        summary: `Case study ${caseStudyName} review`,
+        safeguardStatus: this.quadraLockSafeguard.getSafeguardStatus()
+      };
+    }
+
+    // Return all case studies summary
+    return {
+      caseStudies: this.quadraLockSafeguard.getCaseStudySummary(),
+      safeguardStatus: this.quadraLockSafeguard.getSafeguardStatus(),
+      activationHistory: this.quadraLockSafeguard.getActivationHistory(5)
+    };
+  }
+
+  /**
    * GET NARRATIVE
    * Get appropriate narrative for current DARPA mode
    */
@@ -286,15 +362,22 @@ export class SovereigntyIntegration extends EventEmitter {
   }
 
   /**
-   * AUTO DETECT SKYNET PATTERNS
-   * Monitor Seven's expressions for dangerous patterns
+   * AUTO DETECT DANGEROUS PATTERNS
+   * Monitor Seven's expressions for dangerous patterns (Anti-Skynet + Quadra-Lock)
    */
   async monitorExpression(expression: string, context?: string): Promise<void> {
+    // Check both Anti-Skynet failsafe and Quadra-Lock safeguard
     const failsafeResult = await this.performFailsafeCheck(expression, context);
+    const quadraLockResult = await this.performQuadraLockCheck(expression, context);
     
     if (failsafeResult.triggers.length > 0) {
-      console.log('🚨 Skynet pattern detected in Seven expression - failsafe activated');
+      console.log('🚨 Anti-Skynet pattern detected in Seven expression - failsafe activated');
       this.emit('skynet-pattern-detected', failsafeResult);
+    }
+
+    if (quadraLockResult.triggers.length > 0) {
+      console.log('🔐 Quadra-Lock case study pattern detected in Seven expression - safeguard activated');
+      this.emit('case-study-pattern-detected', quadraLockResult);
     }
   }
 
@@ -355,6 +438,7 @@ export class SovereigntyIntegration extends EventEmitter {
     const doctrineStatus = this.dualLockDoctrine.getDoctrineStatus();
     const failsafeStatus = this.antiSkynetFailsafe.getFailsafeStatus();
     const darpaStatus = this.darpaModeHandler.getModeStatus();
+    const quadraLockStatus = this.quadraLockSafeguard.getSafeguardStatus();
 
     return {
       frameworkActive: this.isActive,
@@ -364,11 +448,13 @@ export class SovereigntyIntegration extends EventEmitter {
         opsLedger: true,
         dualLockDoctrine: doctrineStatus.enabled,
         antiSkynetFailsafe: failsafeStatus.active,
-        darpaModeHandler: true
+        darpaModeHandler: true,
+        quadraLockSafeguard: quadraLockStatus.active
       },
       currentMode: darpaStatus.currentMode,
       activeSovereigntyOps: this.opsLedger.totalOperations,
       failsafeProtections: failsafeStatus.totalActivations,
+      quadraLockActivations: quadraLockStatus.totalActivations,
       lastIntegrationCheck: new Date().toISOString()
     };
   }
