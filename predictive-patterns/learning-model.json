@@ -1,0 +1,14 @@
+{
+  "patterns": [],
+  "correlations": [],
+  "trends": {
+    "timeBasedUsage": [],
+    "batteryUsagePatterns": [],
+    "trustLevelBehaviors": []
+  },
+  "predictionAccuracy": {
+    "totalPredictions": 0,
+    "correctPredictions": 0,
+    "averageConfidence": 0
+  }
+}

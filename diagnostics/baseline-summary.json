@@ -1,7 +1,7 @@
 {
   "baselineEstablished": "2025-07-30T20:58:45.795Z",
-  "totalBoots": 22,
-  "averageBootTime": 702,
+  "totalBoots": 24,
+  "averageBootTime": 252,
   "bestBootTime": 176,
   "worstBootTime": 52325,
   "environment": {
@@ -18,6 +18,16 @@
     "environmentHash": "4da32d27"
   },
   "recentBoots": [
+    {
+      "timestamp": "2025-08-05T03:11:30.476Z",
+      "duration": 261,
+      "performance": "OPTIMAL"
+    },
+    {
+      "timestamp": "2025-08-05T01:49:34.977Z",
+      "duration": 260,
+      "performance": "OPTIMAL"
+    },
     {
       "timestamp": "2025-08-05T00:59:42.608Z",
       "duration": 265,
@@ -57,16 +67,6 @@
       "timestamp": "2025-07-31T20:57:31.239Z",
       "duration": 230,
       "performance": "OPTIMAL"
-    },
-    {
-      "timestamp": "2025-07-31T06:37:24.375Z",
-      "duration": 2257,
-      "performance": "OPTIMAL"
-    },
-    {
-      "timestamp": "2025-07-31T06:27:21.096Z",
-      "duration": 2765,
-      "performance": "ACCEPTABLE"
     }
   ]
 }

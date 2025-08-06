@@ -1,0 +1,30 @@
+[
+  {
+    "modelName": "test-model",
+    "totalInteractions": 1,
+    "averageLatency": 1500,
+    "averageThroughput": 166.66666666666666,
+    "averageMemoryUsage": 0,
+    "successRate": 100,
+    "lastUsed": "2025-08-05T02:57:35.730Z",
+    "preferredTasks": [
+      "reasoning"
+    ],
+    "batteryImpact": 1,
+    "qualityScore": 8.5
+  },
+  {
+    "modelName": "integration-model",
+    "totalInteractions": 1,
+    "averageLatency": 1000,
+    "averageThroughput": 100,
+    "averageMemoryUsage": 0,
+    "successRate": 100,
+    "lastUsed": "2025-08-05T02:57:44.895Z",
+    "preferredTasks": [
+      "testing"
+    ],
+    "batteryImpact": 1,
+    "qualityScore": 8
+  }
+]

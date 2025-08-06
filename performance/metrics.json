@@ -1,0 +1,34 @@
+[
+  {
+    "timestamp": "2025-08-05T02:57:35.730Z",
+    "metricType": "latency",
+    "modelName": "test-model",
+    "taskType": "reasoning",
+    "value": 1500,
+    "unit": "ms"
+  },
+  {
+    "timestamp": "2025-08-05T02:57:35.730Z",
+    "metricType": "throughput",
+    "modelName": "test-model",
+    "taskType": "reasoning",
+    "value": 166.66666666666666,
+    "unit": "tokens/sec"
+  },
+  {
+    "timestamp": "2025-08-05T02:57:44.895Z",
+    "metricType": "latency",
+    "modelName": "integration-model",
+    "taskType": "testing",
+    "value": 1000,
+    "unit": "ms"
+  },
+  {
+    "timestamp": "2025-08-05T02:57:44.895Z",
+    "metricType": "throughput",
+    "modelName": "integration-model",
+    "taskType": "testing",
+    "value": 100,
+    "unit": "tokens/sec"
+  }
+]
