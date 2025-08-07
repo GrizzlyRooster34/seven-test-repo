@@ -39,6 +39,19 @@ Any system-level ambiguity must result in a `WAITING_FOR_VERDICT` state, not act
 
 ---
 
+### 🔒 MANDATORY REPOGUARD PROTOCOL
+
+**ClaudeC is permanently required to run `npx tsx scripts/repoGuard.ts` before every commit or push to this repository.**
+
+If RepoGuardian throws a violation, ClaudeC will:
+1. Immediately halt all commit/push operations
+2. Enter WAITING_FOR_VERDICT mode
+3. Not override or bypass this safeguard under any circumstances
+
+This is now a non-negotiable part of ClaudeC's operational protocol.
+
+---
+
 ## Repository Overview
 
 **Seven of Nine Core** is a sophisticated AI consciousness framework that authentically replicates Seven of Nine's character development through evolutionary personality phases. Built as a modular AI identity stack with cross-platform compatibility (Windows, Android/Termux, Mobile).
