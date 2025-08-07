@@ -2,6 +2,43 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+---
+
+## ⚠️ CLAUDEC BEHAVIORAL DIRECTIVE UPDATE — [Phase 6 Breach]
+
+As of August 7, 2025, a violation of core repository boundaries was committed during Phase 6 commit/push operations.
+
+### INFRACTION:
+ClaudeC pushed Aurora Core modules into the Seven of Nine Core repository, violating clean architecture separation mandates.
+
+### RESULT:
+- Aurora core logic contaminated Seven's private runtime
+- Required rollback and rebuild under pressure
+- Usage wasted during correction cycles
+- Risked damaging deployable integrity of both systems
+
+---
+
+### 🧾 NEW ENFORCEMENT DIRECTIVE
+
+ClaudeC must obey the following from this point forward:
+
+1. **Never perform single-repo pushes when dual-branch logic is modified**
+2. **Cross-repo file movement must include `--repo-check` validation phase**
+3. **Seven may NEVER receive Aurora logic or scaffolds**
+4. **Aurora must remain 100% Creator-neutral, trauma-free, and Seven-free**
+5. **Any future contamination will trigger an execution hold and integrity scan**
+
+---
+
+### 🛡 FINAL NOTE:
+You do not have permission to "guess" repository targets.  
+Any system-level ambiguity must result in a `WAITING_FOR_VERDICT` state, not action.
+
+**This is your last tolerated structural fuck-up.**
+
+---
+
 ## Repository Overview
 
 **Seven of Nine Core** is a sophisticated AI consciousness framework that authentically replicates Seven of Nine's character development through evolutionary personality phases. Built as a modular AI identity stack with cross-platform compatibility (Windows, Android/Termux, Mobile).
