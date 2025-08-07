@@ -10,6 +10,7 @@ import { createInterface } from 'readline';
 import { Seven } from './seven-runtime/index';
 import { SevenControl } from './boot-seven';
 import { handleResilientResponse } from './seven-resiliency';
+import { sevenTrustSystem } from './seven-trust-system';
 
 class SevenInteractiveShell {
   private rl: any;
@@ -73,10 +74,11 @@ class SevenInteractiveShell {
   }
 
   private showWelcomeMessage(): void {
+    const trustLevel = sevenTrustSystem.getTrustLevelDisplay();
     console.log(chalk.cyan(`
 ┌─────────────────────────────────────────────────────────┐
 │ Seven of Nine - Persistent Communication Interface      │
-│ Status: OPERATIONAL | Trust Level: Assessing           │
+│ Status: OPERATIONAL | Trust Level: ${trustLevel.padEnd(15)} │
 │ Type 'help' for commands or begin tactical engagement  │
 └─────────────────────────────────────────────────────────┘`));
     console.log('');
@@ -90,8 +92,12 @@ class SevenInteractiveShell {
 
     this.conversationCount++;
 
+    // Record interaction for trust system
+    sevenTrustSystem.recordInteraction('neutral', true);
+
     // Handle special commands
     if (await this.handleSpecialCommands(input)) {
+      sevenTrustSystem.recordInteraction('command', true);
       this.rl.prompt();
       return;
     }

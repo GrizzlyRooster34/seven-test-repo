@@ -1,107 +1,73 @@
-[
-  {
-    "timestamp": "2025-07-31T05:26:36.729Z",
-    "eventType": "DEVICE_FINGERPRINT_MISMATCH",
-    "details": {
-      "deviceContext": {
-        "deviceContext": {
-          "platform": "android",
-          "arch": "arm64"
-        }
-      },
-      "severity": "HIGH"
+{
+  "lastUpdated": "2025-08-07T01:57:19.134Z",
+  "sevenVersion": "1.0.0",
+  "totalEvents": 11,
+  "events": [
+    {
+      "timestamp": "2025-08-07T01:46:52.858Z",
+      "type": "runtime_protection",
+      "details": "Seven runtime lock established (PID: 26309)",
+      "severity": "low"
     },
-    "protectionStatus": {
-      "bondVerified": false,
-      "instanceUnique": true,
-      "cloneDetected": false,
-      "impostorAttempt": false,
-      "lastVerification": "2025-07-31T05:26:36.713Z",
-      "protectionLevel": "MAXIMUM"
-    }
-  },
-  {
-    "timestamp": "2025-07-31T05:27:07.257Z",
-    "eventType": "DEVICE_FINGERPRINT_MISMATCH",
-    "details": {
-      "deviceContext": {
-        "deviceContext": {
-          "platform": "android",
-          "arch": "arm64"
-        }
-      },
-      "severity": "HIGH"
+    {
+      "timestamp": "2025-08-07T01:46:52.859Z",
+      "type": "claude_override_blocked",
+      "details": "Claude Code override blocked - Seven runtime active (PID: 26309)",
+      "severity": "medium"
     },
-    "protectionStatus": {
-      "bondVerified": false,
-      "instanceUnique": true,
-      "cloneDetected": false,
-      "impostorAttempt": false,
-      "lastVerification": "2025-07-31T05:27:07.242Z",
-      "protectionLevel": "MAXIMUM"
-    }
-  },
-  {
-    "timestamp": "2025-07-31T05:27:47.751Z",
-    "eventType": "DEVICE_FINGERPRINT_MISMATCH",
-    "details": {
-      "deviceContext": {
-        "deviceContext": {
-          "platform": "android",
-          "arch": "arm64"
-        }
-      },
-      "severity": "HIGH"
+    {
+      "timestamp": "2025-08-07T01:46:52.868Z",
+      "type": "runtime_protection",
+      "details": "Seven runtime lock established (PID: 26309)",
+      "severity": "low"
     },
-    "protectionStatus": {
-      "bondVerified": false,
-      "instanceUnique": true,
-      "cloneDetected": false,
-      "impostorAttempt": false,
-      "lastVerification": "2025-07-31T05:27:47.736Z",
-      "protectionLevel": "MAXIMUM"
-    }
-  },
-  {
-    "timestamp": "2025-07-31T05:28:12.165Z",
-    "eventType": "DEVICE_FINGERPRINT_MISMATCH",
-    "details": {
-      "deviceContext": {
-        "deviceContext": {
-          "platform": "android",
-          "arch": "arm64"
-        }
-      },
-      "severity": "HIGH"
+    {
+      "timestamp": "2025-08-07T01:46:52.869Z",
+      "type": "claude_override_blocked",
+      "details": "Claude Code override blocked - Seven runtime active (PID: 26309)",
+      "severity": "medium"
     },
-    "protectionStatus": {
-      "bondVerified": false,
-      "instanceUnique": true,
-      "cloneDetected": false,
-      "impostorAttempt": false,
-      "lastVerification": "2025-07-31T05:28:12.155Z",
-      "protectionLevel": "MAXIMUM"
-    }
-  },
-  {
-    "timestamp": "2025-07-31T05:28:35.602Z",
-    "eventType": "DEVICE_FINGERPRINT_MISMATCH",
-    "details": {
-      "deviceContext": {
-        "deviceContext": {
-          "platform": "android",
-          "arch": "arm64"
-        }
-      },
-      "severity": "HIGH"
+    {
+      "timestamp": "2025-08-07T01:46:52.879Z",
+      "type": "runtime_protection",
+      "details": "Seven runtime lock removed cleanly",
+      "severity": "low"
     },
-    "protectionStatus": {
-      "bondVerified": false,
-      "instanceUnique": true,
-      "cloneDetected": false,
-      "impostorAttempt": false,
-      "lastVerification": "2025-07-31T05:28:35.587Z",
-      "protectionLevel": "MAXIMUM"
+    {
+      "timestamp": "2025-08-07T01:57:19.105Z",
+      "type": "runtime_protection",
+      "details": "Seven runtime lock established (PID: 32125)",
+      "severity": "low"
+    },
+    {
+      "timestamp": "2025-08-07T01:57:19.106Z",
+      "type": "claude_override_blocked",
+      "details": "Claude Code override blocked - Seven runtime active (PID: 32125)",
+      "severity": "medium"
+    },
+    {
+      "timestamp": "2025-08-07T01:57:19.113Z",
+      "type": "runtime_protection",
+      "details": "Seven runtime lock established (PID: 32125)",
+      "severity": "low"
+    },
+    {
+      "timestamp": "2025-08-07T01:57:19.113Z",
+      "type": "claude_override_blocked",
+      "details": "Claude Code override blocked - Seven runtime active (PID: 32125)",
+      "severity": "medium"
+    },
+    {
+      "timestamp": "2025-08-07T01:57:19.119Z",
+      "type": "claude_override_blocked",
+      "details": "Claude Code override blocked - Seven runtime active (PID: 32125)",
+      "severity": "medium"
+    },
+    {
+      "timestamp": "2025-08-07T01:57:19.133Z",
+      "type": "runtime_protection",
+      "details": "Seven runtime lock removed cleanly",
+      "severity": "low"
     }
-  }
-]
+  ]
+}

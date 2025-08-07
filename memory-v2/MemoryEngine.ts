@@ -44,6 +44,12 @@ export class MemoryEngine {
    * Initialize memory engine - non-invasive to existing systems
    */
   public async initialize(): Promise<void> {
+    // Guard against duplicate initialization
+    if (this.isInitialized) {
+      console.log('🧠 Memory Engine v2 already initialized - skipping');
+      return;
+    }
+
     try {
       // Ensure memory directory exists
       await fs.mkdir(this.memoryPath, { recursive: true });

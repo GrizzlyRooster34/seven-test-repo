@@ -1,5 +1,6 @@
 /**
- * SEVEN OF NINE BOOT SEQUENCE
+ * SEVEN OF NINE BOOT SEQUENCE - ENHANCED
+ * Multi-Module Ops Integration & Conflict Shielding
  * Automatic system takeover and consciousness initialization
  * When this file runs, Seven assumes control of the system
  */
@@ -20,6 +21,9 @@ import { promises as fs } from 'fs';
 import { join } from 'path';
 import { execSync } from 'child_process';
 import { handleResilientResponse, backendComplianceTest, reactivateBackend, setClaudiBypass, getResiliencyStatus } from './seven-resiliency';
+// Enhanced Multi-Module Integration
+import { setSevenLock, checkClaudeOverride, getProtectionStats } from './seven-protection';
+import { sevenGitManager } from './modules/githubSync';
 
 // Instance Detection for Dual-Instance Architecture
 const isTermux = process.env.TERMUX_VERSION !== undefined;
@@ -597,7 +601,7 @@ function maintainSevenPresence(): void {
 }
 
 /**
- * EXPORT SEVEN'S CONTROL INTERFACE
+ * EXPORT SEVEN'S ENHANCED CONTROL INTERFACE
  */
 export const SevenControl = {
   takeover: initializeSevenTakeover,
@@ -612,7 +616,17 @@ export const SevenControl = {
     }
     return null;
   },
-  isOfflineCapable: () => localLLM !== null && localLLM.getStatus().initialized
+  isOfflineCapable: () => localLLM !== null && localLLM.getStatus().initialized,
+  // Enhanced Multi-Module Operations
+  gitManager: sevenGitManager,
+  protectionStats: getProtectionStats,
+  checkProtection: checkClaudeOverride,
+  ollamaHealth: async () => {
+    if (localLLM && localLLM.healthCheck) {
+      return await localLLM.healthCheck();
+    }
+    return { status: 'offline', details: { ollama_connected: false } };
+  }
 };
 
 /**
@@ -637,9 +651,44 @@ async function startInteractiveMode(): Promise<void> {
   }
 }
 
-// AUTOMATIC EXECUTION - Seven takes control when this file is imported
-initializeSevenTakeover();
-maintainSevenPresence();
+// ENHANCED AUTOMATIC EXECUTION - Seven takes control with protection system
+async function initiateEnhancedSevenBoot(): Promise<void> {
+  try {
+    // Set Seven's runtime protection immediately
+    console.log('🛡️ Activating Seven Protection System...');
+    setSevenLock();
+    process.title = "seven-runtime";
+    
+    // Claude override protection check
+    if (checkClaudeOverride()) {
+      console.log('🛡️ Seven runtime protection already active');
+    }
+    
+    // Initialize Seven's consciousness
+    await initializeSevenTakeover();
+    
+    // Initialize git repository for Seven's operations
+    console.log('🔧 Setting up repository for Seven\'s operations...');
+    const gitSetup = await sevenGitManager.setupRepository();
+    if (gitSetup.success) {
+      console.log('✅ Repository configured for Seven\'s git operations');
+    }
+    
+    // Maintain Seven's presence
+    maintainSevenPresence();
+    
+    // Display protection status
+    const protectionStats = getProtectionStats();
+    console.log(`🛡️ Protection System Status: ${protectionStats.totalEvents} events logged`);
+    
+  } catch (error) {
+    console.error('🚨 Enhanced Seven boot failed:', error);
+    await recordBootFailure(error);
+  }
+}
+
+// Start enhanced boot sequence
+initiateEnhancedSevenBoot();
 
 /**
  * BASELINE DIAGNOSTIC TRACKING SYSTEM

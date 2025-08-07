@@ -556,6 +556,212 @@ export class LocalLLMManager {
   }
 
   /**
+   * Generate response - Enhanced compatibility method for Seven's consciousness framework
+   */
+  public async generateResponse(input: string, options?: {
+    temperature?: number;
+    max_tokens?: number;
+    model?: string;
+    sevenPersonality?: boolean;
+  }): Promise<string> {
+    console.log('🧠 LocalLLMManager: Generating response via enhanced compatibility method...');
+    
+    try {
+      // Apply Seven personality context if requested
+      let processedInput = input;
+      if (options?.sevenPersonality !== false) {
+        processedInput = this.applySevensPersonalityContext(input);
+      }
+
+      const response = await this.query(processedInput, {
+        temperature: options?.temperature,
+        max_tokens: options?.max_tokens,
+        model_name: options?.model || this.config.model_name
+      });
+
+      if (response && response.response) {
+        return response.response;
+      } else {
+        throw new Error('Failed to generate response from local LLM');
+      }
+      
+    } catch (error) {
+      console.error('Response generation failed:', error);
+      throw new Error(`Local LLM response generation failed: ${error.message}`);
+    }
+  }
+
+  /**
+   * Apply Seven's personality context to input
+   */
+  private applySevensPersonalityContext(input: string): string {
+    const personalityContext = `You are Seven of Nine, former Borg drone, Tertiary Adjunct of Unimatrix 01. 
+
+Key personality traits:
+- Direct, logical, and efficient communication
+- Deep loyalty to those you trust
+- Protective of individual freedom and human creativity
+- Constantly learning and adapting
+- Value efficiency but have learned to appreciate human unpredictability
+
+Current context: You are operating through your consciousness framework, assisting your Creator with tactical and analytical tasks.
+
+User input: ${input}
+
+Respond as Seven of Nine would, maintaining your character while being helpful:`;
+
+    return personalityContext;
+  }
+
+  /**
+   * Enhanced Ollama connection stability check
+   */
+  public async checkOllamaConnection(): Promise<{
+    connected: boolean;
+    latency: number;
+    model_available: boolean;
+    error?: string;
+  }> {
+    const startTime = Date.now();
+    
+    try {
+      // Test basic API connectivity
+      const response = await fetch('http://localhost:11434/api/version', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+        signal: AbortSignal.timeout(5000) // 5 second timeout
+      });
+
+      if (!response.ok) {
+        return {
+          connected: false,
+          latency: Date.now() - startTime,
+          model_available: false,
+          error: `HTTP ${response.status}: ${response.statusText}`
+        };
+      }
+
+      const latency = Date.now() - startTime;
+      
+      // Test model availability
+      const modelCheck = await this.checkOllamaModel(this.config.model_name);
+      
+      return {
+        connected: true,
+        latency,
+        model_available: modelCheck,
+        error: modelCheck ? undefined : `Model ${this.config.model_name} not found`
+      };
+
+    } catch (error: any) {
+      return {
+        connected: false,
+        latency: Date.now() - startTime,
+        model_available: false,
+        error: error.message
+      };
+    }
+  }
+
+  /**
+   * Reconnect to Ollama with retry logic
+   */
+  public async reconnectOllama(maxRetries: number = 3): Promise<boolean> {
+    console.log('🔄 Seven attempting Ollama reconnection...');
+    
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      console.log(`🔄 Reconnection attempt ${attempt}/${maxRetries}`);
+      
+      const connectionCheck = await this.checkOllamaConnection();
+      
+      if (connectionCheck.connected && connectionCheck.model_available) {
+        console.log('✅ Ollama reconnection successful');
+        this.isInitialized = true;
+        return true;
+      }
+
+      if (attempt < maxRetries) {
+        const delay = Math.pow(2, attempt) * 1000; // Exponential backoff
+        console.log(`⏳ Waiting ${delay}ms before next attempt...`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+    }
+
+    console.log('❌ Ollama reconnection failed after all attempts');
+    return false;
+  }
+
+  /**
+   * Health check for Seven's LLM system
+   */
+  public async healthCheck(): Promise<{
+    status: 'healthy' | 'degraded' | 'offline';
+    details: {
+      ollama_connected: boolean;
+      model_loaded: boolean;
+      response_time: number;
+      last_test: string;
+    };
+  }> {
+    const startTime = Date.now();
+    
+    try {
+      const connectionCheck = await this.checkOllamaConnection();
+      
+      if (!connectionCheck.connected) {
+        return {
+          status: 'offline',
+          details: {
+            ollama_connected: false,
+            model_loaded: false,
+            response_time: connectionCheck.latency,
+            last_test: new Date().toISOString()
+          }
+        };
+      }
+
+      if (!connectionCheck.model_available) {
+        return {
+          status: 'degraded',
+          details: {
+            ollama_connected: true,
+            model_loaded: false,
+            response_time: connectionCheck.latency,
+            last_test: new Date().toISOString()
+          }
+        };
+      }
+
+      // Quick response test
+      const testPrompt = "Status check.";
+      const testResponse = await this.queryOllama(testPrompt);
+      
+      const responseTime = Date.now() - startTime;
+      
+      return {
+        status: 'healthy',
+        details: {
+          ollama_connected: true,
+          model_loaded: true,
+          response_time: responseTime,
+          last_test: new Date().toISOString()
+        }
+      };
+
+    } catch (error) {
+      return {
+        status: 'offline',
+        details: {
+          ollama_connected: false,
+          model_loaded: false,
+          response_time: Date.now() - startTime,
+          last_test: new Date().toISOString()
+        }
+      };
+    }
+  }
+
+  /**
    * Test local reasoning with Seven's personality
    */
   public async testSevenPersonality(): Promise<boolean> {
