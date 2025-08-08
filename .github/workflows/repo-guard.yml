@@ -1,0 +1,21 @@
+name: Repo Guard
+on: [pull_request]
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify repo name
+        run: |
+          EXPECTED="seven-of-nine-core"
+          REPO="${GITHUB_REPOSITORY#*/}"
+          if [ "$REPO" != "$EXPECTED" ]; then
+            echo "Wrong repo: $REPO (expected $EXPECTED)"; exit 1; fi
+      - name: Block Aurora references
+        run: |
+          git fetch origin ${{ github.event.pull_request.base.ref }}
+          git diff --name-only origin/${{ github.event.pull_request.base.ref }}...HEAD > changed.txt
+          if grep -Ei "(^|/)(aurora|Aurora)/" changed.txt; then
+            echo "Foreign path (Aurora) detected"; exit 1; fi
+          if grep -Ei "aurora" changed.txt; then
+            echo "Aurora term detected"; exit 1; fi
