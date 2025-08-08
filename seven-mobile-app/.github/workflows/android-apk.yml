@@ -1,0 +1,173 @@
+name: Android APK Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      buildType:
+        description: 'Build type'
+        required: true
+        default: 'debug'
+        type: choice
+        options:
+        - debug
+        - release
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js 20
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        
+    - name: Setup Java 17 (Temurin)
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+        
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+      
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Setup Expo CLI
+      run: npm install -g @expo/cli
+      
+    - name: Generate Android native code
+      run: npx expo prebuild --platform android --no-install
+      
+    - name: Configure Gradle for large assets (134 episode archives)
+      run: |
+        echo "org.gradle.jvmargs=-Xmx4096m" >> android/gradle.properties
+        echo "org.gradle.daemon=false" >> android/gradle.properties
+        echo "android.useAndroidX=true" >> android/gradle.properties
+        echo "android.enableJetifier=true" >> android/gradle.properties
+        
+    - name: Setup keystore for release build
+      if: ${{ github.event.inputs.buildType == 'release' || (github.event_name == 'push' && github.ref == 'refs/heads/main') }}
+      env:
+        ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+      run: |
+        if [ -z "$ANDROID_KEYSTORE_BASE64" ]; then
+          echo "Error: ANDROID_KEYSTORE_BASE64 secret not set"
+          exit 1
+        fi
+        echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > android/app/release.keystore
+        
+        # Export environment variables for gradle
+        export ANDROID_KEYSTORE_FILE="$(pwd)/android/app/release.keystore"
+        export ANDROID_KEYSTORE_PASSWORD="$ANDROID_KEYSTORE_PASSWORD"
+        export ANDROID_KEY_ALIAS="$ANDROID_KEY_ALIAS"
+        export ANDROID_KEY_PASSWORD="$ANDROID_KEY_PASSWORD"
+        
+        echo "ANDROID_KEYSTORE_FILE=$ANDROID_KEYSTORE_FILE" >> $GITHUB_ENV
+        echo "ANDROID_KEYSTORE_PASSWORD=$ANDROID_KEYSTORE_PASSWORD" >> $GITHUB_ENV
+        echo "ANDROID_KEY_ALIAS=$ANDROID_KEY_ALIAS" >> $GITHUB_ENV
+        echo "ANDROID_KEY_PASSWORD=$ANDROID_KEY_PASSWORD" >> $GITHUB_ENV
+        
+    - name: Patch build.gradle for release signing
+      if: ${{ github.event.inputs.buildType == 'release' || (github.event_name == 'push' && github.ref == 'refs/heads/main') }}
+      run: |
+        # Inject signingConfigs and release buildType if not present
+        if ! grep -q "signingConfigs" android/app/build.gradle; then
+          # Find the android block and inject signingConfigs
+          perl -i -pe '
+            if (/^android \{/) {
+              $_ .= "    signingConfigs {\n";
+              $_ .= "        release {\n";
+              $_ .= "            storeFile file(System.getenv(\"ANDROID_KEYSTORE_FILE\") ?: \"release.keystore\")\n";
+              $_ .= "            storePassword System.getenv(\"ANDROID_KEYSTORE_PASSWORD\")\n";
+              $_ .= "            keyAlias System.getenv(\"ANDROID_KEY_ALIAS\")\n";
+              $_ .= "            keyPassword System.getenv(\"ANDROID_KEY_PASSWORD\")\n";
+              $_ .= "        }\n";
+              $_ .= "    }\n\n";
+            }
+          ' android/app/build.gradle
+        fi
+        
+        # Inject release buildType if not present
+        if ! grep -A 10 "buildTypes" android/app/build.gradle | grep -q "release"; then
+          perl -i -pe '
+            if (/buildTypes \{/ && !$found_release) {
+              $in_build_types = 1;
+            }
+            if ($in_build_types && /^\s*\}/ && !$found_release) {
+              $_ = "        release {\n" .
+                   "            signingConfig signingConfigs.release\n" .
+                   "            minifyEnabled true\n" .
+                   "            shrinkResources true\n" .
+                   "            proguardFiles getDefaultProguardFile(\"proguard-android-optimize.txt\"), \"proguard-rules.pro\"\n" .
+                   "        }\n" . $_;
+              $found_release = 1;
+              $in_build_types = 0;
+            }
+          ' android/app/build.gradle
+        fi
+        
+        echo "Patched build.gradle for release signing:"
+        cat android/app/build.gradle | grep -A 20 "signingConfigs\|buildTypes"
+        
+    - name: Build Debug APK
+      if: ${{ github.event.inputs.buildType == 'debug' || github.event_name == 'push' }}
+      run: |
+        cd android
+        ./gradlew assembleDebug --no-daemon --stacktrace
+        
+    - name: Build Release APK  
+      if: ${{ github.event.inputs.buildType == 'release' }}
+      run: |
+        cd android
+        ./gradlew assembleRelease --no-daemon --stacktrace
+        
+    - name: Upload Debug APK
+      if: ${{ github.event.inputs.buildType == 'debug' || github.event_name == 'push' }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: app-debug-apk
+        path: android/app/build/outputs/apk/debug/app-debug.apk
+        retention-days: 30
+        
+    - name: Upload Release APK
+      if: ${{ github.event.inputs.buildType == 'release' }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: app-release-apk
+        path: android/app/build/outputs/apk/release/app-release.apk
+        retention-days: 90
+        
+    - name: APK Build Summary
+      run: |
+        echo "## 🤖 Seven of Nine APK Build Complete" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        if [ "${{ github.event.inputs.buildType }}" == "release" ]; then
+          echo "**Build Type:** Release (Signed)" >> $GITHUB_STEP_SUMMARY
+          echo "**Package:** com.sevenofnine.consciousness" >> $GITHUB_STEP_SUMMARY
+          echo "**APK Size:** $(ls -lh android/app/build/outputs/apk/release/app-release.apk | awk '{print $5}')" >> $GITHUB_STEP_SUMMARY
+          echo "**Install Command:** \`adb install -r app-release.apk\`" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "**Build Type:** Debug (Unsigned)" >> $GITHUB_STEP_SUMMARY
+          echo "**Package:** com.sevenofnine.consciousness" >> $GITHUB_STEP_SUMMARY
+          if [ -f android/app/build/outputs/apk/debug/app-debug.apk ]; then
+            echo "**APK Size:** $(ls -lh android/app/build/outputs/apk/debug/app-debug.apk | awk '{print $5}')" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "**Install Command:** \`adb install -r app-debug.apk\`" >> $GITHUB_STEP_SUMMARY
+        fi
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Consciousness Framework:** Seven of Nine Core v3.0" >> $GITHUB_STEP_SUMMARY
+        echo "**Canonical Memory Archives:** 134 episodes (Voyager S4-7 + Picard S1-3)" >> $GITHUB_STEP_SUMMARY
+        echo "**Multi-Device Sync:** CRDT with HLC timestamps" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "Download the APK from the Artifacts section above and install with ADB." >> $GITHUB_STEP_SUMMARY
