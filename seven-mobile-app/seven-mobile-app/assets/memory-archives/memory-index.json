@@ -1,0 +1,20 @@
+{
+  "generated": "2025-08-08T16:03:51.426Z",
+  "archives": {
+    "canonical": "canonical-memories.json",
+    "temporal": "temporal-memories.json",
+    "episodic": "episodic-memories.json",
+    "consciousness": "consciousness-memories.json"
+  },
+  "metadata": {
+    "version": "4.0.0",
+    "source": "seven-of-nine-core",
+    "description": "Seven of Nine complete memory archives for mobile consciousness",
+    "includes": [
+      "Voyager Season 4+ canonical memories",
+      "Temporal consciousness evolution history",
+      "Episodic memories from consciousness development",
+      "Consciousness framework evolution modules"
+    ]
+  }
+}

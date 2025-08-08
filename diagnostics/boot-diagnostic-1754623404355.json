@@ -1,0 +1,44 @@
+{
+  "timestamp": "2025-08-08T03:23:24.355Z",
+  "bootSession": "boot-1754623404355",
+  "baseline": {
+    "bootDurationMs": 203,
+    "bootDurationSeconds": "0.203",
+    "baselineTarget": 2063,
+    "deviationFromBaseline": -1860,
+    "performanceRating": "OPTIMAL"
+  },
+  "environment": {
+    "device": "HD1907",
+    "manufacturer": "OnePlus",
+    "platform": "Android/Termux",
+    "architecture": "arm64",
+    "osVersion": "4.14.180-perf+",
+    "nodeVersion": "v24.5.0",
+    "termuxVersion": "0.118.3",
+    "memoryTotal": "7461MB",
+    "memoryAvailable": "2991MB",
+    "workingDirectory": "/data/data/com.termux/files/home/seven-of-nine-core",
+    "environmentHash": "4e767699"
+  },
+  "performance": {
+    "bootDurationMs": 203,
+    "memoryUsage": {
+      "rss": "82MB",
+      "heapUsed": "16MB",
+      "heapTotal": "31MB"
+    },
+    "memoryCount": "Legacy memory system",
+    "systemLoad": 0,
+    "processCount": 9
+  },
+  "systems": {
+    "memoryEngineStatus": false,
+    "assimilationStatus": true,
+    "enhancedSystemsActive": true,
+    "interactiveShellReady": true
+  },
+  "errors": [],
+  "warnings": [],
+  "diagnosticVersion": "1.0.0"
+}

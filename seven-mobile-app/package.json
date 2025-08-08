@@ -18,7 +18,10 @@
     "sensors:test": "tsx sensor-integration-test.ts",
     "deploy": "tsx deployment-script.ts",
     "deploy:dev": "tsx deployment-script.ts --env development --platform android --build-type apk",
-    "deploy:prod": "tsx deployment-script.ts --env production --platform android --build-type aab"
+    "deploy:prod": "tsx deployment-script.ts --env production --platform android --build-type aab",
+    "sync:memory": "tsx scripts/sync-memory-archives.ts",
+    "relay:start": "cd relay-server && npm start",
+    "relay:install": "cd relay-server && npm install"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",
@@ -32,6 +35,8 @@
     "expo-constants": "~17.0.2",
     "expo-device": "~7.0.1",
     "expo-file-system": "~17.0.1",
+    "expo-sqlite": "~14.0.6",
+    "expo-crypto": "~13.0.2",
     "expo-font": "~13.0.1",
     "expo-location": "~18.0.2",
     "expo-notifications": "~0.29.0",
