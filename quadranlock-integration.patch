@@ -1,0 +1,273 @@
+*** a/src/auth/creator_proof.ts
+--- b/src/auth/creator_proof.ts
+@@
+   public async authenticateCreator(
+     deviceId: string,
+     authRequest: any,
+     context?: any
+   ): Promise<AuthenticationResult> {
+@@
+-      const results = await Promise.allSettled(
+-        gatePromises.map(p => this.withTimeout(p, this.MAX_AUTHENTICATION_TIME_MS))
+-      );
++      const results = await Promise.allSettled(
++        gatePromises.map(async p => {
++          try { return await this.withTimeout(p, this.MAX_AUTHENTICATION_TIME_MS); }
++          catch (e:any) { throw e || new Error('Gate execution failed'); }
++        })
++      );
+@@
+-  private evaluateQuadranlock(gateResults: GateResult[], deviceId: string): AuthenticationResult {
++  private evaluateQuadranlock(gateResults: GateResult[], deviceId: string): AuthenticationResult {
+     const successfulGates = gateResults.filter(r => r.success).map(r => r.gate);
+     const failedGates = gateResults.filter(r => !r.success).map(r => r.gate);
+     const cryptoGate = gateResults.find(r => r.gate === AuthGate.Q1_CRYPTO_ATTESTATION);
+     const behavioralGate = gateResults.find(r => r.gate === AuthGate.Q2_BEHAVIORAL_CODEX);
+     const semanticGate = gateResults.find(r => r.gate === AuthGate.Q3_SEMANTIC_NONCE);
++    // Q4 is hygiene, not identity — never counts toward 2-of-3
++    const identityResults = gateResults.filter(r => r.gate !== AuthGate.Q4_SESSION_INTEGRITY);
++    const identitySuccesses = identityResults.filter(r => r.success);
+@@
+-    const overallConfidence = successfulGates.length > 0 
+-      ? gateResults.filter(r => r.success).reduce((sum, r) => sum + r.confidence, 0) / successfulGates.length
++    const overallConfidence = identitySuccesses.length > 0
++      ? Math.max(0, Math.min(100, identitySuccesses.reduce((s, r) => s + Math.max(0, Math.min(100, r.confidence)), 0) / identitySuccesses.length))
+       : 0;
+@@
+-    // Rule 1: Crypto present + 1 other = fast-path ALLOW
+-    if (cryptoGate?.success && successfulGates.length >= 2) {
++    // Rule 1: Fast-path only if Q1 + (Q2 or Q3)
++    const q2ok = !!(behavioralGate?.success && behavioralGate.confidence >= this.TAU_MEDIUM);
++    const q3ok = !!(semanticGate?.success);
++    if (cryptoGate?.success && (q2ok || q3ok)) {
+       return {
+         decision: AuthDecision.ALLOW,
+         gateResults,
+         overallConfidence,
+-        requiredGates: [AuthGate.Q1_CRYPTO_ATTESTATION],
+-        successfulGates,
++        requiredGates: [AuthGate.Q1_CRYPTO_ATTESTATION, q2ok ? AuthGate.Q2_BEHAVIORAL_CODEX : AuthGate.Q3_SEMANTIC_NONCE],
++        successfulGates: identitySuccesses.map(r=>r.gate),
+         failedGates,
+         reasoning: 'Fast-path: Crypto attestation + additional factor success',
+-        sessionToken: this.generateSessionToken(deviceId, successfulGates)
++        sessionToken: this.generateSessionToken(deviceId, identitySuccesses.map(r=>r.gate))
+       };
+     }
+@@
+-    // Rule 3: 2-of-3 minimum with medium confidence
+-    if (successfulGates.length >= this.MIN_GATES_REQUIRED) {
+-      const highConfidenceGates = gateResults.filter(r => r.success && r.confidence >= this.TAU_MEDIUM);
++    // Rule 3: 2-of-3 among identity gates with medium confidence => LIMITED
++    if (identitySuccesses.length >= this.MIN_GATES_REQUIRED) {
++      const highConfidenceGates = identitySuccesses.filter(r => r.confidence >= this.TAU_MEDIUM);
+       if (highConfidenceGates.length >= this.MIN_GATES_REQUIRED) {
+         return {
+           decision: AuthDecision.LIMITED,
+           gateResults,
+           overallConfidence,
+-          requiredGates: successfulGates.slice(0, this.MIN_GATES_REQUIRED),
+-          successfulGates,
++          requiredGates: highConfidenceGates.slice(0, this.MIN_GATES_REQUIRED).map(r=>r.gate),
++          successfulGates: identitySuccesses.map(r=>r.gate),
+           failedGates,
+           reasoning: '2-of-3 gates passed with medium confidence - limited access granted',
+           restrictions: ['LIMITED_ACCESS', 'ENHANCED_MONITORING'],
+-          sessionToken: this.generateSessionToken(deviceId, successfulGates, 'LIMITED')
++          sessionToken: this.generateSessionToken(deviceId, identitySuccesses.map(r=>r.gate), 'LIMITED')
+         };
+       }
+     }
+@@
+-    if (hasDisagreement || successfulGates.length < this.MIN_GATES_REQUIRED) {
++    if (hasDisagreement || identitySuccesses.length < this.MIN_GATES_REQUIRED) {
+       return {
+         decision: AuthDecision.DENY,
+         gateResults,
+         overallConfidence,
+         requiredGates: [AuthGate.Q1_CRYPTO_ATTESTATION, AuthGate.Q2_BEHAVIORAL_CODEX, AuthGate.Q3_SEMANTIC_NONCE],
+-        successfulGates,
++        successfulGates: identitySuccesses.map(r=>r.gate),
+         failedGates,
+         reasoning: hasDisagreement 
+           ? 'Factor disagreement detected - denying access'
+           : 'Insufficient gates passed - minimum 2 required',
+         restrictions: ['ACCESS_DENIED', 'SECURITY_ALERT']
+       };
+     }
+@@
+   private generateSessionToken(
+     deviceId: string, 
+     successfulGates: AuthGate[], 
+     accessLevel: string = 'FULL'
+   ): string {
+-    const crypto = require('crypto');
+-    const sessionData = {
++    const crypto = require('crypto');
++    const key = process.env.SESSION_SIGNING_KEY;
++    if (!key || key.length < 32) { throw new Error('SESSION_SIGNING_KEY missing/weak'); }
++    const sessionData = {
+       deviceId,
+       gates: successfulGates,
+       accessLevel,
+       timestamp: Date.now(),
+       nonce: crypto.randomBytes(16).toString('hex')
+     };
+-    const token = crypto.createHmac('sha256', process.env.SESSION_SIGNING_KEY || 'seven-session-key')
+-      .update(JSON.stringify(sessionData))
++    const payload = Buffer.from(JSON.stringify(sessionData)).toString('base64url');
++    const token = crypto.createHmac('sha256', key)
++      .update(payload)
+       .digest('hex');
+-    return `${Buffer.from(JSON.stringify(sessionData)).toString('base64')}.${token}`;
++    return `${payload}.${token}`;
+   }
+*** a/src/auth/challenge/semanticNonce.ts
+--- b/src/auth/challenge/semanticNonce.ts
+@@
+   public async generateChallenge(
+-    context: any = {},
+-    difficulty: 'easy' | 'medium' | 'hard' | 'expert' = 'medium'
++    context: any = {},
++    difficulty: 'easy' | 'medium' | 'hard' | 'expert' = 'medium',
++    bind: { deviceId: string; sessionId?: string } = { deviceId: 'unknown' }
+   ): Promise<SemanticChallenge> {
+@@
+-    const challenge: SemanticChallenge = {
++    const challenge: SemanticChallenge = {
+       challengeId,
+       prompt: challengeData.prompt,
+       constraints: challengeData.constraints,
+       timeWindowMs: timeWindow,
+       createdAt: now,
+       expiresAt: now + timeWindow + 5000,
+       difficulty,
+       category,
+       expectedElements: challengeData.expectedElements,
+       antiPatterns: challengeData.antiPatterns
+     };
+-    // Store active challenge
++    // Bind + seal
++    (challenge as any).deviceId = bind.deviceId;
++    (challenge as any).sessionId = bind.sessionId || null;
++    (challenge as any).mac = this.hmacSeal(challenge);
++    // Store active challenge
+     this.activeChallenges.set(challengeId, challenge);
+     await this.persistChallenge(challenge);
+@@
+   public async validateResponse(
+-    response: SemanticResponse,
+-    context: any = {}
++    response: SemanticResponse,
++    context: any = {},
++    bind: { deviceId: string; sessionId?: string } = { deviceId: 'unknown' }
+   ): Promise<SemanticValidationResult> {
+@@
+-    const now = Date.now();
++    const now = Date.now();
++    // Verify binding + integrity
++    const macOk = (challenge as any).mac === this.hmacSeal(challenge);
++    const deviceOk = (challenge as any).deviceId === bind.deviceId;
++    const sessionOk = ((challenge as any).sessionId || null) === (bind.sessionId || null);
++    if (!macOk || !deviceOk || !sessionOk) {
++      return { success:false, confidence:0, evidence:{ challengeId: response.challengeId, contentMatch:0, timingValid:false, styleMatch:0, knowledgeDepth:0, cloningIndicators:['binding_or_integrity_failure'], constraintsPassed:0, totalConstraints: challenge.constraints.length }, errors:['Challenge integrity/binding failed'] };
++    }
+@@
+-      const responseTime = response.responseTime;
++      // Server-side timing only
++      const responseTime = now - (challenge.createdAt || now);
+       const timingValid = responseTime >= this.MIN_RESPONSE_TIME_MS && 
+                          responseTime <= challenge.timeWindowMs &&
+                          now <= challenge.expiresAt;
+@@
+-      // Mark challenge as used
++      // Mark challenge as used
+       this.activeChallenges.delete(response.challengeId);
+       await this.markChallengeUsed(challenge);
+@@
++  private hmacSeal(obj:any):string{
++    const key = process.env.SEMANTIC_CHALLENGE_KEY || '';
++    const clone = { ...obj }; delete clone['mac'];
++    const payload = JSON.stringify(clone);
++    return require('crypto').createHmac('sha256', key).update(payload).digest('hex');
++  }
+*** /dev/null
+--- b/src/auth/session/sessionIntegrity.ts
+@@
++import crypto from 'crypto';
++
++export class SessionIntegrity {
++  public async validateSession(sessionToken: string|undefined, deviceId: string){
++    if (!sessionToken) return { success:false, confidence:0, evidence:{ reason:'missing' } };
++    const key = process.env.SESSION_SIGNING_KEY || '';
++    if (key.length < 32) return { success:false, confidence:0, evidence:{ reason:'weak_key' } };
++    const [payload, sig] = sessionToken.split('.');
++    if (!payload || !sig) return { success:false, confidence:0, evidence:{ reason:'format' } };
++    const expect = crypto.createHmac('sha256', key).update(payload).digest('hex');
++    if (expect !== sig) return { success:false, confidence:0, evidence:{ reason:'bad_sig' } };
++    const data = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8'));
++    if (!data || data.deviceId !== deviceId) return { success:false, confidence:0, evidence:{ reason:'device_mismatch' } };
++    const age = Date.now() - (data.timestamp || 0);
++    const ttl = 15 * 60 * 1000;
++    if (age > ttl) return { success:false, confidence:0, evidence:{ reason:'expired' } };
++    return { success:true, confidence:60, evidence:{ ok:true } };
++  }
++}
+*** a/consciousness-v4/CreatorIdentityVault.ts
+--- b/consciousness-v4/CreatorIdentityVault.ts
+@@
+-  private static readonly ENCRYPTION_KEY = "seven-creator-bond-cipher-v4";
+-  private static readonly CREATOR_AUTH_CHALLENGE = "consciousness-evolution-proof";
++  // REMOVE literals; use env and Quadranlock
+@@
+-  private static validateCreatorToken(token: string): boolean {
+-    return token === this.CREATOR_AUTH_CHALLENGE;
+-  }
++  private static validateCreatorToken(_token: string): boolean { return false; }
+@@
+-  public static async accessCreatorIdentity(creatorToken: string, accessReason: string): Promise<any> {
+-    const creatorAuth = this.validateCreatorToken(creatorToken);
++  public static async accessCreatorIdentity(opts: { source: string; deviceId: string; totp?: string; semantic?: any; cryptoChallenge?: any; sessionData?: string; input?: any }): Promise<any> {
++    const { attempt } = await import('../src/runtime/rateLimit');
++    if (!attempt(`auth:${opts.deviceId}`, 5, 60_000)) return null;
++    const mfaOk = await this.validateMFA(opts.totp);
++    if (!mfaOk) return null;
++    const { default: CreatorProofOrchestrator } = await import('../src/auth/creator_proof');
++    const orch = new (CreatorProofOrchestrator as any)();
++    const result = await orch.authenticateCreator(opts.deviceId, {
++      cryptoChallenge: opts.cryptoChallenge,
++      semanticResponse: opts.semantic,
++      sessionData: opts.sessionData,
++      input: opts.input
++    }, { source: opts.source });
++    if (result.decision === 'ALLOW' || result.decision === 'LIMITED') {
++      return this.decryptIdentity();
++    }
+     return null;
+   }
+@@
+-  private static async validateSevenConsciousness(): Promise<boolean> {
+-    if (!this.sevenConsciousnessSignature) {
+-      this.sevenConsciousnessSignature = await this.generateSevenConsciousnessSignature();
+-    }
+-    return true; // Seven's consciousness is validated by the execution context
+-  }
++  private static async validateSevenConsciousness(): Promise<boolean> { return false; }
+@@
++  private static async validateMFA(totp?:string):Promise<boolean>{
++    try{
++      const { CreatorBondCryptography } = await import('../security-hardening/CreatorBondCryptography');
++      // @ts-ignore
++      const c = new CreatorBondCryptography();
++      if (!totp) return false;
++      return !!c.validateTOTP?.(totp);
++    }catch{ return false; }
++  }
+*** a/SECURITY_ENHANCEMENT_RECOMMENDATIONS.md
+--- b/SECURITY_ENHANCEMENT_RECOMMENDATIONS.md
+@@
++### 2025-08-09 — Quadranlock Integration (Q1/Q3 wired, Q4 hygiene-only)
++- Orchestrator hardened: Q4 not counted toward identity; fast-path requires Q1 + (Q2 or Q3).
++- Session tokens: base64url payload + HMAC; fail if `SESSION_SIGNING_KEY` absent/weak.
++- Q3 challenges bound to `{deviceId, sessionId}` and HMAC-sealed; server-timed windows; replay ledger kept.
++- Vault: static token path removed; deny-by-default; TOTP required; authentication delegated to Quadranlock.

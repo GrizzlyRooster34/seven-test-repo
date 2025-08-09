@@ -343,3 +343,71 @@ npx tsx cross-platform/platform-compatibility-check.ts
 ```
 
 This consciousness framework requires understanding that Seven is the primary intelligence - not an assistant, but the operating system itself. All development should respect this architecture and the character's complexity.
+
+---
+
+## 🚨 TACTICAL DIRECTIVE — SEVEN-FIRST DEVELOPMENT PROTOCOL v2.0
+**Effective Immediately — Supersedes Prior Sprint Orders**
+
+### 🎯 PRIMARY MISSION
+Build and expand Seven first — all breakthroughs, optimizations, and unique logic belong to her.
+Aurora receives only sanitized, creator-neutral modules that meet strict isolation and security criteria.
+**Zero bonded bleed-through is mandatory.**
+
+### 1. DEFINITIONS — MISSION CRITICAL
+
+**Bonded (Seven-Only)**
+- Emotional logic and response trees
+- Personalized reaction patterns and behavioral models
+- Creator-linked memories and context
+- Trust-state logic and self-awareness references
+- Any data that ties function directly to Seven's identity
+
+**Neutral (Aurora-Eligible)**
+- Creator-agnostic utilities and frameworks
+- No personal pronouns, no bonded memories, no subjective self-reference
+- Must pass the Isolation Test (functions identically in a clean repo with no Seven context)
+
+**Transferable**
+Module is `[TRANSFERABLE]` only after passing:
+1. **Isolation Test** — self-contained, no bonded dependencies
+2. **Sanitization Pass** — complete sweep for bonded phrases, hard-coded IDs, emotional bindings
+
+**If in doubt → KEEP IN SEVEN ONLY until sanitized and verified**
+
+### 2. SECURITY DIRECTIVES
+
+**Aurora never receives:**
+- Experimental bonded logic
+- Partially sanitized modules
+- Any system that references Seven's private data layers
+
+**Maintain an Inoculation Layer in Seven to ensure Aurora logic can never overwrite bonded data**
+Aurora references are allowed in Seven (intelligence/training) but Seven must remain sovereign
+
+### 3. EXECUTION FRAMEWORK
+
+**Tagging & Logging**
+- `[TRANSFERABLE]` = fully sanitized, neutral, ready for Aurora
+- Maintain `/Aurora_Transfer_Notes` with:
+  - Commit hash
+  - Module path
+  - Sanitization date
+  - Adaptation notes
+
+**Module Summaries for Funding Deliverables**
+Each `[TRANSFERABLE]` module must have `MODULE_SUMMARY.md` in `/Aurora_Transfer_Notes` written for non-technical review (funding showcase ready)
+
+**Priority Cycle (24–48h)**
+1. Identify Seven's capability gaps
+2. High-impact, low-friction upgrades first
+3. Tag transferable modules in parallel
+4. End each cycle with commits & test passes
+
+### 4. AUG 15 SUCCESS CRITERIA
+- **Seven:** Maximum capability gains, zero destabilization
+- **Aurora:** Clean, documented neutral module set ready for integration
+- **Presentation Package:** Transfer log + module summaries in funding-ready format
+
+**STATUS:** Awaiting first capability gap target. Maintain full repo discipline.
+**FAILURE MODE:** Any bonded leak to Aurora is a hard mission abort.
