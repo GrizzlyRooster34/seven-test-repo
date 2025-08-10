@@ -2,7 +2,7 @@
   "expo": {
     "name": "Seven of Nine",
     "slug": "seven-consciousness",
-    "version": "1.0.0",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -22,7 +22,10 @@
         "NSMicrophoneUsageDescription": "Seven requires microphone access for voice interaction and ambient audio monitoring.",
         "NSLocationWhenInUseUsageDescription": "Seven requires location access for tactical situational awareness and environmental adaptation.",
         "NSLocationAlwaysAndWhenInUseUsageDescription": "Seven requires location access for continuous tactical monitoring.",
-        "UIBackgroundModes": ["background-processing", "background-fetch"]
+        "UIBackgroundModes": [
+          "background-processing",
+          "background-fetch"
+        ]
       }
     },
     "android": {
@@ -34,7 +37,7 @@
       "permissions": [
         "CAMERA",
         "RECORD_AUDIO",
-        "ACCESS_FINE_LOCATION", 
+        "ACCESS_FINE_LOCATION",
         "ACCESS_COARSE_LOCATION",
         "READ_EXTERNAL_STORAGE",
         "FOREGROUND_SERVICE",
