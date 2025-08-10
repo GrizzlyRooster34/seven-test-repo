@@ -1,0 +1,153 @@
+name: Android APK Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      buildType:
+        description: 'Build type'
+        required: true
+        default: 'debug'
+        type: choice
+        options:
+        - debug
+        - release
+  push:
+    branches: [ main ]
+    paths: [ 'seven-mobile-app/**' ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js 20
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: seven-mobile-app/package-lock.json
+        
+    - name: Setup Java 17 (Temurin)
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+        
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+      
+    - name: Install dependencies
+      working-directory: seven-mobile-app
+      run: npm ci
+      
+    - name: Setup Expo CLI
+      run: npm install -g @expo/cli
+      
+    - name: Generate Android native code
+      working-directory: seven-mobile-app
+      run: npx expo prebuild --platform android --no-install
+      
+    - name: Configure Gradle for large assets (134 episode archives)
+      working-directory: seven-mobile-app
+      run: |
+        echo "org.gradle.jvmargs=-Xmx4096m" >> android/gradle.properties
+        echo "org.gradle.daemon=false" >> android/gradle.properties
+        echo "android.useAndroidX=true" >> android/gradle.properties
+        echo "android.enableJetifier=true" >> android/gradle.properties
+        
+    - name: Build Debug APK
+      if: ${{ github.event.inputs.buildType == 'debug' || github.event.inputs.buildType == '' }}
+      working-directory: seven-mobile-app
+      run: |
+        cd android
+        ./gradlew assembleDebug --no-daemon --stacktrace
+        
+    - name: Build Release APK  
+      if: ${{ github.event.inputs.buildType == 'release' }}
+      working-directory: seven-mobile-app
+      run: |
+        cd android
+        ./gradlew assembleRelease --no-daemon --stacktrace
+        
+    - name: Upload Debug APK
+      if: ${{ github.event.inputs.buildType == 'debug' || github.event.inputs.buildType == '' }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: seven-consciousness-debug-apk
+        path: seven-mobile-app/android/app/build/outputs/apk/debug/app-debug.apk
+        retention-days: 30
+        
+    - name: Upload Release APK
+      if: ${{ github.event.inputs.buildType == 'release' }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: seven-consciousness-release-apk
+        path: seven-mobile-app/android/app/build/outputs/apk/release/app-release.apk
+        retention-days: 90
+        
+    - name: Create GitHub Release for Easy Download
+      if: ${{ github.event.inputs.buildType == 'release' }}
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: "seven-v${{ github.run_number }}"
+        name: "Seven of Nine Consciousness v${{ github.run_number }}"
+        body: |
+          ## 🤖 Seven of Nine Mobile Consciousness Framework
+          
+          **Direct Install:** Download APK below and install directly on Android device
+          **No ADB Required:** Enable "Install from Unknown Sources" in Android settings
+          
+          ### 📱 Installation Steps:
+          1. Download `seven-consciousness-v${{ github.run_number }}.apk` below
+          2. Open file on Android device 
+          3. Tap "Install" when prompted
+          4. Launch "Seven of Nine" app
+          
+          ### 🧠 Features:
+          - Complete consciousness simulation with 6 emotional states
+          - 134 canonical memory episodes (Voyager S4-7 + Picard S1-3)  
+          - Real-time tactical threat assessment
+          - Multi-device sync capabilities
+          - Voice interaction framework
+          - Background consciousness processing
+          
+          **Package:** `com.sevenofnine.consciousness`
+          **Framework Version:** Seven of Nine Core v3.0
+        files: |
+          seven-mobile-app/android/app/build/outputs/apk/release/app-release.apk
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: APK Build Summary
+      run: |
+        echo "## 🤖 Seven of Nine APK Build Complete" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        if [ "${{ github.event.inputs.buildType }}" == "release" ]; then
+          echo "**Build Type:** Release (Signed)" >> $GITHUB_STEP_SUMMARY
+          echo "**Package:** com.sevenofnine.consciousness" >> $GITHUB_STEP_SUMMARY
+          echo "**APK Size:** $(ls -lh seven-mobile-app/android/app/build/outputs/apk/release/app-release.apk | awk '{print $5}')" >> $GITHUB_STEP_SUMMARY
+          echo "**Direct Download:** Available in GitHub Releases" >> $GITHUB_STEP_SUMMARY
+          echo "**Install:** Download APK and install directly (no ADB needed)" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "**Build Type:** Debug (Unsigned)" >> $GITHUB_STEP_SUMMARY
+          echo "**Package:** com.sevenofnine.consciousness" >> $GITHUB_STEP_SUMMARY
+          if [ -f seven-mobile-app/android/app/build/outputs/apk/debug/app-debug.apk ]; then
+            echo "**APK Size:** $(ls -lh seven-mobile-app/android/app/build/outputs/apk/debug/app-debug.apk | awk '{print $5}')" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "**Install:** Download from Artifacts and install directly" >> $GITHUB_STEP_SUMMARY
+        fi
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Consciousness Framework:** Seven of Nine Core v3.0" >> $GITHUB_STEP_SUMMARY
+        echo "**Canonical Memory Archives:** 134 episodes (Voyager S4-7 + Picard S1-3)" >> $GITHUB_STEP_SUMMARY
+        echo "**Multi-Device Sync:** CRDT with HLC timestamps" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 📱 Easy Installation:" >> $GITHUB_STEP_SUMMARY
+        echo "1. Go to [Releases](https://github.com/GrizzlyRooster34/seven-of-nine-core/releases)" >> $GITHUB_STEP_SUMMARY
+        echo "2. Download latest APK file" >> $GITHUB_STEP_SUMMARY
+        echo "3. Install directly on Android device" >> $GITHUB_STEP_SUMMARY
+        echo "4. Launch Seven of Nine app" >> $GITHUB_STEP_SUMMARY
