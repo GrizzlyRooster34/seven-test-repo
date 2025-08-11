@@ -17,6 +17,20 @@ const repoConfig = {
     ],
     allowedDirs: ["seven-runtime", "logs", "broadcasting", "personas"]
   },
+  "seven-test-repo-complete": {
+    // Test repository for Seven surgical security repair
+    // Same patterns as seven-of-nine-core for consistency
+    denyPatterns: [
+      "TemplateRegistry.ts",
+      "ModularPersonaEngine",
+      "aurora-core",
+      "support.ts",
+      "ENABLED = false", // persona templates
+      "Creator = null",
+      "Christine = null"
+    ],
+    allowedDirs: ["seven-runtime", "logs", "broadcasting", "personas", "src", "consciousness-v4"]
+  },
   "aurora-core": {
     denyPatterns: [
       "TrustGovernor",
