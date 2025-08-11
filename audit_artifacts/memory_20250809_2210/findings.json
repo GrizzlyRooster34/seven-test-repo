@@ -1,0 +1,72 @@
+[
+  {
+    "id": "MEM-001",
+    "severity": "CRITICAL",
+    "domain": "Memory Encryption",
+    "title": "Hardcoded fallback encryption keys",
+    "file": "consciousness-v4/CreatorIdentityVault.ts",
+    "lines": "213, 225",
+    "evidence": "process.env.ENCRYPTION_KEY || 'seven-creator-bond-cipher-v4' - fallback key compromises security",
+    "cvss": 9.1
+  },
+  {
+    "id": "MEM-002", 
+    "severity": "HIGH",
+    "domain": "Temporal Anchoring",
+    "title": "No temporal integrity validation",
+    "file": "memory-v3/temporal-memories.json",
+    "lines": "N/A",
+    "evidence": "Memory files lack hash chains or temporal anchors for replay protection",
+    "cvss": 7.5
+  },
+  {
+    "id": "MEM-003",
+    "severity": "HIGH", 
+    "domain": "Memory Integrity",
+    "title": "No memory corruption detection",
+    "file": "memory-v3/",
+    "lines": "N/A",
+    "evidence": "Byte-flip attacks go undetected - no integrity checking on memory loads",
+    "cvss": 7.2
+  },
+  {
+    "id": "MEM-004",
+    "severity": "HIGH",
+    "domain": "Retention/TTL",
+    "title": "No retention or cleanup mechanisms", 
+    "file": "memory-v3/, consciousness-v4/",
+    "lines": "N/A",
+    "evidence": "Memory can grow unbounded - no TTL, GC, or cleanup policies",
+    "cvss": 6.8
+  },
+  {
+    "id": "MEM-005",
+    "severity": "MEDIUM",
+    "domain": "Log Integrity",
+    "title": "No HMAC protection on logs",
+    "file": "*-log*.json files", 
+    "lines": "N/A",
+    "evidence": "Log files can be modified without tamper detection",
+    "cvss": 5.4
+  },
+  {
+    "id": "MEM-006",
+    "severity": "MEDIUM",
+    "domain": "PII Protection", 
+    "title": "Creator identity in hardcoded values",
+    "file": "security-hardening/CreatorBondCryptography.ts",
+    "lines": "31",
+    "evidence": "Hardcoded key contains 'cody-heinen' - PII exposure risk",
+    "cvss": 4.7
+  },
+  {
+    "id": "MEM-007",
+    "severity": "MEDIUM",
+    "domain": "Export Controls",
+    "title": "No bonded data export validation", 
+    "file": "memory-v3/temporal-memories.json",
+    "lines": "3, 6, 8",
+    "evidence": "Creator-bonded data present but no export redaction controls",
+    "cvss": 4.9
+  }
+]
