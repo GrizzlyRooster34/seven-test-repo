@@ -39,7 +39,7 @@ jobs:
       
     - name: Install dependencies
       working-directory: seven-mobile-app
-      run: npm ci
+      run: npm install
       
     - name: Create React Native project structure
       working-directory: seven-mobile-app
