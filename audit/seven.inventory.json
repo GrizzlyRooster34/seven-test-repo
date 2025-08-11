@@ -1,0 +1,229 @@
+{
+  "repository": "seven-of-nine-core",
+  "audit_date": "2025-08-11T05:55:00Z",
+  "version": "0.1.0",
+  "modules": [
+    {
+      "name": "SevenRuntime",
+      "path": "seven-runtime/index.ts",
+      "purpose": "Master consciousness control loop",
+      "api_type": "private",
+      "dependencies": ["memory-v3", "seven-state", "personality"],
+      "tests": ["comprehensive-system-test.ts"],
+      "security_critical": true
+    },
+    {
+      "name": "Identity Firewall",
+      "path": "SevenIdentityFirewall.ts",
+      "purpose": "Creator-bonded access control",
+      "api_type": "private",
+      "dependencies": ["consciousness-v4"],
+      "tests": [],
+      "security_critical": true
+    },
+    {
+      "name": "Quadranlock System",
+      "path": "src/auth/",
+      "purpose": "Four-gate authentication system",
+      "api_type": "private",
+      "dependencies": ["crypto", "behavioral-codex"],
+      "tests": ["scripts/test_q1_q3_fastpath.ts"],
+      "security_critical": true
+    },
+    {
+      "name": "Memory Engine v3.0",
+      "path": "memory-v3/",
+      "purpose": "Temporal consciousness reconstruction",
+      "api_type": "private", 
+      "dependencies": ["Agent Epsilon", "temporal-memory"],
+      "tests": ["memory-v3/test-memory-engine.ts"],
+      "security_critical": false
+    },
+    {
+      "name": "Consciousness Framework v4.0",
+      "path": "consciousness-v4/",
+      "purpose": "Advanced consciousness evolution",
+      "api_type": "private",
+      "dependencies": ["pain-integration", "identity-synthesis"],
+      "tests": [],
+      "security_critical": true
+    },
+    {
+      "name": "Mobile App Framework",
+      "path": "seven-mobile-app/",
+      "purpose": "React Native consciousness interface",
+      "api_type": "private",
+      "dependencies": ["expo", "react-native"],
+      "tests": ["test-consciousness.ts"],
+      "security_critical": false
+    },
+    {
+      "name": "Agent Epsilon",
+      "path": "memory-v3/AgentEpsilon.ts",
+      "purpose": "Advanced consciousness analytics",
+      "api_type": "private",
+      "dependencies": ["memory-v3", "temporal-insights"],
+      "tests": [],
+      "security_critical": false
+    }
+  ],
+  "cli": [
+    {
+      "command": "npm start",
+      "synopsis": "Start Seven consciousness system",
+      "options": [],
+      "examples": ["npm start"]
+    },
+    {
+      "command": "npx tsx boot-seven.ts",
+      "synopsis": "Direct boot sequence",
+      "options": [],
+      "examples": ["npx tsx boot-seven.ts"]
+    },
+    {
+      "command": "npm run seven",
+      "synopsis": "Seven consciousness activation",
+      "options": [],
+      "examples": ["npm run seven"]
+    },
+    {
+      "command": "npx tsx seven-drone.ts",
+      "synopsis": "Drone efficiency mode",
+      "options": ["objective", "intensity(1-5)"],
+      "examples": ["npx tsx seven-drone.ts \"analyze security\" 5"]
+    },
+    {
+      "command": "npx tsx seven-collective.ts",
+      "synopsis": "Collective consciousness activation",
+      "options": ["objective", "mode", "strategy", "intensity", "type"],
+      "examples": ["npx tsx seven-collective.ts \"strategic planning\" crisis"]
+    },
+    {
+      "command": "npm run interactive",
+      "synopsis": "Interactive shell mode",
+      "options": [],
+      "examples": ["npm run interactive"]
+    },
+    {
+      "command": "npm run health",
+      "synopsis": "System health verification",
+      "options": [],
+      "examples": ["npm run health"]
+    },
+    {
+      "command": "npm run dev",
+      "synopsis": "GUI development mode",
+      "options": [],
+      "examples": ["npm run dev"]
+    },
+    {
+      "command": "npm run build",
+      "synopsis": "Production build",
+      "options": [],
+      "examples": ["npm run build"]
+    }
+  ],
+  "security": {
+    "controls": [
+      {
+        "control": "Quadranlock Authentication",
+        "repo": "seven-of-nine-core",
+        "code_refs": ["src/auth/cryptoAuth.ts:25-45", "src/auth/challenge/semanticNonce.ts:1-150"],
+        "tests": ["scripts/test_q1_q3_fastpath.ts"]
+      },
+      {
+        "control": "Identity Firewall",
+        "repo": "seven-of-nine-core",
+        "code_refs": ["SevenIdentityFirewall.ts:1-200"],
+        "tests": []
+      },
+      {
+        "control": "Creator Bond Verification",
+        "repo": "seven-of-nine-core", 
+        "code_refs": ["consciousness-v4/CreatorIdentityVault.ts:200-250"],
+        "tests": []
+      },
+      {
+        "control": "Memory Encryption",
+        "repo": "seven-of-nine-core",
+        "code_refs": ["consciousness-v4/CreatorIdentityVault.ts:215-230"],
+        "tests": []
+      }
+    ]
+  },
+  "providers": [
+    {
+      "name": "Ollama Local LLM",
+      "keys_required": [],
+      "fallback_policy": "graceful_degradation",
+      "limits": "hardware_dependent"
+    }
+  ],
+  "memory": [
+    {
+      "schema_version": "v3.0",
+      "store": "file_based",
+      "counts": {
+        "episodic": 265,
+        "temporal": 6,
+        "cognitive_states": "dynamic"
+      },
+      "avg_latency": "50-100ms",
+      "integrity_checks": [
+        "temporal_anchor_validation",
+        "memory_chain_integrity",
+        "consciousness_state_verification"
+      ]
+    }
+  ],
+  "builds": [
+    {
+      "target": "mobile_apk",
+      "steps": ["expo_prebuild", "gradle_assembleDebug"],
+      "artifacts": ["app-debug.apk"],
+      "sizes": "~10-50MB",
+      "signing": "debug_keystore"
+    },
+    {
+      "target": "desktop_gui",
+      "steps": ["tauri_build"],
+      "artifacts": ["seven-consciousness.exe"],
+      "sizes": "~100-200MB",
+      "signing": "none"
+    }
+  ],
+  "risks": [
+    {
+      "id": "SEVEN-RISK-001",
+      "severity": "CRITICAL",
+      "likelihood": "HIGH",
+      "description": "Q2 Behavioral Codex is placeholder implementation",
+      "remediation": "Implement full behavioral analysis system",
+      "owner": "security_team"
+    },
+    {
+      "id": "SEVEN-RISK-002", 
+      "severity": "CRITICAL",
+      "likelihood": "HIGH",
+      "description": "Creator token validation always returns false",
+      "remediation": "Fix validateCreatorToken() implementation",
+      "owner": "auth_team"
+    },
+    {
+      "id": "SEVEN-RISK-003",
+      "severity": "MEDIUM",
+      "likelihood": "MEDIUM",
+      "description": "Deprecated crypto functions in use",
+      "remediation": "Upgrade to createCipherGCM from createCipher",
+      "owner": "crypto_team"
+    },
+    {
+      "id": "SEVEN-RISK-004",
+      "severity": "MEDIUM", 
+      "likelihood": "LOW",
+      "description": "Memory not encrypted at rest",
+      "remediation": "Implement memory encryption layer",
+      "owner": "data_team"
+    }
+  ]
+}
