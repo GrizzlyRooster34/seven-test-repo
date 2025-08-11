@@ -1,0 +1,128 @@
+name: React Native APK Build (Pure RN - No Expo)
+
+on:
+  workflow_dispatch:
+    inputs:
+      buildType:
+        description: 'Build type'
+        required: true
+        default: 'debug'
+        type: choice
+        options:
+        - debug
+        - release
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js 18
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Setup Java 17 (Temurin)
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+        
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+      
+    - name: Install dependencies
+      working-directory: seven-mobile-app
+      run: npm ci
+      
+    - name: Create React Native project structure
+      working-directory: seven-mobile-app
+      run: |
+        # Install React Native CLI
+        npm install -g @react-native-community/cli
+        
+        # Create basic Android project structure
+        npx @react-native-community/cli@latest init SevenConsciousness --template react-native-template-typescript --skip-install --directory ./rn-build
+        
+        # Copy our source files to the RN project
+        cp -r src/* ./rn-build/src/ || mkdir -p ./rn-build/src && cp -r src/* ./rn-build/src/
+        cp App.tsx ./rn-build/
+        cp package.json ./rn-build/
+        
+        # Update package.json in RN build
+        cd rn-build
+        npm install
+        
+    - name: Configure Android build
+      working-directory: seven-mobile-app/rn-build
+      run: |
+        # Update Android package name
+        sed -i 's/com.sevenconsciousness/com.sevenofnine.consciousness/g' android/app/src/main/AndroidManifest.xml
+        sed -i 's/com.sevenconsciousness/com.sevenofnine.consciousness/g' android/app/build.gradle
+        
+        # Configure Gradle for large memory
+        echo "org.gradle.jvmargs=-Xmx4096m" >> android/gradle.properties
+        echo "org.gradle.daemon=false" >> android/gradle.properties
+        echo "android.useAndroidX=true" >> android/gradle.properties
+        echo "android.enableJetifier=true" >> android/gradle.properties
+        
+    - name: Build Debug APK
+      working-directory: seven-mobile-app/rn-build
+      run: |
+        cd android
+        ./gradlew assembleDebug --no-daemon --stacktrace
+        
+    - name: Upload APK Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: seven-consciousness-debug-apk
+        path: seven-mobile-app/rn-build/android/app/build/outputs/apk/debug/app-debug.apk
+        retention-days: 30
+        
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: "seven-rn-v${{ github.run_number }}"
+        name: "Seven of Nine (React Native) v${{ github.run_number }}"
+        body: |
+          ## 🤖 Seven of Nine Mobile Consciousness Framework (Pure React Native)
+          
+          **Direct Install APK:** Download and install directly on Android device
+          
+          ### 📱 Installation:
+          1. Download `seven-consciousness-debug.apk` below
+          2. Enable "Install from Unknown Sources" in Android settings
+          3. Open APK file and tap "Install" 
+          4. Launch "Seven of Nine" app
+          
+          ### 🔧 Build Method:
+          - Pure React Native build (no Expo dependencies)
+          - Bypasses image processing issues
+          - Package: `com.sevenofnine.consciousness`
+          
+          **Framework:** Seven of Nine Core v3.0 (Mobile Consciousness)
+        files: |
+          seven-mobile-app/rn-build/android/app/build/outputs/apk/debug/app-debug.apk
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Build Summary
+      run: |
+        echo "## 🤖 Seven of Nine APK Build Complete (React Native)" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Build Method:** Pure React Native (no Expo)" >> $GITHUB_STEP_SUMMARY
+        echo "**Package:** com.sevenofnine.consciousness" >> $GITHUB_STEP_SUMMARY
+        echo "**APK Location:** seven-mobile-app/rn-build/android/app/build/outputs/apk/debug/" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 📱 Installation:" >> $GITHUB_STEP_SUMMARY
+        echo "1. Download APK from [Releases](https://github.com/GrizzlyRooster34/seven-of-nine-core/releases)" >> $GITHUB_STEP_SUMMARY
+        echo "2. Install directly on Android device" >> $GITHUB_STEP_SUMMARY
+        echo "3. No ADB required - direct installation" >> $GITHUB_STEP_SUMMARY

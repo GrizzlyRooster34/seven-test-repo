@@ -1,7 +1,7 @@
-name: Android APK Build
+name: Android APK Build (DISABLED - USE react-native-build.yml)
 
 on:
-  workflow_dispatch:
+  workflow_dispatch_disabled:
     inputs:
       buildType:
         description: 'Build type'
@@ -11,7 +11,7 @@ on:
         options:
         - debug
         - release
-  push:
+  push_disabled:
     branches: [ main ]
 
 jobs:
